@@ -1,8 +1,9 @@
 const { default: mongoose } = require("mongoose")
 
-const dbconnect = ()=>{
+const dbconnect = async ()=>{
+    const uri = process.env.DATABASE_CONFIG
     try {
-       const conn = mongoose.connect('mongodb://127.0.0.1:27017/CRC_WORLD')
+       await  mongoose.connect(uri);
         console.log("db connnected sucessufully")
     } catch (error) {
         console.log(error+"SOMETHING RONG IN THE DB CONNECTION")

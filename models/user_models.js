@@ -21,7 +21,11 @@ const userSchema = new mongoose.Schema({
     is_admin:{
         type:Number,
         required:true
+    },
+    is_verified:{
+        type:Boolean,
     }
+    
 });
 
 module.exports = mongoose.model("User",userSchema);
