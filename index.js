@@ -3,8 +3,11 @@ const app = express();
 const mongoose = require("mongoose");
 const dbconnect = require("./config/db_connect");
 const session_config = require("./config/session_config");
+const path = require("path")
+
 require("dotenv").config()
 app.use(session_config)
+
 
 const port = 7001;
 dbconnect()
@@ -19,12 +22,13 @@ app.use((req, res, next) => {
     next();
 });
 
-
-app.use(express.static('public'))
-
+// user releted
+app.use('/assets', express.static(path.join(__dirname, 'public/users/assets')));
 const user_router = require("./routers/user_router");
 app.use('/',user_router)
 
+// admin related
+app.use('/assets', express.static(path.join(__dirname, 'public/admin/assets')));
 const admin_route = require("./routers/admin_router");
 app.use('/',admin_route);
 

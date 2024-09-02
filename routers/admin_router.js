@@ -9,9 +9,13 @@ admin_route.use(bodyparser.urlencoded({extended:true}))
 
 
 admin_route.set("view engine","ejs")
-admin_route.set('views',path.join(__dirname,"../views/users"))
+admin_route.set('views',path.join(__dirname,"../views/admin"))
 
-admin_route.get("/admin",admin_controller.loadadminlogin)
+admin_route.get("/admin",admin_controller.load_adminlogin);
+
+admin_route.post("/verify",admin_controller.admin_verify)
+
+admin_route.get("/dashbord",admin_controller.load_dashbord)
 
 
 module.exports= admin_route;
