@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>CRC_WORLD</title>
+    <title>Evara Dashboard</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,7 +30,7 @@
         </div>
         <nav>
             <ul class="menu-aside">
-                <li class="menu-item active">
+                <li class="menu-item">
                     <a class="menu-link" href="index.html"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
@@ -39,12 +39,6 @@
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                    <div class="submenu">
-                        <a href="page-products-list.html">Product List</a>
-                        <a href="page-products-grid.html">Product grid</a>
-                        <a href="page-products-grid-2.html">Product grid 2</a>
-                        <a href="page-categories.html">Categories</a>
-                    </div>
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
@@ -58,22 +52,15 @@
 <a href="page-invoice.html">Invoice</a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item has-submenu active">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
-                        <span class="text">Sellers</span>
+                        <span class="text">Addcategory</span>
                     </a>
-                    <div class="submenu">
-                        <a href="page-sellers-cards.html">Sellers cards</a>
-                        <a href="page-sellers-list.html">Sellers list</a>
-                        <a href="page-seller-detail.html">Seller profile</a>
-                    </div>
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Add product</span>
                     </a>
-                    <div class="submenu">
-                    </div>
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
@@ -134,26 +121,18 @@
     <main class="main-wrap">
         <header class="main-header navbar">
             <div class="col-search">
-                <form class="searchform" action="/dashbord" method="get" >
+                <form class="searchform">
                     <div class="input-group">
-                        <input list="search_terms" type="text"  name="user_search" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="submit"> <i class="material-icons md-search"></i></button>
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
                     </div>
-                    <!-- <datalist id="search_terms">
+                    <datalist id="search_terms">
                         <option value="Products">
                         <option value="New orders">
                         <option value="Apple iphone">
                         <option value="Ahmed Hassan">
-                    </datalist> -->
-                    <br>
-                    
-                    <% if (msg) { %>
-                        <div class="alert alert-danger">
-                            <P><%= msg %></P>
-                        </div>
-                <% } %>   
+                    </datalist>
                 </form>
-                           
             </div>
             <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
@@ -196,100 +175,120 @@
         </header>
         <section class="content-main">
             <div class="content-header">
-                <h2 class="content-title">Dashbord</h2>
                 <div>
-                    <a href="#" class="btn btn-primary">Create new </a>
+                    <h2 class="content-title card-title">Categories </h2>
+                    <p>Add, edit or delete a category</p>
+                    <br>
+                    <% if ((errorMessage.length > 0)) { %>
+                        <div class="alert alert-danger">
+                            <P><%= errorMessage%></P>
+                        </div>
+                <% } %>   
+                </div>
+                <div>
+                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
                 </div>
             </div>
-            <div class="card mb-4">
-                <header class="card-header">
-                    <h4>User Details</h4>
-                </header>
+            <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title"></h5>
-                    <div class="mt-4">
-                        <div class="text-muted font-size-14">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <div class="table-responsive">
-                                        <table class="table align-middle table-nowrap mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th scope="col" class="text-center">
-                                                        <div class="form-check align-middle">
-                                                            <input class="form-check-input" type="checkbox" id="transactionCheck01">
-                                                            <label class="form-check-label" for="transactionCheck01"></label>
-                                                        </div>
-                                                    </th>
-                                                    <th class="align-middle" scope="col">user ID</th>
-                                                    <th class="align-middle" scope="col">user Name</th>
-                                                    <th class="align-middle" scope="col">Email</th>
-                                                    <!-- <th class="align-middle" scope="col">Total</th> -->
-                                                    <!-- <th class="align-middle" scope="col">active Status</th> -->
-                                                    <th class="align-middle" scope="col">contact number</th>
-                                                    <th class="align-middle" scope="col">active status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            
-                                               <% for(let i =0; i<users.length ; i++){
-                                                %>
-                                              
-                                                <tr>
-                                                    <td class="text-center">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" id="transactionCheck02">
-                                                            <label class="form-check-label" for="transactionCheck02"></label>
-                                                        </div>
-                                                    </td>
-            
-                                                    <td><a href="#" class="fw-bold"><%= users[i]._id %></a> </td>
-                                                    <td><%= users[i].firstname + " " + users[i].lastname %></td>
-                                                    <td>
-                                                        <%= users[i].email %>
-                                                    </td>
-                                                    <td>
-
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge badge-pill badge-soft-success"><%= users[i].is_active %></span>
-                                                    </td>
-                                                    <!-- <td>
-                                                        <i class="material-icons md-payment font-xxl text-muted mr-5"></i> Mastercard
-                                                    </td> -->
-                                                    <td>
-                                                        <form action="/blockuser?id=<%= users[i]._id%>" method="post">
-                                                            <button type="submit" class="btn btn-xs" style="background-color:red; color: white;">Block User</button>                                                        </form>
-                                                    </td>
-                                                    <td>
-                                                        <form action="/unblockuser?id=<%= users[i]._id%>" method="post">
-                                                            <button type="submit" class="btn btn-xs" style="background-color: #28a745; color: white;">Unblock User</button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                          <%
-                                              }
-                                           %>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div> <!-- table-responsive end// -->
+                    <div class="row">
+                        <div class="col-md-3">
+                            <form action="/addcategory" method="post">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Name</label>
+                                    <input name="name" type="text" placeholder="Type here" class="form-control" id="product_name" />
+                                </div>
+                                <!-- <div class="mb-4">
+                                    <label for="product_slug" class="form-label">Slug</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
+                                </div> -->
+                                <!-- <div class="mb-4">
+                                    <label class="form-label">Parent</label>
+                                    <select class="form-select">
+                                        <option>Clothes</option>
+                                        <option>T-Shirts</option>
+                                    </select>
+                                </div> -->
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea   name="discription" placeholder="Type here" class="form-control"></textarea>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Create category</button>
+                                </div>
+                            </form>
                         </div>
-                    </div>
-                </div>
-            </div> <!-- card end// -->
-        </section>
+                        <div class="col-md-9">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            </th>
+                                            <th>SL</th>
+                                            <th>ID</th>
+                                            <th>NAME</th>
+                                            <th>DISCRIPTION</th>
+                                            <!-- <th>Order</th> -->
+                                            <th class="text-end">ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <% for(let i =0; i<cat.length ; i++){
+                                            %>
+                                        <tr>
+                                            <td class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            </td>
+                                            <td><%=i+1%></td>
+                                            <td><b><%=cat[i]._id%></b></td>
+                                            <td><%=cat[i].name%></td>
+                                            <td><%=cat[i].discription%></td>
+                                            <!-- <td>1</td> -->
+                                            <td class="text-end">
+                                                <div class="dropdown">
+                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                    <div class="dropdown-menu">
+                                                        <!-- <form action="/edit_cat?id=<%=cat[i]._id%>" method="post">
+                                                        <button type="submit" class="dropdown-item">Edit info</button>
+                                                        </form> -->
+
+
+                                                        <a class="dropdown-item" href="/lodcatedit?id=<%=cat[i]._id%>">Edit info</a>
+                                                        <form action="/delite_cat?id=<%=cat[i]._id%>" method="post">
+                                                        <button type="submit" class="dropdown-item text-danger">Delete</button>
+                                                        </form>
+                                                    </div>
+                                                </div> <!-- dropdown //end -->
+                                            </td>
+                                        </tr>
+                                        <%
+                                    }
+                                 %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section> <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
                     <script>
                     document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
+                    </script> crc_world  .
                 </div>
                 <div class="col-sm-6">
                     <div class="text-sm-end">
-                        All rights reserved
+                        make an impact on the world
                     </div>
                 </div>
             </div>
