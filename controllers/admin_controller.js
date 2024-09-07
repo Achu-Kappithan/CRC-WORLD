@@ -71,6 +71,7 @@ const load_dashbord = async(req,res)=>{
 
     try {
         const search= req.query.user_search;
+        console.log(search)
         if(search){
             const searchdata = await Admin.find({ 
                 is_admin: 0,
@@ -80,11 +81,11 @@ const load_dashbord = async(req,res)=>{
                     { email: { $regex: search, $options: 'i' } }
                 ]
             });
-            
-            return res.render("admin_dashbord",{users:searchdata, msg:"NO USER FOUND SIMILER TO YOUR SEARCH ....!" })
+            req.flash("error", "no user found");
+            return res.render("admin_dashbord",{users:searchdata})
         }else{
         const userdetails = await Admin.find({is_admin:0})
-       return res.render("admin_dashbord",{users:userdetails,msg:null})
+       return res.render("admin_dashbord",{users:userdetails})
         }
     } catch (err) {
         console.log(err)
@@ -117,7 +118,6 @@ const unblockuser = async (req,res)=>{
         console.log(userid);
         
         const blkusr = await Admin.findByIdAndUpdate(userid,{is_active:true})
-        console.log(blkusr)
         res.redirect("/dashbord")
         
     } catch (err) {
@@ -143,7 +143,6 @@ const load_category = async (req,res)=>{
     try {
         const category_list = await category.find({is_delited:false});
         if(!category_list){
-            console.log("no category list found")
             res.render("addcategory",{cat : category_list})
         }else{
             res.render("addcategory",{cat : category_list})
@@ -170,7 +169,6 @@ const add_category = async (req,res)=>{
             discription: req.body.discription
 
         });
-        console.log(newcategory)
         newcategory.save();
         res.redirect("/Addcategory")
     } catch (err) {

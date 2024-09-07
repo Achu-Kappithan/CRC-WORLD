@@ -1,0 +1,72 @@
+/* Custom styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-y: hidden; /* Prevent vertical scroll caused by overflow */
+}
+
+/* Image and overlay styles */
+img {
+    object-fit: cover;
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    text-align: center;
+    padding: 0 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+p {
+    font-size: 1.25rem;
+    margin-bottom: 0;
+}
+
+/* Form and button styles */
+.card {
+    border-radius: 10px;
+    border: none;
+}
+
+input.form-control {
+    height: 45px;
+    border-radius: 8px;
+}
+
+button.btn {
+    height: 45px;
+    border-radius: 8px;
+}
+
+/* Ensure full-height sections */
+.container-fluid, .row, .col-lg-6 {
+    height: 100%;
+    overflow: hidden; /* Prevent any overflow issues */
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+    p {
+        font-size: 1rem;
+    }
+    .overlay {
+        padding: 0 10px;
+    }
+}
+
+/* Make images adjust perfectly on small screens */
+@media (max-width: 576px) {
+    .img-fluid {
+        height: auto;
+    }
+}

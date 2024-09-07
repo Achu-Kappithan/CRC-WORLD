@@ -46,18 +46,17 @@ const signup_user = async (req, res) => {
   try {
     const { firstname, lastname, email, password, confirm } = req.body;
 
-    if (!firstname || !lastname || !email || !password || !confirm) {
-      return res.render("register", { message: "All fields are required!" });
-    }
+    
 
-    if (password !== confirm) {
-      return res.render("register", { message: "Passwords do not match!" });
-    }
+    // if (password !== confirm) {
+    //   return res.render("register", { message: "Passwords do not match!" });
+    // }
 
     console.log(`PASSWORD IS ${req.body.password}`);
     const userexist = await User.findOne({ email: email });
     if (userexist) {
-      return res.render("register", { message: "USER ALREDAY EXISTS" });
+      req.flash("error","USER ALREDAY EXISTS")
+      return res.redirect("/register");
     }
     const otp = otp_generator.generate(6, {
       digits: true,
@@ -269,8 +268,14 @@ const userverification = async(req,res)=>{
     if(userdata){  
       const passmatch = await bcrypt.compare(password,userdata.password);
       if(passmatch){
+        const isactive =userdata.is_active;
+        if(!isactive){
+          req.flash("error", "SERVICE IS UNAVAILABLE");
+          res.redirect("/login")
+        }else{
         req.session.user_id= userdata._id
         return res.redirect("/load_home")
+      }
       }else{
         req.flash("error", "EMAIL OR PASSWORD IS INCORRECT");
         return res.redirect("/login")
