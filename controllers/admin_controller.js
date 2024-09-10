@@ -102,6 +102,7 @@ const blockuser = async (req,res)=>{
         
         const blkusr = await Admin.findByIdAndUpdate(userid,{is_active:false})
         console.log(blkusr)
+        req.flash("error","User sucessfully bocked")
         res.redirect("/dashbord")
         
     } catch (err) {
@@ -118,6 +119,7 @@ const unblockuser = async (req,res)=>{
         console.log(userid);
         
         const blkusr = await Admin.findByIdAndUpdate(userid,{is_active:true})
+        req.flash("success","user sucessfully unblocked")
         res.redirect("/dashbord")
         
     } catch (err) {
@@ -170,6 +172,7 @@ const add_category = async (req,res)=>{
 
         });
         newcategory.save();
+        req.flash("success","Category added sucessfully")
         res.redirect("/Addcategory")
     } catch (err) {
         console.log(err)
@@ -215,7 +218,7 @@ const edit_category = async (req,res)=>{
                 name: req.body.name,
                 discription: req.body.discription
             }})
-            req.flash("error","CATEGORY UPDATED SUCESSFULLY")
+            req.flash("success","CATEGORY UPDATED SUCESSFULLY")
             return res.redirect("/Addcategory")
         
     } catch (err) {
@@ -223,6 +226,8 @@ const edit_category = async (req,res)=>{
         
     }
 }
+
+
 
 
 module.exports = {
@@ -242,5 +247,7 @@ module.exports = {
     add_category,
     remove_category,
     edit_category,
-    load_editcategory
+    load_editcategory,
+
+
 }

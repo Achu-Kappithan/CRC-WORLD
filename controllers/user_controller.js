@@ -123,6 +123,8 @@ const signup_user = async (req, res) => {
   }
 };
 
+
+//  for loading otp page
 const user_send_otp = async (req, res) => {
   try {
     return res.status(200).render("otp");
@@ -303,14 +305,109 @@ const loadhome = async (req,res)=>{
   }
 }
 
+// load forgotpasword page
+
+const load_forgotpass = async (req,res)=>{
+  try {
+    return res.render("forgotpassword")
+    
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//check the email and  send otp
+
+const resetpass_otp = async (req,res)=>{
+  try {
+    const email = req.body.user_email;
+    
+    const userdata = await User.findOne({email});
+    console.log(userdata)
+
+    if(!userdata){
+      req.flash("error","NO user found with the email")
+      return res.redirect("/forgotpassword")
+    }else{
+      req.session.email = email;
+      const otp = otp_generator.generate(6, {
+        digits: true,
+        alphabets: false,
+        upperCaseAlphabets: false,
+        lowerCaseAlphabets: false,
+        specialChars: false,
+      });
+      console.log(`this is the generated otp`, otp);
+  
+      const otp_data = new user_otp({
+        email: email,
+        otp: otp,
+      });
+  
+      await otp_data.save();
+
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+        secure: false, // Disable using SSL directly (use STARTTLS)
+        tls: {
+          rejectUnauthorized: false, // Allow self-signed certificates
+        },
+      });
+      
+
+    
+    const mailOptions = {
+      from: {
+        name: "CRC_WORLD",
+        address: process.env.EMAIL_USER,
+      },
+      to: email,
+      subject: "Your OTP Code",
+      text: ` Hello, your OTP code is '${otp}' It will be expire in 1 minute.`,
+    };
+
+    // console.log('Transporter Config:', transporter.options);
+
+    const sendMail = async () => {
+      try {
+        await transporter.sendMail(mailOptions);
+
+        console.log("Email has been sent!");
+
+      } catch (error) {
+
+        console.log("Error sending email:", error);
+      }
+    };
+    await sendMail();
+
+    return res.redirect("/otp");
+    }
+    
+  } catch (err) {
+    console.log(err)
+    
+  }
+}
+
 
 module.exports = {
-  loadlogin,
+  // user registration
   loadsignup,
   signup_user,
   verify_otp,
   user_send_otp,
-  loadhome,
   resend_otp,
-  userverification
+
+  // user login
+  loadhome,
+  loadlogin,
+  userverification,
+  load_forgotpass,
+
+  resetpass_otp
 };
