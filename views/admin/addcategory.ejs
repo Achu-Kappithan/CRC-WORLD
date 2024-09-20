@@ -107,7 +107,7 @@
     let value = true;
 
     // Validate name
-    let name = document.getElementById("productname").value;
+    let name = document.getElementById("productname").value.trim();
     console.log(name);
 
     if (name.length < 4) {
@@ -118,7 +118,7 @@
     }
 
     // Validate description
-    let dis = document.getElementById("discription").value;
+    let dis = document.getElementById("discription").value.trim();
     console.log(dis);
 
     if (dis.length < 10) {
@@ -136,7 +136,6 @@
 
 
     </main>
-    <!-- content-main end// -->
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="assets/js/vendors/select2.min.js"></script>

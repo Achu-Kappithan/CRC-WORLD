@@ -71,7 +71,7 @@ const load_dashbord = async(req,res)=>{
 
     try {
         const search= req.query.user_search;
-        console.log(search)
+        // console.log(search)
         if(search){
             const searchdata = await Admin.find({ 
                 is_admin: 0,
@@ -98,10 +98,8 @@ const load_dashbord = async(req,res)=>{
 const blockuser = async (req,res)=>{
     try {
         const userid = req.query.id
-        console.log(userid);
         
         const blkusr = await Admin.findByIdAndUpdate(userid,{is_active:false})
-        console.log(blkusr)
         req.flash("error","User sucessfully bocked")
         res.redirect("/dashbord")
         
@@ -116,7 +114,6 @@ const blockuser = async (req,res)=>{
 const unblockuser = async (req,res)=>{
     try {
         const userid = req.query.id
-        console.log(userid);
         
         const blkusr = await Admin.findByIdAndUpdate(userid,{is_active:true})
         req.flash("success","user sucessfully unblocked")
@@ -128,16 +125,6 @@ const unblockuser = async (req,res)=>{
     }
 }
 
-// load addproduct page
-
-const add_product = async (req,res)=>{
-    try {
-        res.render("addproduct")
-    } catch (err) {
-        console.log(err)
-        
-    }
-}
 
 // load add category page
 
@@ -227,6 +214,16 @@ const edit_category = async (req,res)=>{
     }
 }
 
+// logout the admin
+
+const admin_logout = async (req,res)=>{
+    try {
+        res.redirect("/")
+    } catch (err) {
+        consolo.log(err)
+    }
+}
+
 
 
 
@@ -236,13 +233,15 @@ module.exports = {
     load_adminlogin,
     load_home,
     admin_verify,
+    admin_logout,
+
+
 // user releted section
     load_dashbord,
     blockuser,
     unblockuser,
 
-// product and categories
-    add_product,
+//  categories
     load_category,
     add_category,
     remove_category,

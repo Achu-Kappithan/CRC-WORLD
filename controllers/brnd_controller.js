@@ -1,7 +1,7 @@
 const brand = require("../models/brand")
 const cloudinary = require("cloudinary")
 
-// for adding a new brand
+// for loding brand page
 
 const load_brand = async (req,res)=>{
     try {
@@ -75,7 +75,7 @@ const edit_brand = async(req,res)=>{
   try {
     const id = req.query.id;
     const branddata = await brand.findById({_id:id})
-    console.log(branddata)
+    // console.log(branddata)
       res.render("edite_brand",{data:branddata})
   } catch (err) {
     console.log(err)
@@ -86,26 +86,39 @@ const edit_brand = async(req,res)=>{
 
 // update edite brand details to the database
 
-const update_brand = async (req,res)=>{
+const update_brand = async (req, res) => {
   try {
     const id = req.body.id;
-    const data = await brand.findByIdAndUpdate(
-      id,
-      {$set:{
-       name:req.body.brandname,
-       description: req.body.branddescription,
-       image: req.file ? req.file.filename : data.image 
-      }});
+    const updateData = {
+      name: req.body.brandname,
+      description: req.body.branddescription,
+    };
 
-      req.flash("success","Brand updated sucessfully")
-      return res.redirect("/brand")
+    // If a new file is uploaded, add it to the update data
+    if (req.file) {
+      updateData.image = req.file.filename;
+    }
+
+    const updatedBrand = await brand.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true } // This option returns the updated document
+    );
+
+    if (!updatedBrand) {
+      req.flash("error", "Brand not found");
+      return res.redirect("/brand");
+    }
+
+    req.flash("success", "Brand updated successfully");
+    return res.redirect("/brand");
 
   } catch (err) {
-    console.log(err)
-    
+    console.error(err);
+    req.flash("error", "An error occurred while updating the brand");
+    return res.redirect("/brand");
   }
-}
-
+};
 
 
 

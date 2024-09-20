@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../layouts/admin/admin_header.ejs") %>
+
+  <body>
+    <%- include("../layouts/admin/slidbar.ejs") %>
+
+    <main class="main-wrap">
+      <%- include("../layouts/admin/navbar.ejs") %>
+      <%- include("../layouts/admin/admin_footer.ejs") %>
+      <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Product</h2>
+                    <% if ((errorMessage.length > 0)) { %>
+                        <div class="alert alert-danger">
+                            <P><%= errorMessage%></P>
+                        </div>
+                    <% } %>  
+                    <% if ((successMessage.length > 0)) { %>
+                        <div class="alert alert-success">
+                            <p><%= successMessage %></p>
+                        </div>
+                    <% } %> 
+    
+                    <form action="/update_product?id=<%= productdata._id %>" method="post" onsubmit="return validate()" enctype="multipart/form-data" >
+
+                    <div>
+                        <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
+                        <button type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
+                    <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Product title</label>
+                                <input name="productname" type="text" value="<%= productdata.productname  %>" class="form-control" id="productname">
+                                <span id="errorname" class="text-danger"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Full description</label>
+                                 <textarea name="productdis" id="productdis" placeholder="Type here" class="form-control" rows="4"><%= productdata.productdescription %></textarea>
+                                 <span id="errordis" class="text-danger"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Actual price</label>
+
+                                        <div class="row gx-2">
+                                            <input name="actualPrice" id="actualPrice" value="<%= productdata.Actualprice %>" type="text" class="form-control">
+                                            <span id="erroractualPrice" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Selling price</label>
+                                        <input name="sellingPrice" id="sellingPrice" value="<%= productdata.Salesprice %>" type="text" class="form-control">
+                                         <span id="errorsellingPrice" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label class="form-label">Quantity</label>
+                                    <input name="productquentity" id="productquentity" type="text" value="<%= productdata.quentity %>" class="form-control">
+                                     <span id="errorquentity" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Tax rate</label>
+                                   <input name="taxrate" id="taxrate" type="text" value="<%= productdata.Taxrate %>" class="form-control">
+                                  <span id="errortaxrate" class="text-danger"></span>
+                            </div>
+                    </div>
+                </div> 
+            </div>
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Media</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-upload">
+                            <label for="image" class="form-label">Upload Images</label>
+                            <input type="file" name="productimage" class="form-control" id="image" multiple />
+                            <img src="/assets/uploads/product/<%= productdata.productimage[0] %>" alt="Current Image" width="100px">
+                            <span id="errorimage" class="text-danger"></span>
+                        </div>                   
+                </div> 
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Organization</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row gx-2">
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="productcategory">
+                                    <option value="">Select a Category</option>
+                                    <% categorylist.forEach(category => { %>
+                                        <option value="<%= category._id %>"><%= category.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Brand</label>
+                                <select class="form-select" name="productbrand">
+                                    <option value="">Select a Brand</option>
+                                    <% brandlist.forEach(brand => { %>
+                                        <option value="<%= brand._id %>"><%= brand.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                          <div class="mb-4">
+                                <!-- <label for="product_name" class="form-label">Tags</label>
+                                <input type="text" class="form-control"> -->
+                            </div>
+                        </div> <!-- row.// -->
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+          </form>
+
+        </div>
+    </section> <!-- content-main end// -->
+
+
+    <script>
+        function validate() {
+            let isValid = true;
+        
+            // Validate product name (minimum 4 characters)
+            const name = document.getElementById("productname").value.trim();
+            if (name.length < 4) {
+                document.getElementById("errorname").innerText = "Name must be at least 4 characters long";
+                isValid = false;
+            } else {
+                document.getElementById("errorname").innerText = "";
+            }
+        
+            // Validate description (non-empty)
+            const description = document.getElementById("productdis").value.trim();
+            if (description === "") {
+                document.getElementById("errordis").innerText = "Description is required";
+                isValid = false;
+            } else {
+                document.getElementById("errordis").innerText = "";
+            }
+        
+            // Validate actual price (must be a number)
+            const actualPrice = document.getElementById("actualPrice").value.trim();
+            if (isNaN(actualPrice) || actualPrice === "") {
+                document.getElementById("erroractualPrice").innerText = "Enter a valid actual price";
+                isValid = false;
+            } else {
+                document.getElementById("erroractualPrice").innerText = "";
+            }
+        
+            // Validate selling price (must be a number)
+            const sellingPrice = document.getElementById("sellingPrice").value.trim();
+            if (isNaN(sellingPrice) || sellingPrice === "") {
+                document.getElementById("errorsellingPrice").innerText = "Enter a valid selling price";
+                isValid = false;
+            } else {
+                document.getElementById("errorsellingPrice").innerText = "";
+            }
+        
+            // Validate quantity (must be a number)
+            const quantity = document.getElementById("productquentity").value.trim();
+            if (isNaN(quantity) || quantity === "") {
+                document.getElementById("errorquentity").innerText = "Enter a valid quantity";
+                isValid = false;
+            } else {
+                document.getElementById("errorquentity").innerText = "";
+            }
+        
+            // Validate tax rate (must be a number)
+            const taxRate = document.getElementById("taxrate").value.trim();
+            if (isNaN(taxRate) || taxRate === "") {
+                document.getElementById("errortaxrate").innerText = "Enter a valid tax rate";
+                isValid = false;
+            } else {
+                document.getElementById("errortaxrate").innerText = "";
+            }
+        
+            // Validate image file (must be an image type: jpg, jpeg, png)
+            // const images = document.getElementById("image").files;
+            // const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+            // if (images.length === 0) {
+            //     document.getElementById("errorimage").innerText = "At least one image must be uploaded";
+            //     isValid = false;
+            // } else {
+            //     for (let i = 0; i < images.length; i++) {
+            //         if (!allowedExtensions.exec(images[i].name)) {
+            //             document.getElementById("errorimage").innerText = "Only .jpg, .jpeg, .png files are allowed";
+            //             isValid = false;
+            //             break;
+            //         } else {
+            //             document.getElementById("errorimage").innerText = "";
+            //         }
+            //     }
+            // }
+        
+            return isValid;
+        }
+        </script>
+        
+
+
+
+    </main>
+    <!-- content-main end// -->
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="assets/js/vendors/chart.js"></script>
+
+    <script src="assets/js/main.js" type="text/javascript"></script>
+    <script src="assets/js/custom-chart.js" type="text/javascript"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

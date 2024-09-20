@@ -25,6 +25,12 @@ const userSchema = new mongoose.Schema({
     is_active:{
         type:Boolean,
         default: true
+    },
+    pass_resettoken: {
+        type: String
+    },
+    pass_resettime: {
+        type: Date
     }
     
 });

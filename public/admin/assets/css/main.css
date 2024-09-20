@@ -4442,6 +4442,7 @@ body.dark .dropdown-menu .dropdown-item.text-danger {
   display: none;
 }
 
+
 @media (max-width: 1200px) {
   /* tablet devices */
   .main-wrap {

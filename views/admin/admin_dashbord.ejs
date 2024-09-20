@@ -81,10 +81,14 @@
                                                 <td><%= users[i].firstname + " " + users[i].lastname %></td>
                                                 <td><%= users[i].email %></td>
                                                 <td></td>
+                                                
                                                 <td>
-                                                    <span class="badge badge-pill badge-soft-success"><%= users[i].is_active %></span>
+                                                    <% if (users[i].is_active) { %>
+                                                        <span class="badge badge-pill badge-soft-success" style="background-color: green; color: white;">Active</span>
+                                                    <% } else { %>
+                                                        <span class="badge badge-pill badge-soft-danger" style="background-color: red; color: white;">Inactive</span>
+                                                    <% } %>
                                                 </td>
-                                             
                                                <td>
                                                     <form action="/blockuser?id=<%= users[i]._id%>" method="post">
                                                         <button type="submit" class="btn btn-xs" style="background-color:red; color: white;">Block User</button>                                                        </form>

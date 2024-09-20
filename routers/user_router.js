@@ -3,6 +3,7 @@ const user_route = express()
 const path = require("path")
 const bodyparser =require("body-parser")
 const user_controller = require("../controllers/user_controller")
+const userproduct_controller = require("../controllers/userproduct_controller");
 
 user_route.use(bodyparser.urlencoded({ extended: true }));
 
@@ -21,8 +22,14 @@ user_route.get("/load_home",user_controller.loadhome);
 user_route.post("/user_veryfing",user_controller.userverification);
 user_route.get('/login',user_controller.loadlogin);
 
+//reset password
 user_route.get("/forgotpassword",user_controller.load_forgotpass);
-user_route.post("/resetpass_otp",user_controller.resetpass_otp)
+user_route.post("/resetpass_otp",user_controller.resetpass_mail);
+user_route.get('/reset_password/:token',user_controller.reset_password);
+user_route.post("/update_password/:token",user_controller.update_password)
+
+//product view page
+user_route.get("/load_productview",userproduct_controller.load_productview)
 
 
 

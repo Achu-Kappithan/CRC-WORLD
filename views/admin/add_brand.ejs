@@ -30,27 +30,76 @@
         <div class="card">
             <div class="card-body" style="display: flex; justify-content: center; align-items: center; height: 100%;">
                 <div class="col-md-6"> <!-- Increase width by changing col-md-3 to col-md-6 -->
-                    <form action="/addbrand" method="post" enctype="multipart/form-data">
-                        <div class="mb-4">
-                          <label for="product_name" class="form-label">Name</label>
-                          <input name="brandname" type="text" class="form-control" id="product_name" required />
-                        </div>
-                        <div class="mb-4">
-                          <label class="form-label">Description</label>
-                          <textarea name="branddescription" class="form-control" required></textarea>
-                        </div>
-                        <div class="mb-4">
-                          <label for="image" class="form-label">Upload Image</label>
-                          <input type="file" name="image" class="form-control" required />
-                        </div>
-                        <div class="d-grid">
-                          <button type="submit" class="btn btn-primary">Create</button>
-                        </div>
-                      </form>               </div>
-            </div>
-        </div> <!-- card .// -->
-    </section> <!-- content-main end// -->
+                  <form action="/addbrand" method="post" enctype="multipart/form-data" onsubmit="return validate()">
+                    <div class="mb-4">
+                        <label for="brandname" class="form-label">Name</label>
+                        <input name="brandname" type="text" class="form-control" id="brandname" />
+                        <span id="errorname" class="text-danger"></span> <!-- Error message span -->
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Description</label>
+                        <textarea name="branddescription" class="form-control" id="branddescription"></textarea>
+                        <span id="errordis" class="text-danger"></span> <!-- Error message span -->
+                    </div>
+                    <div class="mb-4">
+                        <label for="image" class="form-label">Upload Image</label>
+                        <input type="file" name="image" class="form-control" id="image" />
+                        <span id="errorimage" class="text-danger"></span> <!-- Error message span -->
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+             </div>
+           </div> 
+         </section> 
+<script>
 
+function validate() {
+    let value = true;
+
+    // Validate brand name
+    let name = document.getElementById("brandname").value.trim();
+    let errorName = document.getElementById("errorname");
+
+    if (name.length < 4) {
+        errorName.textContent = "NAME MUST BE AT LEAST 4 CHARACTERS";
+        value = false;
+    } else {
+        errorName.textContent = "";  // Clear error if valid
+    }
+
+    // Validate description
+    let description = document.getElementById("branddescription").value.trim();
+    let errorDescription = document.getElementById("errordis");
+
+    if (description.length < 10) {
+        errorDescription.textContent = "DESCRIPTION MUST BE AT LEAST 10 CHARACTERS";
+        value = false;
+    } else {
+        errorDescription.textContent = "";  // Clear error if valid
+    }
+
+    // Validate image
+    let image = document.getElementById("image").files[0]; // Get the uploaded file
+    let errorImage = document.getElementById("errorimage");
+
+    if (!image) {
+        errorImage.textContent = "PLEASE UPLOAD AN IMAGE";
+        value = false;
+    } else {
+        const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/jpg", "image/webp"]; // Allowed image types
+        if (!validImageTypes.includes(image.type)) {
+            errorImage.textContent = "ONLY IMAGE FILES (JPG, PNG, GIF) ARE ALLOWED";
+            value = false;
+        } else {
+            errorImage.textContent = "";  // Clear error if valid
+        }
+    }
+
+    return value;
+}
+  </script>
    </main> 
     <!-- content-main end// -->
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>

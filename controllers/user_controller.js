@@ -1,8 +1,12 @@
 const User = require("../models/user_models");
+const Prouduct = require("../models/product");
+const brand = require("../models/brand");
+const category = require("../models/category");
 const bcrypt = require("bcrypt");
 const user_otp = require("../models/otp");
 const nodemailer = require("nodemailer");
 const otp_generator = require("otp-generator");
+const crypto = require("crypto")
 require("dotenv").config();
 
 
@@ -33,7 +37,7 @@ const loadsignup = (req, res) => {
 const encryptpass = async (password) => {
   try {
     const hashpass = await bcrypt.hash(password, 10);
-    console.log(hashpass);
+    // console.log(hashpass);
     return hashpass;
   } catch (err) {
     console.log(err);
@@ -48,9 +52,6 @@ const signup_user = async (req, res) => {
 
     
 
-    // if (password !== confirm) {
-    //   return res.render("register", { message: "Passwords do not match!" });
-    // }
 
     console.log(`PASSWORD IS ${req.body.password}`);
     const userexist = await User.findOne({ email: email });
@@ -297,7 +298,21 @@ const userverification = async(req,res)=>{
 /// for loading home pagde
 const loadhome = async (req,res)=>{
   try {
-    return res.render("user_home")
+    const gadgetcat = await category.findOne({name:"Cricket  Gadgets"});
+    const batcategory =  await category.findOne({name:"Cricket Bat"});
+    console.log("this is batcat", batcategory)
+
+    if(!batcategory && !gadgetcat){
+    }
+    const batlist = await Prouduct.find({category: batcategory._id , is_delited:false})
+    const gadlist = await Prouduct.find({category: gadgetcat._id , is_delited:false})
+    const branddata = await brand.find({is_delited:false})
+
+    const productlist = await Prouduct.find({is_delited:false})
+    .populate('category')  // Populate the category field
+    .populate('brand');    // Populate the brand field
+
+    return res.render("user_home",{productlist,batlist,gadlist,branddata})
   } catch (err) {
 
     console.log(err)
@@ -318,7 +333,7 @@ const load_forgotpass = async (req,res)=>{
 
 //check the email and  send otp
 
-const resetpass_otp = async (req,res)=>{
+const resetpass_mail = async (req,res)=>{
   try {
     const email = req.body.user_email;
     
@@ -329,22 +344,13 @@ const resetpass_otp = async (req,res)=>{
       req.flash("error","NO user found with the email")
       return res.redirect("/forgotpassword")
     }else{
-      req.session.email = email;
-      const otp = otp_generator.generate(6, {
-        digits: true,
-        alphabets: false,
-        upperCaseAlphabets: false,
-        lowerCaseAlphabets: false,
-        specialChars: false,
-      });
-      console.log(`this is the generated otp`, otp);
-  
-      const otp_data = new user_otp({
-        email: email,
-        otp: otp,
-      });
-  
-      await otp_data.save();
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+      
+      userdata.pass_resettoken = hashedToken;
+      userdata.pass_resettime = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+      await userdata.save();
+
 
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -359,15 +365,15 @@ const resetpass_otp = async (req,res)=>{
       });
       
 
-    
+    const resetUrl = `http://localhost:7001/reset_password/${resetToken}`;
     const mailOptions = {
       from: {
         name: "CRC_WORLD",
         address: process.env.EMAIL_USER,
       },
       to: email,
-      subject: "Your OTP Code",
-      text: ` Hello, your OTP code is '${otp}' It will be expire in 1 minute.`,
+      subject: "Reset Password",
+      text: `Reset your password using this link: ${resetUrl}`,
     };
 
     // console.log('Transporter Config:', transporter.options);
@@ -384,8 +390,8 @@ const resetpass_otp = async (req,res)=>{
       }
     };
     await sendMail();
-
-    return res.redirect("/otp");
+    req.flash("success","E mail send sucessfully , check your e -mail")
+    return res.redirect("/login");
     }
     
   } catch (err) {
@@ -394,6 +400,57 @@ const resetpass_otp = async (req,res)=>{
   }
 }
 
+
+
+// load reset password page
+
+const reset_password = async (req,res)=>{
+  try {
+    const token = req.params.token;
+
+    return res.render("reset_password",{token})
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// update reset password to database
+
+const update_password = async (req,res)=>{
+  try {
+      const { newPassword } = req.body;
+      const resetToken = req.params.token;
+      console.log("this is the token",resetToken)
+    
+      const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    
+      const user = await User.findOne({
+        pass_resettoken: hashedToken,
+        pass_resettime: { $gt: Date.now() },
+      });
+    
+      if (!user) {
+        req.flash('error',"Invalid or expired token")
+        return res.status(400).redirect('/login');
+      }
+    
+      // Update password
+      // user.password = await bcrypt.hash(newPassword, 10);
+      user.password = await encryptpass(newPassword),
+      user.pass_resettoken= undefined;
+      user.pass_resettime = undefined;
+      await user.save();
+
+      req.flash("sucess","Password updated sucessfully")
+      return res.redirect("/login");
+    
+    
+    
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 module.exports = {
   // user registration
@@ -409,5 +466,8 @@ module.exports = {
   userverification,
   load_forgotpass,
 
-  resetpass_otp
+  // forgot password
+  resetpass_mail,
+  reset_password,
+  update_password
 };
