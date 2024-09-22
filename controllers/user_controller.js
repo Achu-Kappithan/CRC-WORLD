@@ -300,7 +300,7 @@ const loadhome = async (req,res)=>{
   try {
     const gadgetcat = await category.findOne({name:"Cricket  Gadgets"});
     const batcategory =  await category.findOne({name:"Cricket Bat"});
-    console.log("this is batcat", batcategory)
+    // console.log("this is batcat", batcategory)
 
     if(!batcategory && !gadgetcat){
     }
