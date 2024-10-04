@@ -10,6 +10,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
   <body>
     <div
@@ -121,11 +122,9 @@
       function validateForm() {
         let valid = true;
 
-        // Clear previous errors
         document.getElementById("emailError").textContent = "";
         document.getElementById("passwordError").textContent = "";
 
-        // Validate email
         const email = document.getElementById("email").value;
         const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         if (!emailPattern.test(email)) {
@@ -134,7 +133,6 @@
           valid = false;
         }
 
-        // Validate password
         const password = document.getElementById("password").value;
         if (password.length < 6) {
           document.getElementById("passwordError").textContent =
@@ -145,5 +143,23 @@
         return valid;
       }
     </script>
+
+    <!-- aditional scriipt for sending message to user -->
+
+    <script>
+      const message = "<%= message %>";
+      const type = "<%= type %>";
+
+      if (message && message.length > 0) {
+          Swal.fire({
+              icon: type, // 'success', 'error', 'warning', 'info'
+              title: message,
+              showConfirmButton: true,
+              timer: 3000 // Optional auto-close
+          });
+      }
+  </script>
+
+  
   </body>
 </html>

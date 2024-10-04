@@ -19,7 +19,7 @@ const brandSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    is_delited : {
+    is_deleted : {
         type : Boolean,
         default : false
     },

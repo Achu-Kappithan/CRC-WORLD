@@ -52,6 +52,26 @@ button.btn {
     overflow: hidden; /* Prevent any overflow issues */
 }
 
+
+/* // stock manage color */
+
+.stock-status {
+    font-weight: bold;
+  }
+  
+  .in-stock {
+    color: green;
+  }
+  
+  .limited-stock {
+    color: orange;
+  }
+  
+  .out-of-stock {
+    color: red;
+  }
+  
+
 @media (max-width: 768px) {
     h1 {
         font-size: 2rem;
@@ -70,6 +90,11 @@ button.btn {
         height: auto;
     }
 }
+
+
+
+
+
 
 
 

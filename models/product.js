@@ -1,12 +1,35 @@
 const mongoose = require("mongoose");
 
+const sizeSchema = mongoose.Schema({
+    size: {
+        type: String,
+        required: true,
+        enum: ['small', 'Medium', 'Large'], 
+    },
+    stock: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 1000
+    },
+    Salesprice: {
+        type: Number,
+        required: true
+    },
+    Actualprice: {
+        type: Number,
+        required: true
+    },
+
+});
+
 const productSchema = mongoose.Schema({
     productname: {
         type: String,
         required: true
     },
     productdescription: {
-        type: String,  
+        type: String,
         required: true
     },
     productimage: [{
@@ -18,10 +41,26 @@ const productSchema = mongoose.Schema({
         ref: "category",
         required: true
     },
-    brand: {  
+    brand: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "brand",
         required: true
+    },
+    Taxrate: {
+        type: Number,
+        default: 0
+    },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    is_deleted: {
+        type: Boolean,
+        default: false
+    },
+    dateCreated: {
+        type: Date,
+        default: Date.now
     },
     Salesprice: {
         type: Number,
@@ -31,31 +70,12 @@ const productSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    Taxrate: {
-        type: Number,
-        default: 0
-    },
-    quentity: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 1000
-    },
-    rating: {
-        type: Number,
-        default: 0,
-    },
-    is_delited : {
-        type: Boolean,
-        default: 0
-    },
-    dateCreated: {
-        type: Date,
-        default: Date.now
-    }
+
+    sizes: [sizeSchema] 
 });
 
-module.exports = mongoose.model('Product', productSchema); 
+module.exports = mongoose.model('Product', productSchema);
+
 
 
 

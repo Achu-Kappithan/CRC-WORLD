@@ -1,78 +1,120 @@
 const product = require("../models/product");
 const brand = require("../models/brand");
 const category = require("../models/category");
+const priceHelper = require("../utils/pricehelper");
 
 // for loading product view page
-const load_productview = async (req,res)=>{
-    try {
-        const id = req.query.id;
-       const productdata= await product.findOne({_id:id})
-       return res.render("productview",{productdata})
-        
-    } catch (err) {
-        console.log(err)
-        
-    }
-}
+const load_productview = async (req, res) => {
+  try {
+    const size = "size";
+    const id = req.query.id;
+    const productdata = await product.findOne({ _id: id });
+    return res.render("productview", { productdata, helpers: priceHelper });
+  } catch (err) {
+    console.log(err);
+  }
+};
 
+const load_sizesort = async (req, res) => {
+  try {
+    const sizeId = req.query.id;
+
+    // Find the product that contains the size with the provided size ID
+    const sizeproduct = await product.findOne(
+      { "sizes._id": sizeId },
+      { "sizes.$": 1 }
+    );
+
+    if (sizeproduct && sizeproduct.sizes.length > 0) {
+      res.json({ success: true, size: sizeproduct.sizes[0] });
+    } else {
+      res.json({ success: false, message: "Size not found" });
+    }
+  } catch (err) {
+    console.error("Error fetching size details:", err);
+    res.json({ success: false, message: "Error fetching size details" });
+  }
+};
 
 // for loading shop page
 
-const load_shop = async (req,res)=>{
-    try {
-       
-        const branddata = await brand.find({is_delited:false})
-        const catdata  = await category.find({is_delited:false})
-        const catid = req.query.id;
-        const selectedBrands = req.query.brands ? req.query.brands.split(',') : [];
+const load_shop = async (req, res) => {
+  try {
+    const branddata = await brand.find({ is_deleted: false });
+    const catdata = await category.find({ is_deleted: false });
+    const productdata = await product.find({is_deleted: false})
+      .populate("brand")
+      .populate("category");
+      
+    return res.render("usershop", {
+      productdata,
+      branddata,
+      catdata,
+      helpers: priceHelper,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
-        // console.log("this is catid ",catid)
+// filter productss
+const filterProducts = async (req, res) => {
+  try {
+    const { categories = [], brands = [], sort = [], search } = req.body;
 
-        const sortOption = req.query.sort
-        // console.log(sortOption)
+    // console.log("this is the data", categories, brands,sort);
 
-        let sortCriteria = {};
-        switch (sortOption) {
-            case 'price_asc':
-                sortCriteria = { Salesprice: 1 };
-                break;
-            case 'price_desc':
-                sortCriteria = { Salesprice: -1 };
-                break;
-            case 'name_asc':
-                sortCriteria = { productname: 1 };
-                break;
-            case 'name_desc':
-                sortCriteria = { productname: -1 };
-                break;
-            default:
-                sortCriteria = {};
-        }
-
-        const filterCriteria = {is_delited:false}
-
-        if(catid){
-            filterCriteria.category=catid
-        }
-
-        if (selectedBrands.length > 0) {
-            filterCriteria.brand = { $in: selectedBrands }; 
-        }
-
-        // console.log("this is the filter creaiteria",filterCriteria);
-        
-        const productdata = await product.find(filterCriteria).sort(sortCriteria)
-        return res.render("usershop",{productdata,branddata,catdata})
-        
-    } catch (err) {
-        console.log(err)
-        res.status(500).send("Internal Server Error");
+    let query = { is_deleted:false };
+    
+    false
+    if (categories.length > 0) {
+      query.category = { $in: categories };
     }
-}
+    if (brands.length > 0) {
+      query.brand = { $in: brands };
+    }
+    if(search&& search.trim()){
+      query.productname = { $regex: new RegExp(search, 'i') };
+    }
 
+    let sortOption = {};
+    if (sort.length > 0) {
+      sort.forEach((sort) => {
+        if (sort === "price-asc") {
+          sortOption["sizes.0.price"] = 1;
+        } else if (sort === "price-desc") {
+          sortOption["sizes.0.price"] = -1;
+        } else if (sort === "alpha-asc") {
+          sortOption["productname"] = 1;
+        } else if (sort === "alpha-desc") {
+          sortOption["productname"] = -1;
+        }
+      });
+    }
 
+    // console.log("this is filter query", query);
+    // console.log("this is  sortoption", sortOption);
+
+    let products = await product
+      .find(query)
+      .sort(sortOption)
+      .populate("brand")
+      .populate("category");
+
+    console.log("this is productfilter data", products);
+
+    return res.json({ products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Server error" });
+  }
+};
 
 module.exports = {
-    load_productview,
-    load_shop
-}
+  load_productview,
+  load_sizesort,
+
+  load_shop,
+  filterProducts,
+};

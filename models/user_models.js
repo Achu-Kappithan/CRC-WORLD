@@ -26,7 +26,11 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default: true
     },
-    pass_resettoken: {
+    addressId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Address",
+    }],       
+        pass_resettoken: {
         type: String
     },
     pass_resettime: {

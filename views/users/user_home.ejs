@@ -113,20 +113,14 @@
                 <!-- end product image -->
 
                 <!-- countdown start -->
-                <div class="saleTime desktop" data-countdown="2022/03/01"></div>
+                <!-- <div class="saleTime desktop" data-countdown="2022/03/01"></div> -->
                 <!-- countdown end -->
 
                 <!-- Start product button -->
-                <form
-                  class="variants add"
-                  action="#"
-                  onclick="window.location.href='cart.html'"
-                  method="post"
-                >
-                  <button class="btn btn-addto-cart" type="button" tabindex="0">
-                    Add To Cart
-                  </button>
-                </form>
+                <div
+                  class="variants add">
+                 
+                </div>
                 <div class="button-set">
                   <a
                     href="javascript:void(0)"
@@ -152,20 +146,22 @@
                     </a>
                   </div>
                 </div>
-                <!-- end product button -->
               </div>
               <!-- end product image -->
+
               <!--start product details -->
+              
               <div class="product-details text-center">
-                <!-- product name -->
+                <div style="font-weight: bold;"  class="product-name">
+                  <a href=""><%= productlist[i].brand.name %></a>
+                </div>
                 <div class="product-name">
                   <a href="/load_productview?id=<%= productlist[i]._id%>"><%= productlist[i].productname %></a>
                 </div>
-                <!-- End product name -->
-                <!-- product price -->
+                
                 <div class="product-price">
-                  <span class="old-price"><%= productlist[i].Actualprice %></span>
-                  <span class="price"><%= productlist[i].Salesprice %></span>
+                  <span class="old-price"> <%= productlist[i].sizes[2].Actualprice %> </span>
+                  <span class="price">  <%= helpers.formatPrice(helpers.getAvailablePrice(productlist[i].sizes)) %> </span>
                 </div>
               </div>
             </div>
@@ -270,7 +266,7 @@
                 <!-- countdown end -->
 
                 <!-- Start product button -->
-                <form
+                <!-- <form
                   class="variants add"
                   action="#"
                   onclick="window.location.href='cart.html'"
@@ -279,7 +275,7 @@
                   <button class="btn btn-addto-cart" type="button" tabindex="0">
                     Add To Cart
                   </button>
-                </form>
+                </form> -->
                 <div class="button-set">
                   <a
                     href="javascript:void(0)"
@@ -310,15 +306,17 @@
               <!-- end product image -->
               <!--start product details -->
               <div class="product-details text-center">
-                <!-- product name -->
+                <div style="font-weight: bold;"  class="product-name">
+                  <a href=""><%= batlist[i].brand.name %></a>
+                </div>
                 <div class="product-name">
                   <a href="/load_productview?id=<%= batlist[i]._id%>"><%= batlist[i].productname %></a>
                 </div>
                 <!-- End product name -->
                 <!-- product price -->
                 <div class="product-price">
-                  <span class="old-price"><%= batlist[i].Actualprice %></span>
-                  <span class="price"><%= batlist[i].Salesprice %></span>
+                  <span class="old-price"><%= batlist[i].sizes[2].Actualprice %></span>
+                  <span class="price"><%= helpers.formatPrice(helpers.getAvailablePrice(batlist[i].sizes)) %></span>
                 </div>
               </div>
             </div>
@@ -390,16 +388,6 @@
                   <!-- countdown end -->
   
                   <!-- Start product button -->
-                  <form
-                    class="variants add"
-                    action="#"
-                    onclick="window.location.href='cart.html'"
-                    method="post"
-                  >
-                    <button class="btn btn-addto-cart" type="button" tabindex="0">
-                      Add To Cart
-                    </button>
-                  </form>
                   <div class="button-set">
                     <a
                       href="javascript:void(0)"
@@ -430,15 +418,18 @@
                 <!-- end product image -->
                 <!--start product details -->
                 <div class="product-details text-center">
-                  <!-- product name -->
+                  <div style="font-weight: bold;"  class="product-name">
+                    <a href=""><%= gadlist[i].brand.name %></a>
+                  </div>
+  
                   <div class="product-name">
                     <a href="/load_productview?id=<%= gadlist[i]._id%>"><%= gadlist[i].productname %></a>
                   </div>
                   <!-- End product name -->
                   <!-- product price -->
                   <div class="product-price">
-                    <span class="old-price"><%= gadlist[i].Actualprice %></span>
-                    <span class="price"><%= gadlist[i].Salesprice %></span>
+                    <span class="old-price"><%= gadlist[i].sizes[2].Actualprice %></span>
+                    <span class="price"><%= helpers.formatPrice(helpers.getAvailablePrice(gadlist[i].sizes)) %></span>
                   </div>
                 </div>
               </div>
@@ -486,14 +477,9 @@
             </div>
         </div>
     </div>
-</div>  <!--End Logo Slider-->
+</div> 
 </div>
 
-<!--End Footer-->
-<!--Scoll Top-->
 <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-<!--End Scoll Top-->
-
-<!--End Quick View popup-->
 
 <%- include("../layouts/user/footer.ejs") %>

@@ -6,7 +6,7 @@
     	<!--Collection Banner-->
     	<div class="collection-header">
 			<div class="collection-hero">
-        		<div style="max-height: 350px;" class="collection-hero__image"><img class="blur-up lazyload" data-src="assets/images/crc/shopepage.jpg" src="assets/images/cat-women1.jpg" alt="Women" title="Women" /></div>
+        		<div style="height: 500px;" class="collection-hero__image"><img class="blur-up lazyload" data-src="assets/images/crc/shope.jpg" src="assets/images/crc/shope.jpg" alt="Women" title="Women" /></div>
         		<div class="collection-hero__title-wrapper"><h1 class="collection-hero__title page-width">Shop Right Sidebar</h1></div>
       		</div>
 		</div>
@@ -14,53 +14,20 @@
         
         <div class="container">
         	<div class="row">
-                <!--Main Content-->
-                <div class="col-12 col-sm-12 col-md-9 col-lg-9 main-col">
-                	<div class="productList">
-                    	<!--Toolbar-->
-                        <button type="button" class="btn btn-filter d-block d-md-none d-lg-none"> Product Filters</button>
-                    	<div class="toolbar">
-                        	<div class="filters-toolbar-wrapper">
-                            	<div class="row">
-                                	<div class="col-4 col-md-4 col-lg-4 filters-toolbar__item collection-view-as d-flex justify-content-start align-items-center">
-                                    	<!-- <a href="shop-left-sidebar.html" title="Grid View" class="change-view change-view--active">
-                                        	<img src="assets/images/grid.jpg" alt="Grid" />
-                                        </a>
-                                        <a href="shop-listview.html" title="List View" class="change-view">
-                                        	<img src="assets/images/list.jpg" alt="List" />
-                                        </a> -->
-                                    </div>
-                                    <div class="col-4 col-md-4 col-lg-4 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
-                                    	<!-- <span class="filters-toolbar__product-count">Showing: 22</span> -->
-                                    </div>
 
-                                </div>
-                            </div>
-                        </div>
-                        <!--End Toolbar-->
-                        <div class="grid-products grid--view-items product-load-more">
-                            <div class="row">
-                            
+                <div class="col-12 col-sm-12 col-md-9 col-lg-9 main-col">
+                    <hr>
+                	<div  class="productList">
+                        <div class="grid-products grid--view-items">
+                            <div id='product-list' class="row">
                                 <% for(i=0; i<productdata.length;i++){  %>
-                                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
-                                        <!-- start product image -->
+                                    <div  class="col-6 col-sm-6 col-md-4 col-lg-3 item">
                                         <div class="product-image">
-                                            <!-- start product image -->
-                                            <a href="#">
-                                                <!-- image -->
+                                            <a href="/load_productview?id=<%= productdata[i]._id%>">
                                                 <img class="primary blur-up lazyload" data-src="/assets/uploads/product/<%= productdata[i].productimage[0] %>" src="/assets/uploads/product/<%= productdata[i].productimage[0] %>" alt="image" title="product">
-                                                <!-- End image -->
-                                                <!-- Hover image -->
                                                 <img class="hover blur-up lazyload" data-src="/assets/uploads/product/<%= productdata[i].productimage[1] %>" src="/assets/uploads/product/<%= productdata[i].productimage[1] %>" alt="image" title="product">
                                                  
-                                                <!-- <div class="product-labels rounded"><span class="lbl on-sale">-16%</span> <span class="lbl pr-label1">new</span></div> -->
                                             </a>
-                                            <!-- end product image -->
-        
-                                            <!-- Start product button -->
-                                            <form class="variants add" action="#" onclick="window.location.href='cart.html'"method="post">
-                                                <button class="btn btn-addto-cart" type="button">Add To Cart</button>
-                                            </form>
                                             <div class="button-set">
                                                 <a href="javascript:void(0)" title="Quick View" class="quick-view-popup quick-view" data-toggle="modal" data-target="#content_quickview">
                                                     <i class="icon anm anm-search-plus-r"></i>
@@ -76,23 +43,18 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                            <!-- end product button -->
                                         </div>
-                                        <!-- end product image -->
-        
-                                        <!--start product details -->
                                         <div class="product-details text-center">
-                                            <!-- product name -->
+                                            <div style="font-weight: bold;"  class="product-name">
+                                                <a href=""><%= productdata[i].brand.name %></a>
+                                              </div>
                                             <div class="product-name">
                                                 <a href="#"><%= productdata[i].productname %></a>
                                             </div>
-                                            <!-- End product name -->
-                                            <!-- product price -->
                                             <div class="product-price">
-                                                <span class="old-price"><%= productdata[i].Actualprice %></span>
-                                                <span class="price"><%= productdata[i].Salesprice %></span>
+                                                <span class="old-price"><%= productdata[i].sizes[2].Actualprice %></span>
+                                                <span class="price"><%= helpers.formatPrice(helpers.getAvailablePrice(productdata[i].sizes)) %></span>
                                             </div>
-                                            <!-- End product price -->
                                             
                                             <div class="product-review">
                                                 <i class="font-13 fa fa-star"></i>
@@ -101,117 +63,110 @@
                                                 <i class="font-13 fa fa-star-o"></i>
                                                 <i class="font-13 fa fa-star-o"></i>
                                             </div>
-                                            <!-- Variant -->
-                                            <!-- End Variant -->
                                         </div>
-                                        <!-- End product details -->
                                     </div>
                                     <% } %>
-                            </div>
+                                 </div>
                         </div>
                     </div>
-                    <div class="infinitpaginOuter">
-                        <div class="infinitpagin">	
-                            <a href="javascript:void(0)" class="btn loadMore">Load More</a>
-                        </div>
+                    <hr class="clear">
+                    <div class="pagination">
+                      <ul>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li class="next"><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i></a></li>
+                      </ul>
                     </div>
                 </div>
+
+
                 <!--End Main Content-->
                 <!--Sidebar-->
             	<div class="col-12 col-sm-12 col-md-3 col-lg-3 sidebar filterbar">
                 	<div class="closeFilter d-block d-md-none d-lg-none"><i class="icon icon anm anm-times-l"></i></div>
-                	<div class="sidebar_tags">
                         <br><br>
 
-                        <div class="col-4 col-md-4 col-lg-4 text-right">
-                            <div class="filters-toolbar__item">
-                                  <label for="SortBy" class="hidden"><h2>sort</h2></label>
-                                  <div class="widget-title"><h2>Sort</h2></div>
-                                  <form id="sortForm" method="get" action="/user_shop">
-                                    <select name="sort" id="SortBy" class="filters-toolbar__input filters-toolbar__input--sort" onchange="document.getElementById('sortForm').submit()">
-                                        <option value="" selected="selected">Sort</option>
-                                        <option value="name_asc">Alphabetically, A-Z</option>
-                                        <option value="name_desc">Alphabetically, Z-A</option>
-                                        <option value="price_asc">Price, low to high</option>
-                                        <option value="price_desc">Price, high to low</option>
-                                    </select>
-                                </form>
-                                  <input class="collection-header__default-sort" type="hidden" value="manual">
+
+                        <div class="sidebar_widget filterBox filter-widget">
+                            <div class="widget-title">
+                                <h2>Sort Option</h2>
+                            </div>
+                            <div class="widget-content">
+                                <ul >
+                                    <li >
+                                        <input type="checkbox" id="" class="sort-filter" value="price-asc">
+                                        <label >
+                                        <span><span></span></span>Price: Low to High
+                                        </label>
+                                    </li>
+                                    <li >
+                                        <input type="checkbox" id="" class="sort-filter" value="price-desc">
+                                        <label >
+                                        <span><span></span></span>Price: High to Low
+                                        </label>
+                                    </li>
+                                    <li >
+                                        <input type="checkbox" id="" class="sort-filter" value="alpha-asc">
+                                        <label >
+                                        <span><span></span></span>Name: A to Z
+                                        </label>
+                                        <li >
+                                            <input type="checkbox" id="" class="sort-filter" value="alpha-desc">
+                                            <label >
+                                            <span><span></span></span>Name: Z to A
+                                            </label>
+                                        </li>
+                                </ul>
                             </div>
                         </div>
-                        <br><br>
+
 
                     	<!--Categories-->
-                    	<div class="sidebar_widget categories filter-widget">
-                            <div class="widget-title"><h2>Categories</h2></div>
+                        <div class="sidebar_widget filterBox filter-widget">
+                            <div class="widget-title">
+                                <h2>Categories</h2>
+                            </div>
                             <div class="widget-content">
-                                <ul class="sidebar_categories">
-                                    <% for(let i=0; i<catdata.length;i++){ %>
-                                    <li class="lvl-1">
-                                    <a href="/user_shop?id=<%= catdata[i]._id %>" class="site-nav" style="font-weight: bolder;" ><%= catdata[i].name %></a>
+                                <ul >
+                                    <% for(let i = 0; i < catdata.length; i++) { %>
+                                    <li >
+                                        <input type="checkbox" id="category_<%= catdata[i]._id %>" class="category-filter" value="<%= catdata[i]._id %>">
+                                        <label >
+                                        <span><span></span></span><%= catdata[i].name %>
+                                        </label>
                                     </li>
+                                    
                                     <% } %>
                                 </ul>
                             </div>
                         </div>
-                        <!--Categories-->
-                        <!--Price Filter-->
+                        <!-- Categories -->
+
+                        <!-- Brand -->
                         <div class="sidebar_widget filterBox filter-widget">
                             <div class="widget-title">
-                            	<h2>Price</h2>
+                                <h2>Brands</h2>
                             </div>
-                            <form action="#" method="post" class="price-filter">
-                                <div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
-                                	<div class="ui-slider-range ui-widget-header ui-corner-all"></div>
-                                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                    <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <p class="no-margin"><input id="amount" type="text"></p>
-                                    </div>
-                                    <div class="col-6 text-right margin-25px-top">
-                                        <button class="btn btn-secondary btn--small">filter</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!--End Price Filter-->
-                        <!--Size Swatches-->
-                        <!-- <div class="sidebar_widget filterBox filter-widget size-swacthes">
-                            <div class="widget-title"><h2>Size</h2></div>
-                            <div class="filter-color swacth-list">
-                            	<ul>
-                                    <li><span class="swacth-btn checked">X</span></li>
-                                    <li><span class="swacth-btn">XL</span></li>
-                                    <li><span class="swacth-btn">XLL</span></li>
-                                    <li><span class="swacth-btn">M</span></li>
-                                    <li><span class="swacth-btn">L</span></li>
-                                    <li><span class="swacth-btn">S</span></li>
-                                    <li><span class="swacth-btn">XXXL</span></li>
-                                    <li><span class="swacth-btn">XXL</span></li>
-                                    <li><span class="swacth-btn">XS</span></span></li>
-                                </ul>
-                            </div>
-                        </div> -->
-                        <!--End Size Swatches-->
-                        <!--Brand-->
-                        <div class="sidebar_widget filterBox filter-widget">
-                            <div class="widget-title"><h2>Brands</h2></div>
                             <ul>
                                 <% for (let i = 0; i < branddata.length; i++) { %>
-                                    <li>
-                                        <input type="checkbox" value="<%= branddata[i]._id %>" id="brand_<%= branddata[i]._id %>" class="brand-filter">
-                                        <label for="brand_<%= branddata[i]._id %>">
-                                            <span><span></span></span><%= branddata[i].name %>
-                                        </label>
-                                    </li>
+                                <li>
+                                    <input type="checkbox" value="<%= branddata[i]._id %>" id="brand_<%= branddata[i]._id %>" class="brand-filter">
+                                    <label for="brand_<%= branddata[i]._id %>">
+                                        <span><span></span></span><%= branddata[i].name %>
+                                    </label>
+                                </li>
                                 <% } %>
                             </ul>
+                            <div class="apply-filter-btn">
+                                <button id="applyFilterBtn" class="btn btn-primary">Apply Filter</button>
+                                <a style="margin: 10px;" href="/user_shop" id="applyFilterBtn" class="btn btn-primary">Clear Filter </a>
+                            </div>
+
+
                         </div>
-                        <!--End Brand-->
-                        <!--Popular Products-->
-                        <!--End Popular Products-->
+                        <!-- Brand -->
+            
+
                         <!--Banner-->
                         <div class="sidebar_widget static-banner">
                         	<img src="assets/images/side-banner-2.jpg" alt="" />
@@ -232,27 +187,145 @@
     </div>
     <!--End Body Content-->
 
+<script>
 
-    <script>
-        // Get all brand checkboxes
-        const brandCheckboxes = document.querySelectorAll('.brand-filter');
+document.getElementById('applyFilterBtn').addEventListener('click', function() {
     
-        // Add event listener to each checkbox
-        brandCheckboxes.forEach((checkbox) => {
-            checkbox.addEventListener('change', function () {
-                // Collect all checked brand IDs
-                const selectedBrands = Array.from(document.querySelectorAll('.brand-filter:checked'))
-                    .map(cb => cb.value)
-                    .join(',');
+    let selectedCategories = [];
+    document.querySelectorAll('.category-filter:checked').forEach((checkbox) => {
+        selectedCategories.push(checkbox.value);
+    });
+
     
-                // Redirect to the shop page with selected brands as query parameters
-                window.location.href = `/user_shop?brands=${selectedBrands}`;
-            });
-        });
-    </script>
+    let selectedBrands = [];
+    document.querySelectorAll('.brand-filter:checked').forEach((checkbox) => {
+        selectedBrands.push(checkbox.value);
+    });
+
     
+    let selectedSort = [];
+    document.querySelectorAll('.sort-filter:checked').forEach((checkbox) => {
+        selectedSort.push(checkbox.value);
+    });
 
 
+    let searchquery = document.getElementById("search-input").value;
+
+
+    
+    let filterData = {
+        categories: selectedCategories,
+        brands: selectedBrands,
+        sort: selectedSort,
+        search: searchquery
+    };
+
+    console.log("this is the filter ",filterData);
+    
+    
+    const productListDiv = document.getElementById('product-list');
+    productListDiv.innerHTML = '<p>Loading...</p>';
+
+    
+    fetch('/product_filter', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filterData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // console.log("Received data:", data);
+        if (data && data.products && data.products.length > 0) {
+            updateProductList(data.products); 
+        } else {
+            updateProductList([]);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+function updateProductList(products) {
+    const productListDiv = document.getElementById('product-list');
+    productListDiv.innerHTML = '';  
+
+    if (products.length === 0) {
+        productListDiv.innerHTML = '<p>No products found</p>';
+        return;
+    }
+
+    products.forEach(product => {
+        const productHTML = `
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                <div class="product-image">
+                    <a href="/load_productview?id=${product._id}">
+                        <img class="primary blur-up lazyload" data-src="/assets/uploads/product/${product.productimage[0]}" src="/assets/uploads/product/${product.productimage[0]}" alt="image" title="product">
+                        <img class="hover blur-up lazyload" data-src="/assets/uploads/product/${product.productimage[1]}" src="/assets/uploads/product/${product.productimage[1]}" alt="image" title="product">
+                    </a>
+                    <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post">
+                        <button class="btn btn-addto-cart" type="button">Add To Cart</button>
+                    </form>
+                    <div class="button-set">
+                        <a href="javascript:void(0)" title="Quick View" class="quick-view-popup quick-view" data-toggle="modal" data-target="#content_quickview">
+                            <i class="icon anm anm-search-plus-r"></i>
+                        </a>
+                        <div class="wishlist-btn">
+                            <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist">
+                                <i class="icon anm anm-heart-l"></i>
+                            </a>
+                        </div>
+                        <div class="compare-btn">
+                            <a class="compare add-to-compare" href="compare.html" title="Add to Compare">
+                                <i class="icon anm anm-random-r"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-details text-center">
+                    <div style="font-weight: bold;" class="product-name">
+                        <!-- Handle the brand name if available -->
+                        <a href="#">${product.brand.name || 'Brand Name'}</a>
+                    </div>
+                    <div class="product-name">
+                        <a href="#">${product.productname}</a>
+                    </div>
+                    <div class="product-price">
+                        <span class="old-price">${product.sizes[2]?.Actualprice || ''}</span>
+                        <span class="price">
+                             ${
+                                product.sizes[0]?.Salesprice > 0 
+                                ? product.sizes[0].Salesprice 
+                                : product.sizes[1]?.Salesprice > 0 
+                                ? product.sizes[1].Salesprice 
+                                : product.sizes[2]?.Salesprice > 0 
+                                ? product.sizes[2].Salesprice 
+                                : 'Unavailable'
+                            }
+                        </span>
+                    </div>
+                    <div class="product-review">
+                        <i class="font-13 fa fa-star"></i>
+                        <i class="font-13 fa fa-star"></i>
+                        <i class="font-13 fa fa-star"></i>
+                        <i class="font-13 fa fa-star-o"></i>
+                        <i class="font-13 fa fa-star-o"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        productListDiv.insertAdjacentHTML('beforeend', productHTML);
+    });
+}
+
+</script>
+    
 
 
 <%- include("../layouts/user/footer.ejs") %>

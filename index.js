@@ -4,10 +4,12 @@ const mongoose = require("mongoose");
 const dbconnect = require("./config/db_connect");
 const session_config = require("./config/session_config");
 const path = require("path")
+const getDisplayPrice = require("./utils/pricehelper")
+
 
 require("dotenv").config()
 app.use(session_config)
-
+app.use(express.json());
 
 const port = 7001;
 dbconnect()
@@ -21,6 +23,14 @@ app.use((req, res, next) => {
     res.locals.successMessage = req.flash('success');
     next();
 });
+
+//middlewere for  store userid
+
+app.use((req, res, next) => {
+    res.locals.UserId = req.session.user_id || null;
+    next();
+});
+
 
 // user releted
 app.use('/assets', express.static(path.join(__dirname, 'public/users/assets')));

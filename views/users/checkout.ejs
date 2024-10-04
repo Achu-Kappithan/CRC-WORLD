@@ -1,0 +1,545 @@
+<%- include("../layouts/user/header.ejs") %>
+
+<head>
+
+
+  <style>
+    #customer-login, #have-coupon {
+      position: absolute;
+      background-color: white;
+      width: 100%;
+      z-index: 10;
+      border: 1px solid #ccc;
+      padding: 15px;
+      display: none; 
+  }
+  
+  #customer-login.show, #have-coupon.show {
+      display: block; 
+  }
+  
+  .customer-box {
+      position: relative;
+  }
+  
+  </style>
+  
+
+</head>
+
+
+
+<div id="page-content">
+  <!--Page Title-->
+  <div class="page section-header text-center">
+    <div class="page-title">
+      <div class="wrapper"><h1 class="page-width">Checkout</h1></div>
+    </div>
+  </div>
+  <!--End Page Title-->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+        <div class="customer-box returning-customer">
+          <h3>
+            <i class="icon anm anm-user-al"></i>
+            <a>Available Address</a>
+        </h3>
+        <div id="customer-login" class="your-order-payment">
+          <div class="customer-info">
+                          <button class="btn btn-sm btn-outline-primary me-2" type="button"
+                              data-bs-toggle="collapse" data-bs-target="#edit-form-55555"
+                              aria-expanded="false" aria-controls="edit-form-55555%>">
+                              Add New Address
+                          </button>
+            </div>
+  
+              <!-- New address form -->
+              <div id="edit-form-55555" class="collapse mt-3">
+                <form method="POST" action="/checkout_addaddress">
+                    <div class="row g-3">
+                        <div style="padding-bottom: 10px;" class="col-md-6">
+                            <input type="text" id="name" name="name" value="<%= userdata.firstname + userdata.lastname %>" class="form-control" placeholder="Full Name">
+                            <span id="errname" style="color: red;"></span>
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-md-6">
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="<%= userdata.email %>">
+                            <span id="erremail" style="color: red;"></span>
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-md-6">
+                            <input type="text" id="housename" name="housename" class="form-control" placeholder="House Name">
+                            <span id="errhousename" style="color: red;"></span>
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-md-6">
+                            <input type="text" id="locality" name="locality" class="form-control" placeholder="Locality">
+                            <span id="errlocality" style="color: red;"></span>
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-md-6">
+                            <input type="text" id="district" name="district" class="form-control" placeholder="District">
+                            <span id="errdistrict" style="color: red;"></span>
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-md-6">
+                            <input type="text" id="state" name="state" class="form-control" placeholder="State">
+                            <span id="errstate" style="color: red;"></span>
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-md-12">
+                            <input type="text" id="landmark" name="landmark" class="form-control" placeholder="Landmark">
+                            <span id="errlandmark" style="color: red;"></span>
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-md-4">
+                            <input type="text" id="pincode" name="pincode" class="form-control" placeholder="Zip/Postal Code">
+                            <span id="errpincode" style="color: red;"></span>
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-md-4">
+                            <input type="text" id="phonenumber" name="phonenumber" class="form-control" placeholder="Contact Number">
+                            <span id="errphonenumber" style="color: red;"></span>
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-md-4">
+                            <input type="text" name="altnumber" class="form-control" placeholder="Alternate Number">
+                        </div>
+                        
+                        <div style="padding-bottom: 10px;" class="col-12">
+                          <br>
+                            <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
+                                Add Address
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+              <div class="card-body">
+                  <h5 class="card-title mb-4">Your Addresses</h5>
+                  <% userdata.addressId.forEach(function(a, index) { %>
+                  <div class="card mb-3">
+                      <div class="card-body">
+                        <div style="padding: 5px;margin-right: 10px;">
+                          <!-- <input type="radio" id="address-<%= a._id %>" name="selectedAddress" value="<%= a._id %>" class="form-check-input"> -->
+                          <input type="radio" id="address-<%= a._id %>" name="selectedAddress" value="<%= a._id %>" class="form-check-input" required>
+
+
+                        </div>
+                        <div>
+                          <h6 class="card-subtitle mb-2 text-muted"><%= a.name %></h6>
+                          <p class="card-text">
+                              House Name: <%= a.housename %><br>
+                              Location: <%= a.locality %>, <%= a.district %>, <%= a.state %><br>
+                              PIN: <%= a.pincode %><br>
+                              Phone: <%= a.phone %>
+                          </p>
+  
+                          <button class="btn btn-sm btn-outline-primary me-2" type="button"
+                              data-bs-toggle="collapse" data-bs-target="#edit-form-<%= a._id %>"
+                              aria-expanded="false" aria-controls="edit-form-<%= a._id %>">
+                              Edit
+                          </button>
+  
+ 
+                          <div id="edit-form-<%= a._id %>" class="collapse mt-3">
+                              <form method="POST" action="/checkoutedit_address?id=<%= a._id %>">
+                                  <div class="row g-3">
+                                      <div style="padding-bottom: 10px;" class="col-md-6">
+                                          <input type="text" name="name" class="form-control" value="<%= a.name %>" placeholder="Full Name">
+                                      </div>
+                                      <div style="padding-bottom: 10px;" class="col-md-6">
+                                          <input type="text" name="housename" class="form-control" value="<%= a.housename %>" placeholder="House Name">
+                                      </div>
+                                      <div style="padding-bottom: 10px;" class="col-md-6">
+                                          <input type="text" name="locality" class="form-control" value="<%= a.locality %>" placeholder="Locality">
+                                      </div>
+                                      <div style="padding-bottom: 10px;" class="col-md-6">
+                                          <input type="text" name="district" class="form-control" value="<%= a.district %>" placeholder="District">
+                                      </div>
+                                      <div style="padding-bottom: 10px;" class="col-md-6">
+                                          <input type="text" name="landmark" class="form-control" value="<%= a.landMark %>" placeholder="Landmark">
+                                      </div>
+                                      <div style="padding-bottom: 10px;" class="col-md-6">
+                                          <input type="text" name="phone" class="form-control" value="<%= a.phone %>" placeholder="Phone Number">
+                                      </div>
+                                      <div style="padding-bottom: 10px;" class="col-md-4">
+                                          <input type="text" name="state" class="form-control" value="<%= a.state %>" placeholder="State/Province">
+                                      </div>
+                                      <div style="padding-bottom: 10px;" class="col-md-4">
+                                          <input type="text" name="pincode" class="form-control" value="<%= a.pincode %>" placeholder="Zip/Postal Code">
+                                      </div>
+                                      <div style="padding-bottom: 10px;" class="col-md-4">
+                                          <input type="text" name="altphone" class="form-control" value="<%= a.altPhone0 %>" placeholder="Phone Number">
+                                      </div>
+                                      <div class="col-12">
+                                        <br>  
+                                          <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
+                                              Update Address
+                                          </button>
+                                      </div>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% }) %>
+              </div>
+          </div>
+      </div>
+      </div>
+
+
+      
+
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+        <div class="customer-box customer-coupon">
+          <h3 class="font-15 xs-font-13">
+            <i class="icon anm anm-gift-l"></i> Have a coupon?
+            <a
+              href="#have-coupon"
+              class="text-white text-decoration-underline"
+              data-toggle="collapse"
+              >Click here to enter your code</a
+            >
+          </h3>
+          <div id="have-coupon" class="collapse coupon-checkout-content">
+            <div class="discount-coupon">
+              <div id="coupon" class="coupon-dec tab-pane active">
+                <p class="margin-10px-bottom">
+                  Enter your coupon code if you have one.
+                </p>
+                <label class="required get" for="coupon-code"
+                  ><span class="required-f">*</span> Coupon</label
+                >
+                <input id="coupon-code" required="" type="text" class="mb-3" />
+                <button class="coupon-btn btn" type="button">
+                  Apply Coupon
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row billing-fields">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 sm-margin-30px-bottom">
+        
+      </div>
+
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+        <div class="your-order-payment">
+          <div class="your-order">
+            <h2 class="order-title mb-4">Your Order</h2>
+
+            <div class="table-responsive-sm order-table">
+              <table
+                class="bg-white table table-bordered table-hover text-center"
+              >
+                <thead>
+                  <tr>
+                    <th class="text-left">Product Name</th>
+                    <th>Price</th>
+                    <th>Size</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <% var grandTotal = 0 %>
+                  <% cardata.items.forEach((item)=>{  %> 
+                  <tr>
+                    <td class="text-left"><%= item.name %></td>
+                    <td>₹ <%= item.Salesprice %></td>
+                    <td><%= item.size %></td>
+                    <td><%= item.quantity %></td>
+                    <td>₹ <%= item.quantity * item.Salesprice %></td>
+                  </tr>
+                  <!-- // find the grand total of all products -->
+
+                  
+                  <%  grandTotal = grandTotal + (item.quantity * item.Salesprice); %>
+
+                 <!-- // find the grand total of all products -->
+                <% }); %>
+                </tbody>
+                <tfoot class="font-weight-600">
+                  <tr>
+                    <td colspan="4" class="text-right">Shipping</td>
+                    <td>₹ 0.00</td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" class="text-right">Total</td>
+                    <td name >₹ <%= grandTotal %></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="your-payment">
+            <h2 class="payment-title mb-3">payment method</h2>
+            <div class="payment-method">
+              <div class="payment-accordion">
+                <div id="accordion" class="payment-section">
+                  <div class="card mb-2">
+                    <div class="card-header">
+                      <a
+                        class="card-link"
+                        data-toggle="collapse"
+                        href="#collapseOne"
+                        >Cash on Delivery
+                      </a>
+                    </div>
+                    <div
+                      id="collapseOne"
+                      class="collapse"
+                      data-parent="#accordion"
+                    >
+                      <div class="card-body">
+                        <input style=" margin: 3px;" class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery" value="COD" required>
+
+                        
+                        <label style="margin-left: 20px;" class="form-check-label" for="cashOnDelivery">
+                          Select Cash On Delivery
+                      
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="card mb-2">
+                    <div class="card-header">
+                      <a
+                        class="collapsed card-link"
+                        data-toggle="collapse"
+                        href="#collapseTwo"
+                        >Cheque Payment</a
+                      >
+                    </div>
+                    <div
+                      id="collapseTwo"
+                      class="collapse"
+                      data-parent="#accordion"
+                    >
+                      <div class="card-body">
+                        <p class="no-margin font-15">
+                          Please send your cheque to Store Name, Store Street,
+                          Store Town, Store State / County, Store Postcode.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card margin-15px-bottom border-radius-none">
+                    <div class="card-header">
+                      <a
+                        class="collapsed card-link"
+                        data-toggle="collapse"
+                        href="#collapseThree"
+                      >
+                        PayPal
+                      </a>
+                    </div>
+                    <div
+                      id="collapseThree"
+                      class="collapse"
+                      data-parent="#accordion"
+                    >
+                      <div class="card-body">
+                        <p class="no-margin font-15">
+                          Pay via PayPal; you can pay with your credit card if
+                          you don't have a PayPal account.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card mb-2">
+                    <div class="card-header">
+                      <a
+                        class="collapsed card-link"
+                        data-toggle="collapse"
+                        href="#collapseFour"
+                      >
+                        Payment Information
+                      </a>
+                    </div>
+                    <div
+                      id="collapseFour"
+                      class="collapse"
+                      data-parent="#accordion"
+                    >
+                      <div class="card-body">
+                        <fieldset>
+                          <div class="row">
+                            <div
+                              class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                            >
+                              <label for="input-cardname"
+                                >Name on Card
+                                <span class="required-f">*</span></label
+                              >
+                              <input
+                                name="cardname"
+                                value=""
+                                placeholder="Card Name"
+                                id="input-cardname"
+                                class="form-control"
+                                type="text"
+                              />
+                            </div>
+                            <div
+                              class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                            >
+                              <label for="input-country"
+                                >Credit Card Type
+                                <span class="required-f">*</span></label
+                              >
+                              <select name="country_id" class="form-control">
+                                <option value="">--- Please Select ---</option>
+                                <option value="1">American Express</option>
+                                <option value="2">Visa Card</option>
+                                <option value="3">Master Card</option>
+                                <option value="4">Discover Card</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div
+                              class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                            >
+                              <label for="input-cardno"
+                                >Credit Card Number
+                                <span class="required-f">*</span></label
+                              >
+                              <input
+                                name="cardno"
+                                value=""
+                                placeholder="Credit Card Number"
+                                id="input-cardno"
+                                class="form-control"
+                                type="text"
+                              />
+                            </div>
+                            <div
+                              class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                            >
+                              <label for="input-cvv"
+                                >CVV Code
+                                <span class="required-f">*</span></label
+                              >
+                              <input
+                                name="cvv"
+                                value=""
+                                placeholder="Card Verification Number"
+                                id="input-cvv"
+                                class="form-control"
+                                type="text"
+                              />
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div
+                              class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                            >
+                              <label
+                                >Expiration Date
+                                <span class="required-f">*</span></label
+                              >
+                              <input
+                                type="date"
+                                name="exdate"
+                                class="form-control"
+                              />
+                            </div>
+                            <div
+                              class="form-group col-md-6 col-lg-6 col-xl-6 required"
+                            >
+                              <img
+                                class="padding-25px-top xs-padding-5px-top"
+                                src="assets/images/payment-img.jpg"
+                                alt="card"
+                                title="card"
+                              />
+                            </div>
+                          </div>
+                        </fieldset>
+                      </div> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <form method="post" action="/Placeorder">
+
+
+              <!-- // address  -->
+              <input type="text" id="selectedAddressInput" name="selectedAddress" value="">
+              <!-- // payment method -->
+              <input type="text" id="selectedPaymentMethodInput" name="paymentMethod" value="">
+
+              <div class="order-button-payment">
+                <button class="btn" value="Place order" type="submit">
+                  Place order
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<%- include("../layouts/user/footer.ejs") %>
+
+<script>
+  window.onload = function() {
+      const customerLogin = document.getElementById("customer-login");
+      if (customerLogin) {
+          customerLogin.classList.add("show");
+      }
+  };
+  
+  
+  </script>
+
+<script>
+  const message = "<%= message %>";
+  const type = "<%= type %>";
+
+  if (message && message.length > 0) {
+      Swal.fire({
+          icon: type, // 'success', 'error', 'warning', 'info'
+          title: message,
+          showConfirmButton: true,
+          timer: 3000 
+      });
+  }
+</script>
+
+<!-- address selection -->
+
+<script>
+  document.querySelectorAll('input[name="selectedAddress"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      document.getElementById('selectedAddressInput').value = this.value;
+    });
+  });
+
+  document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      document.getElementById('selectedPaymentMethodInput').value = this.value;
+    });
+  });
+</script>

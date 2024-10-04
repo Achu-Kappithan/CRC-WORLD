@@ -112,7 +112,7 @@
       document.addEventListener("DOMContentLoaded", function () {
         setTimeout(function () {
           document.getElementById("Subscribe").classList.remove("hidden");
-        }, 60000); // 60000 milliseconds = 1 minute
+        }, 60000);
       });
     </script>
 
@@ -135,5 +135,23 @@
 
       startCountdown();
     </script>
+
+            <!-- aditional scriipt for sending message to user -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+            <script>
+              const message = "<%= message %>";
+              const type = "<%= type %>";
+        
+              if (message && message.length > 0) {
+                  Swal.fire({
+                      icon: type, // 'success', 'error', 'warning', 'info'
+                      title: message,
+                      showConfirmButton: true,
+                      timer: 3000 
+                  });
+              }
+          </script>
+    
   </body>
 </html>

@@ -3,6 +3,21 @@
 <html lang="en">
   <%- include("../layouts/admin/admin_header.ejs") %>
 
+
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+  <style>
+    .additional-fields {
+        display: none;
+        margin-top: 10px;
+    }
+  </style>
+
+
   <body>
     <%- include("../layouts/admin/slidbar.ejs") %>
 
@@ -13,7 +28,7 @@
         <div class="row">
             <div class="col-9">
                 <div class="content-header">
-                    <h2 class="content-title">Add New Product</h2>
+                    <h2 class="content-title">Update Product</h2>
                     <% if ((errorMessage.length > 0)) { %>
                         <div class="alert alert-danger">
                             <P><%= errorMessage%></P>
@@ -28,7 +43,6 @@
                     <form action="/update_product?id=<%= productdata._id %>" method="post" onsubmit="return validate()" enctype="multipart/form-data" >
 
                     <div>
-                        <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
                         <button type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
                     </div>
                 </div>
@@ -49,182 +63,330 @@
                                  <textarea name="productdis" id="productdis" placeholder="Type here" class="form-control" rows="4"><%= productdata.productdescription %></textarea>
                                  <span id="errordis" class="text-danger"></span>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="mb-4">
-                                        <label class="form-label">Actual price</label>
-
-                                        <div class="row gx-2">
-                                            <input name="actualPrice" id="actualPrice" value="<%= productdata.Actualprice %>" type="text" class="form-control">
-                                            <span id="erroractualPrice" class="text-danger"></span>
+                            <label class="form-label">Select Size:</label>
+                            <br><br>
+                            <div class="container mt-4">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <input type="radio" name="size" id="sm" value="SM" <%= productdata.sizes.some(size => size.size === 'SM') ? 'checked' : '' %> >
+                                            <label for="sm">Small</label>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-4">
-                                        <label class="form-label">Selling price</label>
-                                        <input name="sellingPrice" id="sellingPrice" value="<%= productdata.Salesprice %>" type="text" class="form-control">
-                                         <span id="errorsellingPrice" class="text-danger"></span>
+            
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <input type="radio" name="size" id="medium" value="Medium" <%= productdata.sizes.some(size => size.size === 'Medium') ? 'checked' : '' %> >
+                                            <label for="medium">Medium</label>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-lg-4">
+                                        <input type="radio" name="size" id="l" value="L" <%= productdata.sizes.some(size => size.size === 'L') ? 'checked' : '' %> >
+                                        <label for="l">Large</label>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <label class="form-label">Quantity</label>
-                                    <input name="productquentity" id="productquentity" type="text" value="<%= productdata.quentity %>" class="form-control">
-                                     <span id="errorquentity" class="text-danger"></span>
+            
+                                <div id="additionalFieldsSM" class="additional-fields">
+                                    <h5>Small Size</h5>
+                                    <div class="form-group">
+                                        <label for="stockSM">Stock:</label>
+                                        <input type="number" id="stockSM" name="size[SM][stock]" class="form-control" min="0" placeholder="Enter stock count"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'small') || {}).stock || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="actualPriceSM">Actual Price:</label>
+                                        <input type="number" id="actualPriceSM" name="size[SM][actualPrice]" class="form-control" step="0.01" placeholder="Enter actual price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'small') || {}).Actualprice || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="salesPriceSM">Sales Price:</label>
+                                        <input type="number" id="salesPriceSM" name="size[SM][salesPrice]" class="form-control" step="0.01" placeholder="Enter sales price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'small') || {}).Salesprice || '' %>">
+                                    </div>
+                                </div>
+            
+                                <div id="additionalFieldsMedium" class="additional-fields">
+                                    <h5>Medium Size</h5>
+                                    <div class="form-group">
+                                        <label for="stockMedium">Stock:</label>
+                                        <input type="number" id="stockMedium" name="size[Medium][stock]" class="form-control" min="0" placeholder="Enter stock count"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).stock || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="actualPriceMedium">Actual Price:</label>
+                                        <input type="number" id="actualPriceMedium" name="size[Medium][actualPrice]" class="form-control" step="0.01" placeholder="Enter actual price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).Actualprice || ''%>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="salesPriceMedium">Sales Price:</label>
+                                        <input type="number" id="salesPriceMedium" name="size[Medium][salesPrice]" class="form-control" step="0.01" placeholder="Enter sales price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).Salesprice|| '' %>">
+                                    </div>
+                                </div>
+            
+                                <div id="additionalFieldsL" class="additional-fields">
+                                    <h5>Large Size</h5>
+                                    <div class="form-group">
+                                        <label for="stockL">Stock:</label>
+                                        <input type="number" id="stockL" name="size[L][stock]" class="form-control" min="0" placeholder="Enter stock count"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Large') || {}).stock || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="actualPriceL">Actual Price:</label>
+                                        <input type="number" id="actualPriceL" name="size[L][actualPrice]" class="form-control" step="0.01" placeholder="Enter actual price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Large') || {}).Actualprice || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="salesPriceL">Sales Price:</label>
+                                        <input type="number" id="salesPriceL" name="size[L][salesPrice]" class="form-control" step="0.01" placeholder="Enter sales price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Large') || {}).Salesprice || '' %>">
+                                    </div>
                                 </div>
                             </div>
+            
                             <div class="mb-4">
                                 <label class="form-label">Tax rate</label>
-                                   <input name="taxrate" id="taxrate" type="text" value="<%= productdata.Taxrate %>" class="form-control">
-                                  <span id="errortaxrate" class="text-danger"></span>
+                                <input name="taxrate" id="taxrate" type="text" value="<%= productdata.Taxrate %>" class="form-control">
+                                <span id="errortaxrate" class="text-danger"></span>
                             </div>
+                        </div>
                     </div>
-                </div> 
-            </div>
-            <div class="col-lg-3">
+                </div>
+                <div class="col-lg-3">
                 <div class="card mb-4">
                     <div class="card-header">
                         <h4>Media</h4>
                     </div>
                     <div class="card-body">
                         <div class="input-upload">
-                            <label for="image" class="form-label">Upload Images</label>
-                            <input type="file" name="productimage" class="form-control" id="image" multiple />
-                            <img src="/assets/uploads/product/<%= productdata.productimage[0] %>" alt="Current Image" width="100px">
+                            <label for="image" class="form-label">Update Images</label>
+                            <input type="file" name="productimage" class="form-control" id="image" multiple  onchange="handleFiles(event)" />
+                            
+                        
+                            <div id="imagePreview" class="existing-images mt-3">
+                              <% productdata.productimage.forEach(function(image) { %>
+                                <img src="/assets/uploads/product/<%= image %>" alt="Current Image" width="100px" style="margin-right: 10px;">
+                              <% }) %>
+                            </div>
+
+                            <div  class="mt-3"></div>
+
+                            <div id="cropModal" style="display: none">
+                                <img id="croppingImage" style="max-width: 100%" />
+                                <button type="button" id="cropButton" onclick="cropImage()">
+                                  Crop Image
+                                </button>
+                              </div>
+                          
                             <span id="errorimage" class="text-danger"></span>
-                        </div>                   
-                </div> 
+                          </div>
+                    </div> 
                 <div class="card mb-4">
                     <div class="card-header">
                         <h4>Organization</h4>
                     </div>
                     <div class="card-body">
                         <div class="row gx-2">
+                            
                             <div class="col-sm-6 mb-3">
                                 <label class="form-label">Category</label>
                                 <select class="form-select" name="productcategory">
-                                    <option value="">Select a Category</option>
+                                    <option value="<%= productdata.category._id %>"><%= productdata.category.name %></option>
                                     <% categorylist.forEach(category => { %>
-                                        <option value="<%= category._id %>"><%= category.name %></option>
+                                        <option value="<%= category._id %>"><%= category.name %></option>                                            <%= category.name %>
+                                    
                                     <% }) %>
                                 </select>
                             </div>
-                            
+
+                                                        
                             <div class="col-sm-6 mb-3">
                                 <label class="form-label">Brand</label>
                                 <select class="form-select" name="productbrand">
-                                    <option value="">Select a Brand</option>
+                                    <option value="<%= productdata.brand._id %>"><%= productdata.brand.name %></option>
                                     <% brandlist.forEach(brand => { %>
                                         <option value="<%= brand._id %>"><%= brand.name %></option>
                                     <% }) %>
                                 </select>
                             </div>
-                          <div class="mb-4">
-                                <!-- <label for="product_name" class="form-label">Tags</label>
-                                <input type="text" class="form-control"> -->
-                            </div>
-                        </div> <!-- row.// -->
+                            <div class="mb-4">
+                        </div>
+                        </div> 
                     </div>
-                </div> <!-- card end// -->
+                </div> 
             </div>
           </form>
 
         </div>
-    </section> <!-- content-main end// -->
+    </section> 
 
 
     <script>
-        function validate() {
-            let isValid = true;
+        const radios = document.querySelectorAll('input[name="size"]');
         
-            // Validate product name (minimum 4 characters)
-            const name = document.getElementById("productname").value.trim();
-            if (name.length < 4) {
-                document.getElementById("errorname").innerText = "Name must be at least 4 characters long";
-                isValid = false;
-            } else {
-                document.getElementById("errorname").innerText = "";
-            }
-        
-            // Validate description (non-empty)
-            const description = document.getElementById("productdis").value.trim();
-            if (description === "") {
-                document.getElementById("errordis").innerText = "Description is required";
-                isValid = false;
-            } else {
-                document.getElementById("errordis").innerText = "";
-            }
-        
-            // Validate actual price (must be a number)
-            const actualPrice = document.getElementById("actualPrice").value.trim();
-            if (isNaN(actualPrice) || actualPrice === "") {
-                document.getElementById("erroractualPrice").innerText = "Enter a valid actual price";
-                isValid = false;
-            } else {
-                document.getElementById("erroractualPrice").innerText = "";
-            }
-        
-            // Validate selling price (must be a number)
-            const sellingPrice = document.getElementById("sellingPrice").value.trim();
-            if (isNaN(sellingPrice) || sellingPrice === "") {
-                document.getElementById("errorsellingPrice").innerText = "Enter a valid selling price";
-                isValid = false;
-            } else {
-                document.getElementById("errorsellingPrice").innerText = "";
-            }
-        
-            // Validate quantity (must be a number)
-            const quantity = document.getElementById("productquentity").value.trim();
-            if (isNaN(quantity) || quantity === "") {
-                document.getElementById("errorquentity").innerText = "Enter a valid quantity";
-                isValid = false;
-            } else {
-                document.getElementById("errorquentity").innerText = "";
-            }
-        
-            // Validate tax rate (must be a number)
-            const taxRate = document.getElementById("taxrate").value.trim();
-            if (isNaN(taxRate) || taxRate === "") {
-                document.getElementById("errortaxrate").innerText = "Enter a valid tax rate";
-                isValid = false;
-            } else {
-                document.getElementById("errortaxrate").innerText = "";
-            }
-        
-            // Validate image file (must be an image type: jpg, jpeg, png)
-            // const images = document.getElementById("image").files;
-            // const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
-            // if (images.length === 0) {
-            //     document.getElementById("errorimage").innerText = "At least one image must be uploaded";
-            //     isValid = false;
-            // } else {
-            //     for (let i = 0; i < images.length; i++) {
-            //         if (!allowedExtensions.exec(images[i].name)) {
-            //             document.getElementById("errorimage").innerText = "Only .jpg, .jpeg, .png files are allowed";
-            //             isValid = false;
-            //             break;
-            //         } else {
-            //             document.getElementById("errorimage").innerText = "";
-            //         }
-            //     }
-            // }
-        
-            return isValid;
+        const additionalFieldsSM = document.getElementById('additionalFieldsSM');
+        const additionalFieldsMedium = document.getElementById('additionalFieldsMedium');
+        const additionalFieldsL = document.getElementById('additionalFieldsL');
+    
+        function hideAllFields() {
+            additionalFieldsSM.style.display = 'none';
+            additionalFieldsMedium.style.display = 'none';
+            additionalFieldsL.style.display = 'none';
         }
-        </script>
+    
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                hideAllFields(); 
+                
+                if (radio.value === 'SM') {
+                    additionalFieldsSM.style.display = 'block';
+                } else if (radio.value === 'Medium') {
+                    additionalFieldsMedium.style.display = 'block';
+                } else if (radio.value === 'L') {
+                    additionalFieldsL.style.display = 'block';
+                }
+            });
+        });
+  
+      function validate() {
+        let isValid = true;
+
+        const name = document.getElementById("productname").value.trim();
+        if (name.length < 4) {
+          document.getElementById("errorname").innerText =
+            "Name must be at least 4 characters long";
+          isValid = false;
+        } else {
+          document.getElementById("errorname").innerText = "";
+        }
+
+        const description = document.getElementById("productdis").value.trim();
+        if (description.length < 10) {
+          document.getElementById("errordis").innerText =
+            "Description is required";
+          isValid = false;
+        } else {
+          document.getElementById("errordis").innerText = "";
+        }
+
+        const taxRate = document.getElementById("taxrate").value.trim();
+        if (isNaN(taxRate) || taxRate === "") {
+          document.getElementById("errortaxrate").innerText =
+            "Enter a valid tax rate";
+          isValid = false;
+        } else {
+          document.getElementById("errortaxrate").innerText = "";
+        }
+
+        const images = document.getElementById("image").files;
+        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.WEBP)$/i;
+
+          for (let i = 0; i < images.length; i++) {
+            if (!allowedExtensions.exec(images[i].name)) {
+              document.getElementById("errorimage").innerText =
+                "Only .jpg, .jpeg, .png ,WEBP files are allowed";
+              isValid = false;
+              break;
+            } else {
+              document.getElementById("errorimage").innerText = "";
+            }
+          }
+        
+
+        return isValid;
+      }
+
+
+      let cropper;
+      let currentFile;
+      let currentImgElement; 
+
+      function handleFiles(event) {
+        const imagePreviewContainer = document.getElementById("imagePreview");
+        imagePreviewContainer.innerHTML = "";
+
+        const files = event.target.files;
+
+        if (files) {
+          Array.from(files).forEach((file) => {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+              currentFile = file; 
+              const img = document.createElement("img");
+              img.src = e.target.result;
+              img.style.width = "100px";
+              img.style.marginRight = "10px";
+              img.style.cursor = "pointer";
+              img.onclick = () => openCropper(e.target.result, img); 
+              imagePreviewContainer.appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
+          });
+        }
+      }
+
+      function openCropper(imageSrc, imgElement) {
+        const cropModal = document.getElementById("cropModal");
+        const croppingImage = document.getElementById("croppingImage");
+
+        currentImgElement = imgElement; 
+
+        croppingImage.src = imageSrc;
+        cropModal.style.display = "block";
+
+        if (cropper) {
+          cropper.destroy();
+        }
+
+        cropper = new Cropper(croppingImage, {
+          aspectRatio: 1, 
+          viewMode: 2,
+        });
+      }
+
+      function cropImage() {
+  const canvas = cropper.getCroppedCanvas(); 
+
+  canvas.toBlob((blob) => {
+    const croppedFile = new File([blob], currentFile.name, { type: 'image/png' });
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(croppedFile); 
+
+    
+    const fileInput = document.getElementById('image');
+    fileInput.files = dataTransfer.files;
+
+    
+    currentImgElement.src = URL.createObjectURL(croppedFile);
+
+    
+    document.getElementById("cropModal").style.display = "none";
+
+    
+    cropper.destroy();
+    cropper = null;
+  }, 'image/png'); 
+}
+      
+    </script>
+        
+
         
 
 
 
     </main>
-    <!-- content-main end// -->
+
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="assets/js/vendors/select2.min.js"></script>
     <script src="assets/js/vendors/perfect-scrollbar.js"></script>
     <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
     <script src="assets/js/vendors/chart.js"></script>
-
     <script src="assets/js/main.js" type="text/javascript"></script>
     <script src="assets/js/custom-chart.js" type="text/javascript"></script>
   </body>
