@@ -17,7 +17,7 @@ const  load_checkout = async (req,res)=>{
         const type =  req.flash("type");
 
         // console.log("this is the data send to user profile",userdata)
-        res.status(200).render("checkout",{userdata ,cardata ,message ,type })
+       return res.status(200).render("checkout",{userdata ,cardata ,message ,type })
     } catch (err) {
 
         console.log("error for loading checkout page ",err)
@@ -50,12 +50,12 @@ const checkoutupdate_address = async (req,res)=>{
         });
         req.flash("message","Address Upated successfully")
         req.flash("type","success")
-        res.status(200).redirect("/user_checkout")
+        return  res.status(200).redirect("/user_checkout")
     } catch (err) {
         console.log("error for updating the user address",err)
         req.flash("message","Fail to updae the addrss try again..!")
         req.flash("type","error")
-        res.status(500).redirect("/user_checkout")
+        return res.status(500).redirect("/user_checkout")
         
     }
 }
@@ -70,7 +70,7 @@ const checkout_newaddress = async (req,res)=>{
         if(!userid){
             req.flash("message","User is Not valid");
             req.flash("type","error")
-            res.statun(4001).redirect("/user_checkout")
+            return res.statun(4001).redirect("/user_checkout")
             console.log("userId is not valid",userid)
         }
 
@@ -90,14 +90,14 @@ const checkout_newaddress = async (req,res)=>{
         })
          const addressData =await address.save()
 
-         const pushAddressIntoUser = await User.findByIdAndUpdate(
+           await User.findByIdAndUpdate(
             { _id: userid },
             { $push: { addressId: addressData._id } },
             { new: true }
         );
         req.flash("message","Adress Added Sucessfully");
         req.flash("type","success")
-        res.status(200).redirect("/user_checkout")
+        return  res.status(200).redirect("/user_checkout")
     } catch (err) {
         console.log("error for adding address",err)
         res.status(500).render("user404",{message:"unable to add address try again...!"})
@@ -121,20 +121,21 @@ const place_order = async (req, res) => {
         return res.status(400).redirect("/user_checkout");
       }
   
-      const totalPrice = cartData.items.reduce((total, item) => {
-        return total + (item.Salesprice * item.quantity);
+      const totalPrice = cartData.items.reduce((acc, curr) => {
+        return acc + (curr.Salesprice * curr.quantity);
       }, 0);
   
-      const newOrder = new Order({
+      const neworder = new Order({
         userId: userId,
         items: cartData.items.map((item) => ({
           productId: item.productId,
           productname: item.name,
           Salesprice: item.Salesprice,
           quantity: item.quantity,
+          size: item.size,
           productimage: item.productimage,
         })),
-        
+
         totalPrice: totalPrice,
         status: "Pending",
         billingDetails: {
@@ -149,25 +150,37 @@ const place_order = async (req, res) => {
           email: orderAddress.email,
         },
         paymentMethod: paymentMethod,
-        paymentStatus: paymentMethod === "COD" ? "COD" : "Pending", 
+        paymentStatus: paymentMethod, 
         orderDate: Date.now(),
       });
   
-      await newOrder.save();
+      await neworder.save();
+
+      for (let item of cartData.items) {
+        const product = await Product.findById(item.productId);
   
+        if (product) {
+          const sizeIndex = product.sizes.findIndex((sizeObj) => sizeObj.size === item.size);
+          if (sizeIndex !== -1) {
+            product.sizes[sizeIndex].stock -= item.quantity;
+  
+  
+            await product.save();
+          }
+        }
+      } 
+
       await Cart.findOneAndUpdate({ user: userId }, { items: [] });
-      res.status(200).render("order_successfull",{  newOrder });
+      return res.status(200).render("order_successfull",{  newOrder:neworder });
       
     } catch (err) {
       console.error("Error while placing order:", err);
-      res.status(500).render("user404",{message:"Something went wrong. Please try again."});
+     return  res.status(500).render("user404",{message:"Something went wrong. Please try again."});
     }
   };
+
   
-
-
-
-
+  
 
 module.exports = {
     load_checkout,

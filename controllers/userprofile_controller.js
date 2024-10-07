@@ -1,5 +1,6 @@
 const User = require("../models/user_models");
 const Address = require("../models/address");
+const Orders = require("../models/order")
 
 
 // for loading  userprofile page
@@ -119,6 +120,38 @@ const delete_address = async (req,res)=>{
     }
 }
 
+//for loading order summaypage
+
+const load_ordersummary = async (req,res)=>{
+    try {
+        orderid = req.query.orderid
+        const orderdetails = await Orders.findById(orderid)
+        console.log("this is the order details",orderdetails)
+        return res.status(200).render("order_summary",{ orderdetails})
+        
+    } catch (err) {
+        console.log("error for loading product summary page",err)
+        return res.status(500).render("user404",{message: "unable to load order summaypage"})
+        
+    }
+}
+
+
+// for lading my order page
+
+const load_myorder = async (req,res)=>{
+    try {
+        const userId = req.session.user_id;
+        const order_details = await Orders.find({ userId: userId });
+        console.log("this is orderdetails",order_details)
+        return res.status(200).render("myorders",{orderdetails:order_details})
+        
+    } catch (err) {
+        console.log("error for loading  order summary page ",err)
+        
+    }
+}
+
 
 
 
@@ -129,5 +162,7 @@ module.exports = {
     load_userprofile,
     add_newaddress,
     update_address,
-    delete_address
+    delete_address,
+    load_ordersummary,
+    load_myorder
 }

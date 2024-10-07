@@ -39,8 +39,6 @@ app.use('/',user_router)
 
 // admin related
 app.use('/assets', express.static(path.join(__dirname, 'public/admin/assets')));
-
-// app.use( express.static(path.join(__dirname, 'public/admin/assets')));
 const admin_route = require("./routers/admin_router");
 app.use('/',admin_route);
 

@@ -58,10 +58,15 @@
                                     <td class="cart__update-wrapper cart-flex-item text-right">
                                         <div class="cart__qty text-center">
                                             <div class="qtyField">
-                                                <!-- <a class="qtyBtn minus" href="javascript:void(0);"><i class="icon icon-minus"></i></a>
-                                                <input class="cart__qty-input qty" type="text" name="updates[]" id="qty" value="<%= item.quantity %>" pattern="[0-9]*">
-                                                <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a> -->
-                                                <div><span class="money"><%= item.quantity %></span></div>
+                                                <div class="qtyField">
+                                                    <a class="qtyBtn minus" href="javascript:void(0);"><i class="icon icon-minus"></i></a>
+                                                    <input class="cart__qty-input qty" type="text" name="updates[]" id="qty-<%= item._id %>" value="<%= item.quantity %>" pattern="[0-9]*" readonly>
+                                                    <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a>
+                                                </div>
+                                                 <!-- <div><span class="money"><%= item.quantity %></span></div> -->
+
+
+
                                             </div>
                                         </div>
                                     </td>
@@ -188,4 +193,46 @@
             timer: 3000 
         });
     }
+
+
+
+    function qnt_incre(){
+    $(".qtyBtn").on("click", function() {
+        var qtyField = $(this).parent(".qtyField"),
+            oldValue = $(qtyField).find(".qty").val(),
+            itemId = $(qtyField).find(".qty").attr("id").split('-')[1], 
+            newVal = 1;
+
+        if ($(this).is(".plus")) {
+            if (parseInt(oldValue) < 5) {
+                newVal = parseInt(oldValue) + 1;
+            } else {
+                newVal = 5; 
+            }
+        } else if (oldValue > 1) {
+            newVal = parseInt(oldValue) - 1;
+        }
+
+        $(qtyField).find(".qty").val(newVal);
+
+        $.ajax({
+            url: '/update_quntity',
+            method: 'POST',
+            data: {
+                itemId: itemId,
+                quantity: newVal
+            },
+            success: function(response) {
+                console.log('Quantity updated successfully');
+            },
+            error: function(error) {
+                console.log('Error updating quantity:', error);
+            }
+        });
+    });
+}
+qnt_incre();
+
+
+
 </script>

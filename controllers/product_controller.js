@@ -124,85 +124,6 @@ const loadedit_product = async (req, res) => {
   }
 };
 
-// for updating products
-
-const update_product = async (req, res) => {
-  try {
-    const id = req.query.id;
-    const {
-      productname,
-      productdis,
-      taxrate,
-      productcategory,
-      productbrand,
-      size,
-    } = req.body;
-
-    const sizes = [];
-
-    if (size.SM) {
-      sizes.push({
-        size: "small",
-        stock: size.SM.stock || 0,
-        Actualprice: size.SM.actualPrice || 0,
-        Salesprice: size.SM.salesPrice || 0,
-      });
-    }
-
-    if (size.Medium) {
-      sizes.push({
-        size: "Medium",
-        stock: size.Medium.stock || 0,
-        Actualprice: size.Medium.actualPrice || 0,
-        Salesprice: size.Medium.salesPrice || 0,
-      });
-    }
-
-    if (size.L) {
-      sizes.push({
-        size: "Large",
-        stock: size.L.stock || 0,
-        Actualprice: size.L.actualPrice || 0,
-        Salesprice: size.L.salesPrice || 0,
-      });
-    }
-
-    const updateData = {
-      productname,
-      productdescription: productdis,
-      category: productcategory,
-      brand: productbrand,
-      Taxrate: taxrate,
-      sizes: sizes,
-    };
-
-    if (req.files && req.files.length > 0) {
-      const productImages = req.files.map((file) => file.filename);
-      updateData.productimage = productImages;
-    }
-
-    const updateproduct = await Product.findByIdAndUpdate(
-      id,
-      { $set: updateData },
-      { new: true }
-    );
-
-    if (!updateproduct) {
-      req.flash("error", "Product not found");
-      return res.status(404).redirect("/edit_product");
-    }
-
-    req.flash("success", "Product updated successfully");
-    return res.status(200).redirect("/admin_productlist");
-  } catch (err) {
-    console.error("error for updating the product", err);
-    return response
-      .status(500)  
-      .render("404", {
-        message: "Unable to complate your request tray again..!",
-      });
-  }
-};
 
 // for listing and unlisting the products
 
@@ -228,6 +149,76 @@ const unlist_product = async (req, res) => {
       .render("404", { message: "Sorry Unable to  complate your request" });
   }
 };
+
+
+// for updating the product 
+
+const update_product = async (req,res)=>{
+  try {
+    const {productname, productdis, taxrate, productcategory, productbrand  }=req.body
+    const productId = req.query.pid
+
+    const sizes = []
+
+    if(req.body.size?.SM) {
+      sizes.push({
+        size : "small",
+        stock : req.body.size.SM.stock || 0,
+        Salesprice : req.body.size.SM.salesPrice  || 0,
+        Actualprice : req.body.size.SM.actualPrice || 0
+      })
+    }
+
+  if(req.body.size?.Medium){
+    sizes.push({
+      size : "Medium",
+      stock : req.body.size.Medium.stock || 0,
+      Salesprice : req.body.size.Medium.salesPrice  || 0,
+      Actualprice : req.body.size.Medium.actualPrice  || 0
+
+    })
+  }
+
+  if(req.body.size.L){
+    sizes.push({
+      size : "Large",
+      stock : req.body.size.L.stock || 0,
+      Salesprice : req.body.size.L.salesPrice || 0,
+      Actualprice : req.body.size.L.actualPrice || 0
+
+    })
+  }
+
+    const productimage = req.files.map((file)=>file.filename)
+
+    const updatedata = {
+      productname : productname,
+        productdescription : productdis,
+        category : productcategory,
+        brand : productbrand,
+        Taxrate : taxrate,
+        sizes : sizes,
+    }
+
+    if(productimage && productimage.length > 0){
+      updatedata.productimage = productimage
+    }
+
+    const updateproduct =  await Product.findByIdAndUpdate(
+      productId,
+      {$set: updatedata },
+      {new : true}
+    )
+    req.flash("success","Product updated successfully")
+    return res.status(200).redirect("/admin_productlist")
+    
+  } catch (err) {
+    console.log("this is the error for updating the product",err)
+    return res.status(500).render("404",{message:"Unable to complate product updation"})
+    
+    
+  }
+}
 
 module.exports = {
   loadadd_product,

@@ -34,10 +34,10 @@ const add_newbrand = async (req, res) => {
     const { brandname, branddescription } = req.body;
     const imageFile = req.file;
 
-    // if (!brandname || !branddescription || !imageFile) {
-    //   req.flash('error', 'All fields including image are required');
-    //   return res.redirect('/newbrand');
-    // }
+    if (!brandname || !branddescription || !imageFile) {
+      req.flash('error', 'all fields including image are required');
+      return res.redirect('/newbrand');
+    }
 
     const newBrand = new brand({
       name: brandname,
@@ -94,7 +94,6 @@ const update_brand = async (req, res) => {
       description: req.body.branddescription,
     };
 
-    // If a new file is uploaded, add it to the update data
     if (req.file) {
       updateData.image = req.file.filename;
     }
@@ -109,17 +108,19 @@ const update_brand = async (req, res) => {
       req.flash("error", "Brand not found");
       return res.status(404).redirect("/brand");
     }
-
     req.flash("success", "Brand updated successfully");
     return res.status(200).redirect("/brand");
+
   } catch (err) {
-    console.error(err);
+
+    console.error('error for upadatitng the brand',err);
     req.flash("error", "An error occurred while updating the brand");
     return res.stat.redirect("/brand");
   }
 };
 
 module.exports = {
+
   //  brand
   load_brand,
   load_newbrand,
@@ -127,4 +128,5 @@ module.exports = {
   delete_brand,
   edit_brand,
   update_brand,
+  
 };

@@ -1,0 +1,127 @@
+<%-include("../layouts/user/header.ejs") %>
+
+
+
+
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .order-header {
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .order-header h1 {
+            color: #2e7d32;
+            margin: 0;
+        }
+        .order-details, .product-list, .shipping-info {
+            margin-bottom: 30px;
+        }
+        .product-item {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .product-info {
+            flex-grow: 1;
+        }
+        .total {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: right;
+        }
+        .continue-shopping {
+            background-color: #000;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="order-header">
+        <h1>Order Summary</h1>
+        <p>Thank you for your purchase. Here are your order details:</p>
+    </div>
+
+    <div class="order-details">
+        <h2>Order Information</h2>
+        <table>
+            <tr>
+                <th>Order ID:</th>
+                <td><%= orderdetails._id %></td>
+            </tr>
+            <tr>
+                <th>Order Date:</th>
+                <td><%= new Date(orderdetails.orderDate).toLocaleDateString() %></td>
+            </tr>
+            <tr>
+                <th>Order Status:</th>
+                <td><%= orderdetails.status %></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="product-list">
+        <h2>Products Ordered</h2>
+        <% orderdetails.items.forEach((item)=>{ %>
+        <div class="product-item">
+            <img src="/assets/uploads/product/<%= item.productimage[0] %>" alt="Product 1" class="product-image">
+            <div class="product-info">
+                <h3><%= item.productname %></h3>
+                <p>Quantity: <%= item.quantity %></p>
+                <p>Price: <%= item.Salesprice %></p>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+
+    <div class="shipping-info">
+        <h2>Shipping Information</h2>
+        <p><%= orderdetails.billingDetails.name %></p>
+        <p><%= orderdetails.billingDetails.housename %> , <%= orderdetails.billingDetails.locality %>, <%= orderdetails.billingDetails.district %></p>
+        <p><%= orderdetails.billingDetails.pincode %></p>
+        <p><%= orderdetails.billingDetails.state %></p>
+    </div>
+
+    <div class="total">
+        <p> Total Price : ₹ <%= orderdetails.totalPrice %></p>
+    </div>
+
+    <a href="/user_shop" class="continue-shopping">Continue Shopping</a>
+  </div>
+</body>
+
+
+
+<%-include("../layouts/user/footer.ejs") %>

@@ -62,14 +62,7 @@ const productSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    Salesprice: {
-        type: Number,
-        required: true
-    },
-    Actualprice: {
-        type: Number,
-        required: true
-    },
+    
 
     sizes: [sizeSchema] 
 });

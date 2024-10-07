@@ -6,7 +6,7 @@ const is_authaticated = async (req,res,next)=>{
         if(user.is_active){
             next();
         }else{
-            req.session.destroy()
+            // req.session.destroy()
             res.redirect("/login")
         }
     }else{

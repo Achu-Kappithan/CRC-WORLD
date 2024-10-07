@@ -49,6 +49,7 @@ user_route.post("/product_filter", userproduct_controller.filterProducts);
 user_route.get("/load_usercart",auth,usercart_controller.load_cart);
 user_route.post("/addto_cart",usercart_controller.addto_cart);
 user_route.post("/remove_cartitem",usercart_controller.remove_cartitem);
+user_route.post("/update_quntity")
 
 // checkout page
 user_route.get("/user_checkout",auth,checkout_controller.load_checkout);
@@ -61,6 +62,8 @@ user_route.get("/user_Profile",auth,userprofile_controller.load_userprofile);
 user_route.post("/add_useraddress",userprofile_controller.add_newaddress);
 user_route.post("/edit_address",userprofile_controller.update_address);
 user_route.post("/delete_address",userprofile_controller.delete_address);
+user_route.get("/order_summary",auth,userprofile_controller.load_ordersummary);
+user_route.get("/my_orders", userprofile_controller.load_myorder);
 
 
 

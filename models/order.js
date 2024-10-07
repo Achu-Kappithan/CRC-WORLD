@@ -24,6 +24,10 @@ const orderschema = mongoose.Schema({
         type: Number,
         default: 1, 
       },
+      size: {
+        type: String,
+        required: true,
+      },
       productimage: [
         {
           type: String,

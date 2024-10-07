@@ -10,11 +10,7 @@ const load_adminlogin = async (req, res) => {
     return res.status(200).render("admin_login");
   } catch (err) {
     console.error("Error loading admin login page:", err);
-    res
-      .status(500)
-      .render("404", {
-        message: "Internal Server Error. Unable to load the admin login page.",
-      });
+    res.status(500) .render("404", { message: "Internal Server Error. Unable to load the admin login page."});
   }
 };
 

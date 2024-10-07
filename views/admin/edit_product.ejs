@@ -40,7 +40,7 @@
                         </div>
                     <% } %> 
     
-                    <form action="/update_product?id=<%= productdata._id %>" method="post" onsubmit="return validate()" enctype="multipart/form-data" >
+                    <form action="/update_product?pid=<%= productdata._id %>" method="post" onsubmit="return validate()" enctype="multipart/form-data" >
 
                     <div>
                         <button type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
@@ -110,7 +110,7 @@
                                     <h5>Medium Size</h5>
                                     <div class="form-group">
                                         <label for="stockMedium">Stock:</label>
-                                        <input type="number" id="stockMedium" name="size[Medium][stock]" class="form-control" min="0" placeholder="Enter stock count"
+                                        <input type="number" id="stockMedium" name="size[Medium][x]" class="form-control" min="0" placeholder="Enter stock count"
                                             value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).stock || '' %>">
                                     </div>
                                     <div class="form-group">

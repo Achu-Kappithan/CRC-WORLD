@@ -173,3 +173,79 @@
 
         </div>
     </div>
+
+
+
+
+    <!-- //my orders page -->
+
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
+            <div class="customer-box returning-customer text-center">
+                <h3>
+                    <i class="icon anm anm-user-al"></i>
+                    <a>Order Details</a>
+                </h3>
+    
+                <% orderdetails.forEach(order => { %> 
+                <div id="order-details" class="your-order-payment mb-4"> 
+                    <div class="card-body">
+                        <div class="row text-left">
+                            <div class="col-md-4">
+                                <h5 class="card-title">Order Summary</h5>
+                                <p>
+                                    <strong>Order ID:</strong> <%= order._id.toString() %><br>
+                                    <strong>Order Date:</strong> <%= new Date(order.orderDate).toLocaleDateString() %><br>
+                                    <strong>Status:</strong> <%= order.status %><br>
+                                    <strong>Total Price:</strong> ₹<%= order.totalPrice.toFixed(2) %><br>
+                                    <strong>Payment Method:</strong> <%= order.paymentMethod %><br>
+                                    <strong>Payment Status:</strong> <%= order.paymentStatus %>
+                                </p>
+                            </div>
+    
+                            <div class="col-md-4">
+                                <h5 class="card-title">Billing Details</h5>
+                                <p>
+                                    <strong>Name:</strong> <%= order.billingDetails.name %><br>
+                                    <strong>Phone:</strong> <%= order.billingDetails.phone %><br>
+                                    <strong>House Name:</strong> <%= order.billingDetails.housename %><br>
+                                    <strong>Location:</strong> <%= order.billingDetails.locality %>, <%= order.billingDetails.district %>, <%= order.billingDetails.state %><br>
+                                    <strong>PIN:</strong> <%= order.billingDetails.pincode %><br>
+                                    <strong>Email:</strong> <%= order.billingDetails.email %>
+                                </p>
+                            </div>
+    
+                            <div class="col-md-4">
+                                <h5 class="card-title">Ordered Items</h5>
+                                <% order.items.forEach(item => { %> 
+                                <p>
+                                    <strong>Product:</strong> <%= item.productname %><br>
+                                    <strong>Price:</strong> ₹<%= item.Salesprice.toFixed(2) %><br>
+                                    <strong>Quantity:</strong> <%= item.quantity %><br>
+                                    <strong>Size:</strong> <%= item.size %><br>
+                                    <img src="/assets/uploads/product/<%= item.productimage[0] %>" alt="<%= item.productname %>" style="width: 110px; margin-top: 5px;">
+                                </p>
+                                <% }) %>
+                            </div>
+                        </div>
+    
+                        <% if(order.returnReason) { %>
+                        <div class="row mt-4">
+                            <div class="col">
+                                <h5 class="card-title">Return Reason</h5>
+                                <p><%= order.returnReason %></p>
+                            </div>
+                        </div>
+                        <% } %>
+    
+                        <div class="d-flex justify-content-center mt-4">
+                            <a href="/shop" class="btn btn-outline-primary me-2">Continue Shopping</a>
+                            <a href="/orders/<%= order._id.toString() %>/summary" class="btn btn-outline-secondary">View Order Summary</a>
+                        </div>
+                    </div>
+                </div>
+                <% }); %> 
+            </div>
+        </div>
+    </div>
+    
