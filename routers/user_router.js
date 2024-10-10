@@ -49,7 +49,7 @@ user_route.post("/product_filter", userproduct_controller.filterProducts);
 user_route.get("/load_usercart",auth,usercart_controller.load_cart);
 user_route.post("/addto_cart",usercart_controller.addto_cart);
 user_route.post("/remove_cartitem",usercart_controller.remove_cartitem);
-user_route.post("/update_quntity")
+// user_route.post("/update_quntity")
 
 // checkout page
 user_route.get("/user_checkout",auth,checkout_controller.load_checkout);

@@ -124,7 +124,6 @@ const loadedit_product = async (req, res) => {
   }
 };
 
-
 // for listing and unlisting the products
 
 const unlist_product = async (req, res) => {
@@ -150,75 +149,87 @@ const unlist_product = async (req, res) => {
   }
 };
 
+// for updating the product
 
-// for updating the product 
-
-const update_product = async (req,res)=>{
+const update_product = async (req, res) => {
   try {
-    const {productname, productdis, taxrate, productcategory, productbrand  }=req.body
-    const productId = req.query.pid
+    const { productname, productdis, taxrate, productcategory, productbrand } =
+      req.body;
+    const productId = req.query.pid;
+    const existingdata = await Product.findById(productId);
+    const namematch = await Product.findOne({ productname: productname });
 
-    const sizes = []
+    const sizes = [];
 
-    if(req.body.size?.SM) {
+    if (req.body.size?.SM) {
       sizes.push({
-        size : "small",
-        stock : req.body.size.SM.stock || 0,
-        Salesprice : req.body.size.SM.salesPrice  || 0,
-        Actualprice : req.body.size.SM.actualPrice || 0
-      })
+        size: "small",
+        stock: req.body.size.SM.stock || 0,
+        Salesprice: req.body.size.SM.salesPrice || 0,
+        Actualprice: req.body.size.SM.actualPrice || 0,
+      });
     }
 
-  if(req.body.size?.Medium){
-    sizes.push({
-      size : "Medium",
-      stock : req.body.size.Medium.stock || 0,
-      Salesprice : req.body.size.Medium.salesPrice  || 0,
-      Actualprice : req.body.size.Medium.actualPrice  || 0
+    if (req.body.size?.Medium) {
+      sizes.push({
+        size: "Medium",
+        stock: req.body.size.Medium.stock || 0,
+        Salesprice: req.body.size.Medium.salesPrice || 0,
+        Actualprice: req.body.size.Medium.actualPrice || 0,
+      });
+    }
 
-    })
-  }
+    if (req.body.size.L) {
+      sizes.push({
+        size: "Large",
+        stock: req.body.size.L.stock || 0,
+        Salesprice: req.body.size.L.salesPrice || 0,
+        Actualprice: req.body.size.L.actualPrice || 0,
+      });
+    }
 
-  if(req.body.size.L){
-    sizes.push({
-      size : "Large",
-      stock : req.body.size.L.stock || 0,
-      Salesprice : req.body.size.L.salesPrice || 0,
-      Actualprice : req.body.size.L.actualPrice || 0
-
-    })
-  }
-
-    const productimage = req.files.map((file)=>file.filename)
+    const productimage = req.files.map((file) => file.filename);
 
     const updatedata = {
-      productname : productname,
-        productdescription : productdis,
-        category : productcategory,
-        brand : productbrand,
-        Taxrate : taxrate,
-        sizes : sizes,
+      productname: productname,
+      productdescription: productdis,
+      category: productcategory,
+      brand: productbrand,
+      Taxrate: taxrate,
+      sizes: sizes,
+    };
+
+    if (productimage && productimage.length > 0) {
+      updatedata.productimage = productimage;
     }
 
-    if(productimage && productimage.length > 0){
-      updatedata.productimage = productimage
+    if (existingdata.productname == productname) {
+      await Product.findByIdAndUpdate(
+        productId,
+        { $set: updatedata },
+        { new: true }
+      );
+      req.flash("success", "Product updated successfully");
+      return res.status(200).redirect("/admin_productlist");
+    } else if (!namematch) {
+      await Product.findByIdAndUpdate(
+        productId,
+        { $set: updatedata },
+        { new: true }
+      );
+      req.flash("success", "Product updated successfully");
+      return res.status(200).redirect("/admin_productlist");
+    } else {
+      req.flash("error", "Product name already exisits");
+      res.status(500).redirect("/admin_productlist");
     }
-
-    const updateproduct =  await Product.findByIdAndUpdate(
-      productId,
-      {$set: updatedata },
-      {new : true}
-    )
-    req.flash("success","Product updated successfully")
-    return res.status(200).redirect("/admin_productlist")
-    
   } catch (err) {
-    console.log("this is the error for updating the product",err)
-    return res.status(500).render("404",{message:"Unable to complate product updation"})
-    
-    
+    console.log("this is the error for updating the product", err);
+    return res
+      .status(500)
+      .render("404", { message: "Unable to complate product updation" });
   }
-}
+};
 
 module.exports = {
   loadadd_product,

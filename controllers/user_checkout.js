@@ -103,8 +103,8 @@ const checkout_newaddress = async (req,res)=>{
         res.status(500).render("user404",{message:"unable to add address try again...!"})
     }
 }
-
-
+ 
+// for placeing a new order
 
 const place_order = async (req, res) => {
     try {
@@ -138,6 +138,7 @@ const place_order = async (req, res) => {
 
         totalPrice: totalPrice,
         status: "Pending",
+
         billingDetails: {
           name: orderAddress.name,
           phone: orderAddress.phone,
@@ -161,12 +162,9 @@ const place_order = async (req, res) => {
   
         if (product) {
           const sizeIndex = product.sizes.findIndex((sizeObj) => sizeObj.size === item.size);
-          if (sizeIndex !== -1) {
             product.sizes[sizeIndex].stock -= item.quantity;
-  
-  
             await product.save();
-          }
+          
         }
       } 
 
@@ -179,8 +177,7 @@ const place_order = async (req, res) => {
     }
   };
 
-  
-  
+
 
 module.exports = {
     load_checkout,

@@ -169,20 +169,15 @@ const remove_cartitem = async (req,res)=>{
 }
 
 
-// for updating  the quentity of  items in the database
+// // for updating  the quentity of  items in the database
 
-const update_quentity = async (req,res)=>{
-  try {
-    const { itemId, quantity } = req.body;
-    Cart.updateOne(
-      { 'items._id': itemId }, 
-      { $set: { 'items.$.quantity': quantity } }
-    )
-    
-  } catch (err) {
-    console.log("error for updating the quentity from the cart ",err)
-  }
-}
+// const update_quentity = async (req,res)=>{
+//   try {
+//     const { itemId, quantity } = req.body;
+//   } catch (err) {
+//     console.log("error for updating the quentity from the cart ",err)
+//   }
+// }
 
 module.exports = {
   load_cart,

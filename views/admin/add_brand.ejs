@@ -94,7 +94,7 @@
         let name = document.getElementById("brandname").value.trim();
         let errorName = document.getElementById("errorname");
 
-        if (name.length < 4) {
+        if (name.length < 2) {
           errorName.textContent = "NAME MUST BE AT LEAST 4 CHARACTERS";
           value = false;
         } else {

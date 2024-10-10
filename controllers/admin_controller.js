@@ -126,7 +126,7 @@ const unblockuser = async (req, res) => {
 const load_category = async (req, res) => {
   try {
     const category_list = await category.find({ is_deleted: false });
-    console.log(category_list);
+    // console.log(category_list);
     if (!category_list) {
       return res.status(200).render("addcategory", { cat: category_list });
     } else {
@@ -150,6 +150,15 @@ const add_category = async (req, res) => {
       req.flash("error", "ALL FIELD ARE REQUIRED");
       return res.status(400).redirect("/Addcategory");
     }
+
+    existingdata = await category.findOne({name: name});
+
+    if(existingdata){
+      req.flash("error","Category alredy exist")
+     return res.status(400).redirect("/Addcategory")
+    }
+
+
     const newcategory = new category({
       name: req.body.name,
       discription: req.body.discription,
@@ -200,7 +209,24 @@ const load_editcategory = async (req, res) => {
 
 const edit_category = async (req, res) => {
   try {
+    const {name , discription } = req.body
     const id = req.body.id;
+    console.log("name ffomr body ",name)
+
+    const existingdata = await category.findById({_id:id})
+    console.log("existing data by id",existingdata)
+    const matchname = await category.findOne({name:name})
+    if(existingdata.name==name){
+      await category.findByIdAndUpdate(id, {
+        $set: {
+          name: name ,
+          discription: discription,
+        },
+      });
+      req.flash("success", "CATEGORY UPDATED SUCESSFULLY");
+      return res.status(200).redirect("/Addcategory");
+
+    }else if(!matchname){
     const data = await category.findByIdAndUpdate(id, {
       $set: {
         name: req.body.name,
@@ -209,8 +235,13 @@ const edit_category = async (req, res) => {
     });
     req.flash("success", "CATEGORY UPDATED SUCESSFULLY");
     return res.status(200).redirect("/Addcategory");
+  }else{
+    req.flash("error","Category alredy exist")
+    return res.status(400).redirect("/Addcategory")
+  }
   } catch (err) {
     console.log("unable update category tray again..!", err);
+    return res.status(500).render("404",{message:"Unable to complite your request"})
   }
 };
 

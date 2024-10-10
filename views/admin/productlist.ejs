@@ -13,6 +13,18 @@
           <div>
             <h2 class="content-title card-title">Products List</h2>
             <p>Lorem ipsum dolor sit amet.</p>
+
+            <% if ((errorMessage.length > 0)) { %>
+              <div class="alert alert-danger">
+                  <P><%= errorMessage%></P>
+              </div>
+          <% } %>  
+          <% if ((successMessage.length > 0)) { %>
+              <div class="alert alert-success">
+                  <p><%= successMessage %></p>
+              </div>
+          <% } %> 
+
           </div>
           <div>
             <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>

@@ -33,10 +33,16 @@ const add_newbrand = async (req, res) => {
   try {
     const { brandname, branddescription } = req.body;
     const imageFile = req.file;
+    const existingdata = await brand.findOne({name:brandname})
 
     if (!brandname || !branddescription || !imageFile) {
       req.flash('error', 'all fields including image are required');
       return res.redirect('/newbrand');
+    }
+
+    if(existingdata){
+      req.flash("error","Brand name is already exists")
+      return res.status(400).redirect("/brand")
     }
 
     const newBrand = new brand({
@@ -86,36 +92,52 @@ const edit_brand = async (req, res) => {
   }
 };
 
+
+// for updating existing brand
+
 const update_brand = async (req, res) => {
   try {
+    const { brandname, branddescription } = req.body
     const id = req.body.id;
+    const existingdata = await brand.findById(id);
+    const matchname = await brand.findOne({name:brandname})
+
     const updateData = {
-      name: req.body.brandname,
-      description: req.body.branddescription,
+      name: req.body.brandname.trim(),
+      description: req.body.branddescription.trim(),
     };
 
     if (req.file) {
       updateData.image = req.file.filename;
     }
 
-    const updatedBrand = await brand.findByIdAndUpdate(
+    if(existingdata.name==brandname){
+     await brand.findByIdAndUpdate(
       id,
       { $set: updateData },
       { new: true }
     );
-
-    if (!updatedBrand) {
-      req.flash("error", "Brand not found");
-      return res.status(404).redirect("/brand");
-    }
     req.flash("success", "Brand updated successfully");
     return res.status(200).redirect("/brand");
 
-  } catch (err) {
+    }else if(!matchname){
+    await brand.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true }
+    );
+ req.flash("success", "Brand updated successfully");
+    return res.status(200).redirect("/brand");
 
+    }else{
+    req.flash("error", "Brand name is already exists");
+    return res.status(404).redirect("/brand");
+  }
+
+  } catch (err) {
     console.error('error for upadatitng the brand',err);
     req.flash("error", "An error occurred while updating the brand");
-    return res.stat.redirect("/brand");
+    return res.status(500).redirect("/brand");
   }
 };
 
@@ -128,5 +150,5 @@ module.exports = {
   delete_brand,
   edit_brand,
   update_brand,
-  
+
 };

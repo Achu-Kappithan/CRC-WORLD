@@ -12,6 +12,7 @@ const crypto = require("crypto");
 require("dotenv").config();
 
 //for loading sign in page
+
 const loadlogin = (req, res) => {
   try {
     const message = req.flash("message");
@@ -183,7 +184,7 @@ const verify_otp = async (req, res) => {
       return res.status(401).redirect("/otp");
     }
   } catch (err) {
-    console.log(`error from verify otp function `, err.message);
+    console.log(`error from verify otp function `, err);
     res
       .status(500)
       .render("user404", {
@@ -315,6 +316,7 @@ const userverification = async (req, res) => {
 };
 
 /// for loading home pagde
+
 const loadhome = async (req, res) => {
   try {
     // console.log("this is passing userid ",UserId)
@@ -429,7 +431,7 @@ const resetpass_mail = async (req, res) => {
         }
       };
       await sendMail();
-      req.flash("message", "E mail send sucessfully , check your e -mail");
+      req.flash("message", "Email send successfully , check your e-mail");
       req.flash("type", "success");
       return res.redirect("/login");
     }

@@ -67,7 +67,6 @@ const filterProducts = async (req, res) => {
 
     let query = { is_deleted:false };
     
-    false
     if (categories.length > 0) {
       query.category = { $in: categories };
     }
@@ -115,6 +114,7 @@ module.exports = {
   load_productview,
   load_sizesort,
 
+  // shope page
   load_shop,
   filterProducts,
 };

@@ -249,3 +249,72 @@
         </div>
     </div>
     
+    // place order 
+
+    const  place_order = async (req,res)=>{
+      try {
+        const addresid  = req.body.selectedAddress;
+        const paymentmethod = req.body.paymentMethod;
+        const userId = req.session.user_id;
+    
+        const address = await Adress.findById(addresid);
+        const cartdata = await Cart.findOne({user:userId});
+    
+        const totalprice = cartdata.items.reduce((acc,curr)=>{
+          acc+= (curr.Salesprice * curr.quantity)
+        })
+    
+        const neworder = new Order({
+          userId : userId,
+          items : cartdata.items.map((item) => ({
+            productId : item.productId,
+            productname : item.name,
+            Salesprice : item.Salesprice,
+            quantity : item.quantity,
+            size : item.size,
+            productimage : item.productimage
+          })),
+    
+          totalPrice :totalprice,
+          status : 'Pending',
+          billingDetails : {
+            name :address.name,
+            phone: address.phone,
+            pincode :address.pincode,
+            locality :address.locality,
+            housename : address.housename,
+            district : address.district,
+            state : address.state,
+            landMark : address.landMark,
+            email : address.email
+          },
+          paymentMethod : paymentmethod,
+          paymentStatus : "COD" ,
+          orderDate : Date.now(),
+        })
+    
+        const orderdata = await neworder.save()
+    
+        await Cart.findByIdAndUpdate({user:userId},{items:[]})
+    
+        for(let i=0 ;i<cartdata.items.length; i++){
+          const productstock = await Product.findById(cartdata.itmes[i].productId)
+    
+          if(product){
+            productindex = await productstock.items.findIndex((value)=>{value=== cartdata.itmes[i].size})
+            productstock[productindex].stock -= cartdata.itmes[i].quantity
+    
+            await productstock.save()
+          }
+    
+          
+        }
+    
+         
+      } catch (err) {
+        console.log("error for updating  placieing order",err)
+        
+      }
+    }
+    
+    

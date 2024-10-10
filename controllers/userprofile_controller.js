@@ -99,6 +99,8 @@ const update_address = async (req,res)=>{
     }
 }
 
+//for removing a adderess from the addresslisst
+
 const delete_address = async (req,res)=>{
     try {
         const addressid = req.query.id
