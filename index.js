@@ -5,6 +5,7 @@ const dbconnect = require("./config/db_connect");
 const session_config = require("./config/session_config");
 const path = require("path")
 const getDisplayPrice = require("./utils/pricehelper")
+const nocache = require("nocache")
 
 
 require("dotenv").config()
@@ -16,6 +17,7 @@ dbconnect()
 const flash = require("connect-flash")
 
 app.use(flash());
+app.use(nocache());
 
 // Middleware to make flash messages available to all views
 app.use((req, res, next) => {
@@ -34,6 +36,8 @@ app.use((req, res, next) => {
 
 // user releted
 app.use('/assets', express.static(path.join(__dirname, 'public/users/assets')));
+
+
 const user_router = require("./routers/user_router");
 app.use('/',user_router)
 

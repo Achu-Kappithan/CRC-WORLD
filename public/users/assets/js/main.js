@@ -871,25 +871,25 @@
 	/*----------------------------------
 	  26. Quantity Plus Minus
 	------------------------------------*/
-	function qnt_incre(){
-		$(".qtyBtn").on("click", function() {
-			var qtyField = $(this).parent(".qtyField"),
-				oldValue = $(qtyField).find(".qty").val(),
-				newVal = 1;
+	// function qnt_incre(){
+	// 	$(".qtyBtn").on("click", function() {
+	// 		var qtyField = $(this).parent(".qtyField"),
+	// 			oldValue = $(qtyField).find(".qty").val(),
+	// 			newVal = 1;
 	
-			if ($(this).is(".plus")) {
-				if (parseInt(oldValue) < 5) {
-					newVal = parseInt(oldValue) + 1;
-				} else {
-					newVal = 5; // Limit the maximum value to 5
-				}
-			} else if (oldValue > 1) {
-				newVal = parseInt(oldValue) - 1;
-			}
-			$(qtyField).find(".qty").val(newVal);
-		});
-	}
-	qnt_incre();
+	// 		if ($(this).is(".plus")) {
+	// 			if (parseInt(oldValue) < 5) {
+	// 				newVal = parseInt(oldValue) + 1;
+	// 			} else {
+	// 				newVal = 5; // Limit the maximum value to 5
+	// 			}
+	// 		} else if (oldValue > 1) {
+	// 			newVal = parseInt(oldValue) - 1;
+	// 		}
+	// 		$(qtyField).find(".qty").val(newVal);
+	// 	});
+	// }
+	// qnt_incre();
 	
 	
 	/*----------------------------------

@@ -143,13 +143,35 @@ const load_ordersummary = async (req,res)=>{
 
 const load_myorder = async (req,res)=>{
     try {
+        const message = req.flash("message");
+        const type =  req.flash("type");
         const userId = req.session.user_id;
         const order_details = await Orders.find({ userId: userId });
-        console.log("this is orderdetails",order_details)
-        return res.status(200).render("myorders",{orderdetails:order_details})
+        // console.log("this is orderdetails",order_details)
+        return res.status(200).render("myorders",{orderdetails:order_details ,message , type})
         
     } catch (err) {
         console.log("error for loading  order summary page ",err)
+       res.status(500).render("user404",{message: "Unable to load my order page Try again...!"}) 
+    }
+}
+
+// for cancel order
+
+const cancell_order = async (req,res)=>{
+    try {
+        const id = req.query.id
+        // console.log("this is the id for cancell a order",id)
+        await Orders.findByIdAndUpdate(
+            id,
+            {$set:{status:"Cancelled"}},
+        )
+        req.flash("message","Order Cancelled successfully")
+        req.flash("type","success")
+       return res.status(200).redirect("/my_orders") 
+    } catch (err) {
+        console.log("error for cancelling a order",err)
+        res.status(500).render("user404",{message:"Something went rong Tray again..!"})
         
     }
 }
@@ -166,5 +188,6 @@ module.exports = {
     update_address,
     delete_address,
     load_ordersummary,
-    load_myorder
+    load_myorder,
+    cancell_order
 }

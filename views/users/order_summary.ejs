@@ -87,7 +87,19 @@
             </tr>
             <tr>
                 <th>Order Status:</th>
-                <td><%= orderdetails.status %></td>
+                <td>
+                    <h2 class="badge rounded-pill 
+                        <% if (orderdetails.status === 'Pending' || orderdetails.status === 'Shipped') { %>
+                            alert-warning
+                        <% } else if (orderdetails.status === 'Delivered') { %>
+                            alert-success
+                        <% } else if (orderdetails.status === 'Cancelled' || orderdetails.status === 'Returned') { %>
+                            alert-danger
+                        <% } %>
+                    ">
+                        <%= orderdetails.status %>
+                        </h2>
+                </td>
             </tr>
         </table>
     </div>

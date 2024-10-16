@@ -18,6 +18,18 @@
                             
                             <div class="col-md-4">
                                 <h5 class="card-title">Ordered Items</h5>
+                                <h5 class="card-title" style="display: inline;">Status:</h5>
+                                <h6 style="display: inline;">   <h2 class="badge rounded-pill 
+                                    <% if (order.status === 'Pending' || order.status === 'Shipped') { %>
+                                        alert-warning
+                                    <% } else if (order.status === 'Delivered') { %>
+                                        alert-success
+                                    <% } else if (order.status === 'Cancelled' || order.status === 'Returned') { %>
+                                        alert-danger
+                                    <% } %>
+                                ">
+                                    <%= order.status %>
+                                    </h2>   </h6>
                                 <% order.items.forEach(item => { %> 
                                 <p>
                                     <img src="/assets/uploads/product/<%= item.productimage[0] %>" alt="<%= item.productname %>" style="width: 110px; margin-top: 5px;"><br>
@@ -34,7 +46,6 @@
                                 <p>
                                     <strong>Order ID:</strong> <%= order._id.toString() %><br>
                                     <strong>Order Date:</strong> <%= new Date(order.orderDate).toLocaleDateString() %><br>
-                                    <strong>Status:</strong><%= order.status %><br>
                                     <strong>Total Price:</strong> ₹<%= order.totalPrice.toFixed(2) %><br>
                                     <strong>Payment Method:</strong> <%= order.paymentMethod %><br>
                                     <strong>Payment Status:</strong> <%= order.paymentStatus %>
@@ -43,7 +54,9 @@
     
                             <div class="col-md-4">
                                 <p>
-                                    <a href="/shop" class="btn btn-outline-primary me-2" style="width: 200px;">Cancel order</a><br><br><br>
+                                    <form action="/order_cancelled?id=<%= order ._id %>" method="post">
+                                    <button type="submit" class="btn btn-outline-primary me-2" style="width: 200px;">Cancel order</button><br><br><br>
+                                    </form>
                                     <a href="/order_summary?orderid=<%= order ._id %>" class="btn btn-outline-secondary" style="width: 200px;" >Order Summary</a>
                                 </p>
                             </div>
@@ -68,3 +81,22 @@
     </div>
     
     <%- include("../layouts/user/footer.ejs") %>
+
+</script>
+<!-- aditional scriipt for sending message to user -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  const message = "<%= message %>";
+  const type = "<%= type %>";
+
+  if (message && message.length > 0) {
+      Swal.fire({
+          icon: type, // 'success', 'error', 'warning', 'info'
+          title: message,
+          showConfirmButton: true,
+          timer: 3000 
+      });
+  }
+</script>
+

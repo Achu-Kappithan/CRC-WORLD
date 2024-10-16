@@ -28,10 +28,10 @@ const addto_cart = async (req, res) => {
   try {
     const { productId, quantity, Salesprice, stock, Cartsize } = req.body;
     const userId = req.session.user_id;
-    console.log(
-      "this is the data  get form the frondend for adding cart ",
-      req.body
-    );
+    // console.log(
+    //   "this is the data  get form the frondend for adding cart ",
+    //   req.body
+    // );
 
     if (!userId) {
       return res.status(401).json({
@@ -169,18 +169,26 @@ const remove_cartitem = async (req,res)=>{
 }
 
 
-// // for updating  the quentity of  items in the database
+// for updating  the quentity of  items in the database
 
-// const update_quentity = async (req,res)=>{
-//   try {
-//     const { itemId, quantity } = req.body;
-//   } catch (err) {
-//     console.log("error for updating the quentity from the cart ",err)
-//   }
-// }
+const update_quentity = async (req,res)=>{
+  try {
+    const userId = req.session.user_id;
+    const { itemId, quantity } = req.body;
+
+    const newquentity = await Cart.findOneAndUpdate(
+      {user:userId,"items.productId": itemId},
+      {$set:{"items.$.quantity":quantity}},
+      {new: true}
+    )
+  } catch (err) {
+    console.log("error for updating the quentity from the cart ",err)
+  }
+}
 
 module.exports = {
   load_cart,
   addto_cart,
-  remove_cartitem
+  remove_cartitem,
+  update_quentity
 };

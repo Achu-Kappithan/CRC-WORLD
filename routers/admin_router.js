@@ -5,7 +5,6 @@ const bodyparser = require("body-parser")
 const is_auth = require("../middlewares/admin_auth")
 const auth = is_auth.is_authaticated
 const pageload404 = require("../middlewares/404load")
-const nocache = require("nocache")
 
 
 
@@ -19,7 +18,6 @@ const upload = require('../config/multer');
 const uploadProductImages = require('../config/productMulter'); 
 
 admin_route.use(bodyparser.urlencoded({extended:true}))
-admin_route.use(nocache())
 
 admin_route.set("view engine","ejs")
 admin_route.set('views',path.join(__dirname,"../views/admin"))
@@ -52,16 +50,21 @@ admin_route.post("/updatebrand", upload.single('image'),brand_controller.update_
 // product controller
 admin_route.get("/lodadadd_product",auth,product_controller.loadadd_product);
 admin_route.post("/add_product", uploadProductImages.array('productimage', 3), product_controller.add_product);
-admin_route.get("/admin_productlist",auth,product_controller.product_list)
-admin_route.get("/edit_product",auth,product_controller.loadedit_product)
-admin_route.post("/update_product",uploadProductImages.array('productimage', 3),product_controller.update_product)
-admin_route.post("/productunllist",auth,product_controller.unlist_product)
+admin_route.get("/admin_productlist",auth,product_controller.product_list);
+admin_route.get("/edit_product",auth,product_controller.loadedit_product);
+admin_route.post("/update_product",uploadProductImages.array('productimage', 3),product_controller.update_product);
+admin_route.post("/productunllist",auth,product_controller.unlist_product);
+
 
 // order controller
-admin_route.get("/orders_list",order_controller.load_orderlist)
+admin_route.get("/orders_list",auth,order_controller.load_orderlist);
+admin_route.get("/load_orderdetails",auth,order_controller.load_orderdetails);
+admin_route.post("/change_status",auth,order_controller.Update_orderstatus);
 
 
 
+
+// for loading 404 page
 admin_route.use(pageload404)
 
 

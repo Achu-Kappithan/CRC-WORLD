@@ -14,4 +14,17 @@ const is_authaticated = async (req,res,next)=>{
     }
 }
 
-module.exports = is_authaticated
+// check the the user is alredy logined
+
+const is_alredylogined = async (req,res,next)=>{
+    if (req.session.user_id){
+        res.redirect("/load_home")
+    }else{
+        next()
+    }
+}
+
+module.exports = {
+    is_authaticated,
+    is_alredylogined
+} 
