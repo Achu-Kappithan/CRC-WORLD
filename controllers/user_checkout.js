@@ -111,6 +111,12 @@ const place_order = async (req, res) => {
       const addressId = req.body.selectedAddress; 
       const paymentMethod = req.body.paymentMethod; 
       const userId = req.session.user_id;
+
+      if(!addressId && !paymentMethod){
+        req.flash("message","Plz Select address and Payment Method");
+        req.flash("type","warning")
+        return res.status(400).redirect("/user_checkout");
+      }
   
       const orderAddress = await Address.findById(addressId);
       const cartData = await Cart.findOne({ user: userId });

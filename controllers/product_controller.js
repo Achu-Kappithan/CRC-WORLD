@@ -12,7 +12,7 @@ const loadadd_product = async (req, res) => {
     const categorylist = await Category.find();
     res.render("addproduct", { brandlist, categorylist });
   } catch (err) {
-    console.log(err);
+    console.log("error for loading addproduct page",err);
   }
 };
 
@@ -27,8 +27,13 @@ const add_product = async (req, res) => {
 
     if (exsitingproduct) {
       req.flash("error", "Product alredy exist Tray with another product");
-      res.status(409).redirect("/lodadadd_product");
+      return res.status(409).redirect("/lodadadd_product");
     }
+
+  if(!productcategory && !productbrand){
+    req.flash("error", "Plz select category and brand");
+   return res.status(409).redirect("/lodadadd_product");
+  }
 
     if (!req.files || req.files.length === 0) {
       req.flash("error", "No files were uploaded");
@@ -91,9 +96,14 @@ const add_product = async (req, res) => {
 
 const product_list = async (req, res) => {
   try {
-    const productlist = await Product.find();
+    const page = req.query.page || 1
+    const limit = 4;
 
-    return res.status(200).render("productlist", { productlist });
+    const productlist = await Product.find().skip((page-1)*limit).limit(limit)
+    const toataorders = await Product.countDocuments();
+    const totalPages = Math.ceil(toataorders/limit)
+
+    return res.status(200).render("productlist", { productlist, totalPages, page });
   } catch (err) {
     console.log("error for displaying product list", err);
     res
@@ -231,6 +241,25 @@ const update_product = async (req, res) => {
   }
 };
 
+// for sorting productlist by status
+
+const admin_productsort = async (req,res)=>{
+  try {
+    const sortdata = req.body.sort;
+    let productlist;
+
+    if(sortdata=="all"){
+      productlist = await Product.find()
+      return res.json({ success: true, productlist });
+    }else
+     productlist = await Product.find({is_deleted:sortdata})
+     return res.json({ success: true, productlist });
+  } catch (err) {
+    console.log("error for product sort by status",err)
+    return res.status(500).render("404",{message:"Unable to complate request"});
+  }
+}
+
 module.exports = {
   loadadd_product,
   add_product,
@@ -238,4 +267,5 @@ module.exports = {
   loadedit_product,
   update_product,
   unlist_product,
+  admin_productsort
 };

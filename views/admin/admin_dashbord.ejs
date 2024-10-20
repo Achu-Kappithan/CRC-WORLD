@@ -124,6 +124,34 @@
             </div>
           </div>
         </div>
+
+        <div class="pagination-area mt-15 mb-50">
+          <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-start">
+                  <% if (page > 1) { %>
+                  <li class="page-item" >
+                      <a class="page-link" href="?page=<%= page -1  %>">
+                          <i class="material-icons md-chevron_left"></i>
+                      </a>
+                  </li>
+                  <% } %>
+  
+                  <% for (let i = 1; i <= totalPages; i++) { %>
+                      <li class="page-item <%= i === page ? 'active' : '' %>">
+                      <a class="page-link" href="?page=<%= i  %> "> <%= i %></a>
+                  </li>
+                  <% } %>
+                  <% if (page < totalPages) { %>
+                  <li class="page-item">
+                      <a class="page-link" href="?page=<%= page + 1  %>">
+                          <i class="material-icons md-chevron_right"></i>
+                      </a>
+                  </li>
+                  <% } %>
+              </ul>
+          </nav>
+      </div>
+  
       </section>
 
       <%- include("../layouts/admin/admin_footer.ejs") %>

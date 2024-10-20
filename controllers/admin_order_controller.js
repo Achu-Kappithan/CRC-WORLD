@@ -6,7 +6,7 @@ const User = require("../models/user_models")
 const load_orderlist = async (req,res)=>{
     try {
         const page = req.query.page || 1 ;
-        const limit = 6;
+        const limit = 5;
 
         const orderdata = await Orders.find()
         .populate("userId")
@@ -60,26 +60,6 @@ const Update_orderstatus = async (req,res)=>{
 }
 
 
-// for adding pagenation
-
-const pagenation = async (req,res)=>{
-    try {
-        const page = req.query.page || 1 ;
-        const limit = 8;
-
-        const orderlist = await Orders.find()
-        .skip((page-1)*limit)
-        .limit(limit)
-
-        const totalorders = await Orders.countDocuments();
-
-        res.status(200).render()
-        
-    } catch (err) {
-        console.log("error for adjesting pagenation ",err)
-        
-    }
-}
 
 
 module.exports = {

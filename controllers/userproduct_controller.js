@@ -81,9 +81,9 @@ const filterProducts = async (req, res) => {
     if (sort.length > 0) {
       sort.forEach((sort) => {
         if (sort === "price-asc") {
-          sortOption["sizes.0.price"] = 1;
+          sortOption["sizes.0.Salesprice"] = 1;
         } else if (sort === "price-desc") {
-          sortOption["sizes.0.price"] = -1;
+          sortOption["sizes.0.Salesprice"] = -1;
         } else if (sort === "alpha-asc") {
           sortOption["productname"] = 1;
         } else if (sort === "alpha-desc") {

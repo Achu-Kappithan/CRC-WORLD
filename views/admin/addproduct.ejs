@@ -385,79 +385,84 @@
         return isValid;
       }
 
-      let cropper;
-      let currentFile;
-      let currentImgElement; 
+let cropper;
+let croppedFiles = []; 
+let originalFiles = []; 
 
-      function handleFiles(event) {
-        const imagePreviewContainer = document.getElementById("imagePreview");
-        imagePreviewContainer.innerHTML = "";
+function handleFiles(event) {
+  const imagePreviewContainer = document.getElementById("imagePreview");
+  imagePreviewContainer.innerHTML = "";
 
-        const files = event.target.files;
+  const files = event.target.files;
+  if (files) {
+    originalFiles = Array.from(files);
 
-        if (files) {
-          Array.from(files).forEach((file) => {
-            const reader = new FileReader();
+    originalFiles.forEach((file, index) => {
+      const reader = new FileReader();
 
-            reader.onload = (e) => {
-              currentFile = file; 
-              const img = document.createElement("img");
-              img.src = e.target.result;
-              img.style.width = "100px";
-              img.style.marginRight = "10px";
-              img.style.cursor = "pointer";
-              img.onclick = () => openCropper(e.target.result, img); 
-              imagePreviewContainer.appendChild(img);
-            };
+      reader.onload = (e) => {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.style.width = "100px";
+        img.style.marginRight = "10px";
+        img.style.cursor = "pointer";
+        img.onclick = () => openCropper(e.target.result, img, index);
 
-            reader.readAsDataURL(file);
-          });
-        }
-      }
+        imagePreviewContainer.appendChild(img);
+      };
 
-      function openCropper(imageSrc, imgElement) {
-        const cropModal = document.getElementById("cropModal");
-        const croppingImage = document.getElementById("croppingImage");
+      reader.readAsDataURL(file);
+    });
+  }
+}
 
-        currentImgElement = imgElement; 
+function openCropper(imageSrc, imgElement, fileIndex) {
+  const cropModal = document.getElementById("cropModal");
+  const croppingImage = document.getElementById("croppingImage");
 
-        croppingImage.src = imageSrc;
-        cropModal.style.display = "block";
+  currentFile = croppedFiles[fileIndex] || originalFiles[fileIndex]; 
+  currentImgElement = imgElement; 
 
-        if (cropper) {
-          cropper.destroy();
-        }
+  croppingImage.src = imageSrc;
+  cropModal.style.display = "block";
 
-        cropper = new Cropper(croppingImage, {
-          aspectRatio: 1, 
-          viewMode: 2,
-        });
-      }
+  if (cropper) {
+    cropper.destroy();
+  }
 
-      function cropImage() {
-  const canvas = cropper.getCroppedCanvas(); 
+  cropper = new Cropper(croppingImage, {
+    aspectRatio: 1, 
+    viewMode: 2,
+  });
+}
+
+function cropImage() {
+  const canvas = cropper.getCroppedCanvas();
 
   canvas.toBlob((blob) => {
     const croppedFile = new File([blob], currentFile.name, { type: 'image/png' });
 
+    const fileIndex = originalFiles.indexOf(currentFile); 
+    croppedFiles[fileIndex] = croppedFile; 
+
     const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(croppedFile); 
 
-    
+    originalFiles.forEach((file, index) => {
+      dataTransfer.items.add(croppedFiles[index] || file); 
+    });
+
     const fileInput = document.getElementById('image');
-    fileInput.files = dataTransfer.files;
+    fileInput.files = dataTransfer.files; 
 
-    
     currentImgElement.src = URL.createObjectURL(croppedFile);
 
-    
-    document.getElementById("cropModal").style.display = "none";
+    document.getElementById("cropModal").style.display = "none"; 
 
-    
     cropper.destroy();
     cropper = null;
-  }, 'image/png'); 
+  }, 'image/png');
 }
+
       
     </script>
   </body>

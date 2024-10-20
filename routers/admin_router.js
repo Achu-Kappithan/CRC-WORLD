@@ -54,6 +54,7 @@ admin_route.get("/admin_productlist",auth,product_controller.product_list);
 admin_route.get("/edit_product",auth,product_controller.loadedit_product);
 admin_route.post("/update_product",uploadProductImages.array('productimage', 3),product_controller.update_product);
 admin_route.post("/productunllist",auth,product_controller.unlist_product);
+admin_route.post("/sortbystatus",product_controller.admin_productsort);
 
 
 // order controller

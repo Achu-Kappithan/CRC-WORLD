@@ -4,8 +4,17 @@ const brand = require("../models/brand");
 
 const load_brand = async (req, res) => {
   try {
-    const branddata = await brand.find({ is_deleted: false });
-    return res.status(200).render("brand", { brand: branddata });
+    const page = req.query.page
+    const limit = 8;
+
+    const branddata = await brand.find({ is_deleted: false })
+    .skip((page-1)*limit)
+    .limit(limit)
+
+    const totaldocument = await brand.countDocuments()
+    const totalPages = Math.ceil(totaldocument/limit)
+
+    return res.status(200).render("brand", { brand: branddata, totalPages , page });
   } catch (err) {
     console.log("error for loding the brand page", err);
     return res

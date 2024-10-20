@@ -62,8 +62,14 @@ const admin_verify = async (req, res) => {
 
 const load_dashbord = async (req, res) => {
   try {
+    const page = req.query.page;
+    const limit = 6;
     const search = req.query.user_search;
     // console.log(search)
+
+    const totaluser = await Admin.countDocuments()
+    const totalPages = Math.ceil(totaluser/limit)
+
     if (search) {
       const searchdata = await Admin.find({
         is_admin: 0,
@@ -72,12 +78,13 @@ const load_dashbord = async (req, res) => {
           { lastname: { $regex: search, $options: "i" } },
           { email: { $regex: search, $options: "i" } },
         ],
-      });
+      }).skip((page-1)*limit).limit(limit)
+
       req.flash("error", "no user found");
-      return res.render("admin_dashbord", { users: searchdata });
+      return res.render("admin_dashbord", { users: searchdata, totalPages, page });
     } else {
       const userdetails = await Admin.find({ is_admin: 0 });
-      return res.render("admin_dashbord", { users: userdetails });
+      return res.render("admin_dashbord", { users: userdetails, totalPages, page });
     }
   } catch (err) {
     console.log("error for loading dashbord", err);

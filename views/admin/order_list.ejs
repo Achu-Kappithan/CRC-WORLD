@@ -77,25 +77,36 @@
                 </table>
             </div> <!-- table-responsive //end -->
         </div> <!-- card-body end// -->
-    </div> <!-- card end// -->
+    </div> 
+    
     <div class="pagination-area mt-15 mb-50">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-start">
                 <% if (page > 1) { %>
-                <li class="page-item" ><a style="width: 100px;" class="page-link" href="/orders_list?page=<%= page - 1 %>">Previous</a></li>
+                <li class="page-item" >
+                    <a class="page-link" href="?page=<%= page -1  %>">
+                        <i class="material-icons md-chevron_left"></i>
+                    </a>
+                </li>
                 <% } %>
+
                 <% for (let i = 1; i <= totalPages; i++) { %>
-                <li class="page-item"><a href="/orders_list?page=<%= i %>" class="page-link" class="<%= page === i ? "page-item active" : '' %>"><%= i %></a></li>
+                    <li class="page-item <%= i === page ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i  %> "> <%= i %></a>
+                </li>
                 <% } %>
-                <!-- <% if (page < totalPages) { %>
-                <li class="page-item"><a style="width: 70px;" class="page-link" href="?page=<%= page + 1 %>">Next</a></li>
-                <% } %> -->
+                <% if (page < totalPages) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= page + 1  %>">
+                        <i class="material-icons md-chevron_right"></i>
+                    </a>
+                </li>
+                <% } %>
             </ul>
         </nav>
     </div>
 </section> 
 
-<!-- content-main end// -->
 <script>
         function validate() {
           let value = true;

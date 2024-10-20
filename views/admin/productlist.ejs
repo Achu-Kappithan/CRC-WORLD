@@ -15,16 +15,14 @@
             <p>Lorem ipsum dolor sit amet.</p>
 
             <% if ((errorMessage.length > 0)) { %>
-              <div class="alert alert-danger">
-                  <P><%= errorMessage%></P>
-              </div>
-          <% } %>  
-          <% if ((successMessage.length > 0)) { %>
-              <div class="alert alert-success">
-                  <p><%= successMessage %></p>
-              </div>
-          <% } %> 
-
+            <div class="alert alert-danger">
+              <P><%= errorMessage%></P>
+            </div>
+            <% } %> <% if ((successMessage.length > 0)) { %>
+            <div class="alert alert-success">
+              <p><%= successMessage %></p>
+            </div>
+            <% } %>
           </div>
           <div>
             <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
@@ -41,28 +39,28 @@
                 <div class="form-check ms-2"></div>
               </div>
               <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                <select class="form-select">
+                <!-- <select class="form-select">
                   <option selected>All category</option>
                   <option>Electronics</option>
                   <option>Clothes</option>
                   <option>Automobile</option>
-                </select>
+                </select> -->
               </div>
-              <div class="col-md-2 col-6">
+              <!-- <div class="col-md-2 col-6">
                 <input type="date" value="02.05.2022" class="form-control" />
-              </div>
+              </div> -->
               <div class="col-md-2 col-6">
-                <select class="form-select">
+                <select id="statussort" class="form-select">
                   <option selected>Status</option>
-                  <option>Active</option>
-                  <option>Disabled</option>
-                  <option>Show all</option>
+                  <option value="false">Active</option>
+                  <option value="true">Disabled</option>
+                  <option value="all">Show all</option>
                 </select>
               </div>
             </div>
           </header>
           <!-- card-header end// -->
-          <div class="card-body">
+          <div id="listitem" class="card-body">
             <% for (let i = 0; i < productlist.length; i++) { %>
             <article class="itemlist">
               <div class="row align-items-center">
@@ -122,18 +120,30 @@
             <% } %>
           </div>
         </div>
-        <!-- <div class="pagination-area mt-30 mb-50">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-start">
-                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                    <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-                </ul>
-            </nav>
-        </div> -->
+
+        <div class="pagination-area mt-15 mb-50">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+              <% if (page > 1) { %>
+              <li class="page-item">
+                <a class="page-link" href="?page=<%= page -1  %>">
+                  <i class="material-icons md-chevron_left"></i>
+                </a>
+              </li>
+              <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
+              <li class="page-item <%= i === page ? 'active' : '' %>">
+                <a class="page-link" href="?page=<%= i  %> "> <%= i %></a>
+              </li>
+              <% } %> <% if (page < totalPages) { %>
+              <li class="page-item">
+                <a class="page-link" href="?page=<%= page + 1  %>">
+                  <i class="material-icons md-chevron_right"></i>
+                </a>
+              </li>
+              <% } %>
+            </ul>
+          </nav>
+        </div>
       </section>
       <!-- content-main end// -->
 
@@ -166,6 +176,86 @@
 
           return value;
         }
+
+        // script for sort by the status.
+
+        document
+          .getElementById("statussort")
+          .addEventListener("change", function () {
+            const sort = this.value;
+
+            fetch("/sortbystatus", {
+              method: "post",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ sort }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  const container = document.getElementById("listitem");
+                  container.innerHTML = "";
+
+                  data.productlist.forEach((product, index) => {
+                    container.innerHTML += `
+                    <article class="itemlist">
+                    <div class="row align-items-center">
+                   <div class="col col-check flex-grow-0">
+                   <div class="form-check">${index + 1}</div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                     <a class="itemside" href="#">
+                   <div class="left">
+                    <img src="/assets/uploads/product/${
+                      product.productimage[0]
+                    }" class="img-sm img-thumbnail" alt="Item"/>
+                   </div>
+                   <div class="info">
+                   <h6 class="mb-0">${product.productname}</h6>
+                   </div>
+                   </a>
+                   </div>
+                    <div class="col-lg-2 col-sm-2 col-4 col-price">
+                    ${product.sizes
+                      .map(
+                        (size) =>
+                          `<span>${size.size} ${size.Salesprice}</span><br />`
+                      )
+                      .join("")}
+                     </div>
+                   <div class="col-lg-2 col-sm-2 col-4 col-status">
+                     ${
+                       !product.is_deleted
+                         ? `<span class="badge rounded-pill alert-success">Active</span>`
+                         : `<span class="badge rounded-pill alert-danger">Inactive</span>`
+                     }
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                       <a href="/edit_product?id=${
+                         product._id
+                       }" class="btn btn-sm font-sm rounded btn-brand">
+                        <i class="material-icons md-edit"></i> Edit
+                      </a>
+                     <form method="post" action="/productunllist?id=${
+                       product._id
+                     }">
+                     ${
+                       !product.is_deleted
+                         ? `<button id="toggleProductButton" class="unlisted">unlist</button>`
+                         : `<button id="toggleProductButton" class="listed">List</button>`
+                     }
+                     </form>
+                      </div>
+                       </div>
+                     </article>
+                        `;
+                  });
+                } else {
+                  console.log("Failed to sort products");
+                }
+              });
+          });
       </script>
     </main>
     <!-- content-main end// -->
