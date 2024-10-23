@@ -13,16 +13,6 @@
           <div>
             <h2 class="content-title card-title">Products List</h2>
             <p>Lorem ipsum dolor sit amet.</p>
-
-            <% if ((errorMessage.length > 0)) { %>
-            <div class="alert alert-danger">
-              <P><%= errorMessage%></P>
-            </div>
-            <% } %> <% if ((successMessage.length > 0)) { %>
-            <div class="alert alert-success">
-              <p><%= successMessage %></p>
-            </div>
-            <% } %>
           </div>
           <div>
             <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
@@ -146,6 +136,23 @@
         </div>
       </section>
       <!-- content-main end// -->
+
+
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+      <script>
+        const message = "<%= message %>";
+        const type = "<%= type %>";
+  
+        if (message && message.length > 0) {
+            Swal.fire({
+                icon: type, // 'success', 'error', 'warning', 'info'
+                title: message,
+                showConfirmButton: true,
+                timer: 3000 
+            });
+        }
+    </script>
 
       <%- include("../layouts/admin/admin_footer.ejs") %>
       <script>

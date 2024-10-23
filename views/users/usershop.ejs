@@ -33,9 +33,11 @@
                                                     <i class="icon anm anm-search-plus-r"></i>
                                                 </a>
                                                 <div class="wishlist-btn">
-                                                    <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist">
+                                                    <form method="post" action="/addto_wishlisht?id=<%= productdata[i]._id%>">
+                                                    <button type="submit" class="wishlist add-to-wishlist"  title="Add to Wishlist">
                                                         <i class="icon anm anm-heart-l"></i>
-                                                    </a>
+                                                    </button>
+                                                    </form>
                                                 </div>
                                                 <div class="compare-btn">
                                                     <a class="compare add-to-compare" href="compare.html" title="Add to Compare">
@@ -185,8 +187,25 @@
         </div>
         
     </div>
-    <!--End Body Content-->
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+<script>
+  const message = "<%= message %>";
+  const type = "<%= type %>";
+
+  if (message && message.length > 0) {
+      Swal.fire({
+          icon: type, // 'success', 'error', 'warning', 'info'
+          title: message,
+          showConfirmButton: false,
+          timer: 2000 
+      });
+  }
+  </script>
+
+
+    
 <script>
 
 document.getElementById('applyFilterBtn').addEventListener('click', function() {

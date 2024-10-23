@@ -40,6 +40,9 @@ const load_sizesort = async (req, res) => {
 
 const load_shop = async (req, res) => {
   try {
+    const message = req.flash("message");
+    const type = req.flash("type");
+
     const branddata = await brand.find({ is_deleted: false });
     const catdata = await category.find({ is_deleted: false });
     const productdata = await product.find({is_deleted: false})
@@ -51,6 +54,8 @@ const load_shop = async (req, res) => {
       branddata,
       catdata,
       helpers: priceHelper,
+      message,
+      type
     });
   } catch (err) {
     console.log(err);

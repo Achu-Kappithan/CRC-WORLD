@@ -132,9 +132,11 @@
                     <i class="icon anm anm-search-plus-r"></i>
                   </a>
                   <div class="wishlist-btn">
-                    <a class="wishlist add-to-wishlist" href="wishlist.html">
-                      <i class="icon anm anm-heart-l"></i>
-                    </a>
+                    <form method="post" action="/addto_wishlisht?id=<%= productlist[i]._id%>">
+                      <button style="outline: none; border: none; background: none;" type="submit" class="wishlist add-to-wishlist"  title="Add to Wishlist">
+                          <i class="icon anm anm-heart-l"></i>
+                      </button>
+                      </form>
                   </div>
                   <div class="compare-btn">
                     <a
@@ -287,9 +289,11 @@
                     <i class="icon anm anm-search-plus-r"></i>
                   </a>
                   <div class="wishlist-btn">
-                    <a class="wishlist add-to-wishlist" href="wishlist.html">
-                      <i class="icon anm anm-heart-l"></i>
-                    </a>
+                    <form method="post" action="/addto_wishlisht?id=<%= batlist[i]._id%>">
+                      <button style="outline: none; border: none; background: none;" type="submit" class="wishlist add-to-wishlist"  title="Add to Wishlist">
+                          <i class="icon anm anm-heart-l"></i>
+                      </button>
+                      </form>
                   </div>
                   <div class="compare-btn">
                     <a
@@ -399,9 +403,11 @@
                       <i class="icon anm anm-search-plus-r"></i>
                     </a>
                     <div class="wishlist-btn">
-                      <a class="wishlist add-to-wishlist" href="wishlist.html">
-                        <i class="icon anm anm-heart-l"></i>
-                      </a>
+                      <form method="post" action="/addto_wishlisht?id=<%= gadlist[i]._id%>">
+                        <button style="outline: none; border: none; background: none;" type="submit" class="wishlist add-to-wishlist"  title="Add to Wishlist">
+                            <i class="icon anm anm-heart-l"></i>
+                        </button>
+                        </form>
                     </div>
                     <div class="compare-btn">
                       <a

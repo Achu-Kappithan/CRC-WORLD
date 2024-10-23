@@ -12,7 +12,7 @@ const loadadd_product = async (req, res) => {
     const categorylist = await Category.find();
     res.render("addproduct", { brandlist, categorylist });
   } catch (err) {
-    console.log("error for loading addproduct page",err);
+    console.log("error for loading addproduct page", err);
   }
 };
 
@@ -30,10 +30,10 @@ const add_product = async (req, res) => {
       return res.status(409).redirect("/lodadadd_product");
     }
 
-  if(!productcategory && !productbrand){
-    req.flash("error", "Plz select category and brand");
-   return res.status(409).redirect("/lodadadd_product");
-  }
+    if (!productcategory && !productbrand) {
+      req.flash("error", "Plz select category and brand");
+      return res.status(409).redirect("/lodadadd_product");
+    }
 
     if (!req.files || req.files.length === 0) {
       req.flash("error", "No files were uploaded");
@@ -96,14 +96,20 @@ const add_product = async (req, res) => {
 
 const product_list = async (req, res) => {
   try {
-    const page = req.query.page || 1
+    const message = req.flash("message");
+    const type =  req.flash("type");
+    const page = req.query.page || 1;
     const limit = 4;
 
-    const productlist = await Product.find().skip((page-1)*limit).limit(limit)
+    const productlist = await Product.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
     const toataorders = await Product.countDocuments();
-    const totalPages = Math.ceil(toataorders/limit)
+    const totalPages = Math.ceil(toataorders / limit);
 
-    return res.status(200).render("productlist", { productlist, totalPages, page });
+    return res
+      .status(200)
+      .render("productlist", { productlist, totalPages, page , message ,type});
   } catch (err) {
     console.log("error for displaying product list", err);
     res
@@ -116,6 +122,9 @@ const product_list = async (req, res) => {
 
 const loadedit_product = async (req, res) => {
   try {
+    const message = req.flash("message");
+    const type =  req.flash("type");
+
     const id = req.query.id;
     const brandlist = await Brand.find();
     const categorylist = await Category.find();
@@ -125,7 +134,7 @@ const loadedit_product = async (req, res) => {
     // console.log("this is data for editing ",productdata)
     return res
       .status(200)
-      .render("edit_product", { productdata, brandlist, categorylist });
+      .render("edit_product", { productdata, brandlist, categorylist ,message ,type });
   } catch (err) {
     console.log("error for loding edit product page", err);
     res
@@ -144,11 +153,13 @@ const unlist_product = async (req, res) => {
 
     if (data.is_deleted == false) {
       await product.findByIdAndUpdate(id, { is_deleted: true });
-      req.flash("success", "Product unlisted sucessfully");
+      req.flash("message", "Product unlisted sucessfully");
+      req.flash("type","success")
       return res.status(200).redirect("/admin_productlist");
     } else {
       await product.findByIdAndUpdate(id, { is_deleted: false });
-      req.flash("success", "Product unlisted sucessfully");
+      req.flash("message", "Product listed sucessfully");
+      req.flash("type","success")
       return res.status(200).redirect("/admin_productlist");
     }
   } catch (err) {
@@ -163,8 +174,19 @@ const unlist_product = async (req, res) => {
 
 const update_product = async (req, res) => {
   try {
+    let existingImages = [];
+    try {
+      existingImages = req.body.existingImages
+        ? JSON.parse(req.body.existingImages)
+        : [];
+    } catch (err) {
+      console.log("Error parsing existingImages:", err);
+      existingImages = [];
+    }
+
     const { productname, productdis, taxrate, productcategory, productbrand } =
       req.body;
+
     const productId = req.query.pid;
     const existingdata = await Product.findById(productId);
     const namematch = await Product.findOne({ productname: productname });
@@ -198,7 +220,18 @@ const update_product = async (req, res) => {
       });
     }
 
-    const productimage = req.files.map((file) => file.filename);
+    let productimage = existingdata.productimage;
+
+    if (req.files && req.files.length > 0) {
+      req.files.forEach((file) => {
+        const index = existingImages.indexOf(file.originalname);
+        if (index !== -1) {
+          productimage[index] = file.filename;
+        } else {
+          productimage.push(file.filename);
+        }
+      });
+    }
 
     const updatedata = {
       productname: productname,
@@ -207,11 +240,8 @@ const update_product = async (req, res) => {
       brand: productbrand,
       Taxrate: taxrate,
       sizes: sizes,
+      productimage: productimage,
     };
-
-    if (productimage && productimage.length > 0) {
-      updatedata.productimage = productimage;
-    }
 
     if (existingdata.productname == productname) {
       await Product.findByIdAndUpdate(
@@ -219,7 +249,8 @@ const update_product = async (req, res) => {
         { $set: updatedata },
         { new: true }
       );
-      req.flash("success", "Product updated successfully");
+      req.flash("message", "Product updated successfully");
+      req.flash("type","success")
       return res.status(200).redirect("/admin_productlist");
     } else if (!namematch) {
       await Product.findByIdAndUpdate(
@@ -227,10 +258,12 @@ const update_product = async (req, res) => {
         { $set: updatedata },
         { new: true }
       );
-      req.flash("success", "Product updated successfully");
+      req.flash("message", "Product updated successfully");
+      req.flash("type","success")
       return res.status(200).redirect("/admin_productlist");
     } else {
-      req.flash("error", "Product name already exisits");
+      req.flash("message", "Product name already exisits");
+      req.flash("type","warning")
       res.status(500).redirect("/admin_productlist");
     }
   } catch (err) {
@@ -243,22 +276,23 @@ const update_product = async (req, res) => {
 
 // for sorting productlist by status
 
-const admin_productsort = async (req,res)=>{
+const admin_productsort = async (req, res) => {
   try {
     const sortdata = req.body.sort;
     let productlist;
 
-    if(sortdata=="all"){
-      productlist = await Product.find()
+    if (sortdata == "all") {
+      productlist = await Product.find();
       return res.json({ success: true, productlist });
-    }else
-     productlist = await Product.find({is_deleted:sortdata})
-     return res.json({ success: true, productlist });
+    } else productlist = await Product.find({ is_deleted: sortdata });
+    return res.json({ success: true, productlist });
   } catch (err) {
-    console.log("error for product sort by status",err)
-    return res.status(500).render("404",{message:"Unable to complate request"});
+    console.log("error for product sort by status", err);
+    return res
+      .status(500)
+      .render("404", { message: "Unable to complate request" });
   }
-}
+};
 
 module.exports = {
   loadadd_product,
@@ -267,5 +301,5 @@ module.exports = {
   loadedit_product,
   update_product,
   unlist_product,
-  admin_productsort
+  admin_productsort,
 };

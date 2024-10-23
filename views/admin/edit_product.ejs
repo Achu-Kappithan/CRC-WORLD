@@ -3,18 +3,138 @@
 <html lang="en">
   <%- include("../layouts/admin/admin_header.ejs") %>
 
-
-  <link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
-/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
   <style>
     .additional-fields {
         display: none;
         margin-top: 10px;
-    }
+    } 
+
+    .img-edit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            overflow-y: auto;
+        }
+        
+        .img-edit-modal__content {
+            position: relative;
+            background-color: #ffffff;
+            margin: 2% auto;
+            padding: 25px;
+            width: 95%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .img-edit-modal__close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .img-edit-modal__close:hover {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .img-edit-modal__header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .img-edit-modal__title {
+            font-size: 20px;
+            color: #333;
+            margin: 0;
+            padding-right: 40px;
+        }
+        
+        .img-edit-modal__image-container {
+            position: relative;
+            max-width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .img-edit-modal__image {
+            max-width: 100%;
+            max-height: 100%;
+            margin: 0 auto;
+            object-fit: contain;
+        }
+        
+        .img-edit-modal__crop-container {
+            display: none;
+            width: 100%;
+            height: 200px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+        
+        .img-edit-modal__actions {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .img-edit-modal__btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .img-edit-modal__btn--primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .img-edit-modal__btn--primary:hover {
+            background-color: #45a049;
+        }
+        
+        .img-edit-modal__btn--secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .img-edit-modal__btn--secondary:hover {
+            background-color: #e4e4e4;
+        }
+        
+        .img-edit-modal__file-input {
+            display: none;
+        }
+    
+    </style>
+
   </style>
 
 
@@ -159,30 +279,58 @@
                         <h4>Media</h4>
                     </div>
                     <div class="card-body">
-                        <div class="input-upload">
-                            <label for="image" class="form-label">Update Images</label>
-                            <input type="file" name="productimage" class="form-control" id="image" multiple  onchange="handleFiles(event)" />
-                            
-                        
-                            <div id="imagePreview" class="existing-images mt-3">
-                              <% productdata.productimage.forEach(function(image) { %>
-                                <img src="/assets/uploads/product/<%= image %>" alt="Current Image" width="100px" style="margin-right: 10px;">
-                              <% }) %>
-                            </div>
+                      <div class="input-upload">
+                        <label for="image" class="form-label">Update Images</label>
+                        <input type="file" name="productimage" class="form-control" id="image" multiple onchange="handleFiles(event)" />
 
-                            <div  class="mt-3"></div>
 
-                            <div id="cropModal" style="display: none">
-                                <img id="croppingImage" style="max-width: 100%" />
-                                <button type="button" id="cropButton" onclick="cropImage()">
-                                  Crop Image
-                                </button>
+                        <div id="imagePreview" class="existing-images mt-3">
+                          <% productdata.productimage.forEach(function(image, index) { %>
+                            <img src="/assets/uploads/product/<%= image %>" alt="Current Image" width="100px" style="margin-right: 10px; cursor: pointer;" onclick="openImageModal('<%= image %>', '<%= index %>')">
+                          <% }) %>
+                        </div>
+
+                        <input type="hidden" id="existingImages" name="existingImages" value="">
+
+                        <div id="imageEditModal" class="img-edit-modal">
+                          <div class="img-edit-modal__content">
+                              <div class="img-edit-modal__header">
+                                  <h3 class="img-edit-modal__title">Edit Image</h3>
+                                  <span class="img-edit-modal__close" onclick="closeImageModal()">&times;</span>
                               </div>
-                          
-                            <span id="errorimage" class="text-danger"></span>
+                              
+                              <div id="regularImageContainer" class="img-edit-modal__image-container">
+                                  <img id="modalImage" class="img-edit-modal__image" src="" alt="Selected Image">
+                              </div>
+                              
+                              <div id="cropContainer" class="img-edit-modal__crop-container">
+                                  <img id="cropImage" src="" alt="Image to crop">
+                              </div>
+                              
+                              <div class="img-edit-modal__actions">
+                                  <input type="file" id="replaceImageInput" class="img-edit-modal__file-input" accept="image/*">
+                                  <button type="button" class="img-edit-modal__btn img-edit-modal__btn--secondary" onclick="document.getElementById('replaceImageInput').click()">
+                                      Replace Image
+                                  </button>
+                                  <button type="button" class="img-edit-modal__btn img-edit-modal__btn--secondary" onclick="startImageCropping()">
+                                      Crop Image
+                                  </button>
+                                  <button type="button" class="img-edit-modal__btn img-edit-modal__btn--primary" id="saveCropBtn" style="display: none" onclick="saveImageCrop()">
+                                      Save Crop
+                                  </button>
+                                  <button type="button" class="img-edit-modal__btn img-edit-modal__btn--secondary" id="cancelCropBtn" style="display: none" onclick="cancelImageCropping()">
+                                      Cancel
+                                  </button>
+                              </div>
                           </div>
-                    </div> 
-                <div class="card mb-4">
+                      </div>
+
+
+                      </div>
+                    
+                        <span id="errorimage" class="text-danger"></span>
+                    </div>
+                      <div class="card mb-4">
                     <div class="card-header">
                         <h4>Organization</h4>
                     </div>
@@ -194,7 +342,7 @@
                                 <select class="form-select" name="productcategory">
                                     <option value="<%= productdata.category._id %>"><%= productdata.category.name %></option>
                                     <% categorylist.forEach(category => { %>
-                                        <option value="<%= category._id %>"><%= category.name %></option>                                            <%= category.name %>
+                                        <option value="<%= category._id %>"><%= category.name %></option>                                            
                                     
                                     <% }) %>
                                 </select>
@@ -221,6 +369,23 @@
         </div>
     </section> 
 
+    <!-- //aditional script for senditg sweet alert' -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+    <script>
+      const message = "<%= message %>";
+      const type = "<%= type %>";
+
+      if (message && message.length > 0) {
+          Swal.fire({
+              icon: type, // 'success', 'error', 'warning', 'info'
+              title: message,
+              showConfirmButton: true,
+              timer: 3000 
+          });
+      }
+  </script>
 
     <script>
         const radios = document.querySelectorAll('input[name="size"]');
@@ -298,88 +463,190 @@
       }
 
 
-      let cropper;
-      let currentFile;
-      let currentImgElement; 
 
-      function handleFiles(event) {
-        const imagePreviewContainer = document.getElementById("imagePreview");
-        imagePreviewContainer.innerHTML = "";
 
-        const files = event.target.files;
-
-        if (files) {
-          Array.from(files).forEach((file) => {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-              currentFile = file; 
-              const img = document.createElement("img");
-              img.src = e.target.result;
-              img.style.width = "100px";
-              img.style.marginRight = "10px";
-              img.style.cursor = "pointer";
-              img.onclick = () => openCropper(e.target.result, img); 
-              imagePreviewContainer.appendChild(img);
-            };
-
-            reader.readAsDataURL(file);
-          });
-        }
-      }
-
-      function openCropper(imageSrc, imgElement) {
-        const cropModal = document.getElementById("cropModal");
-        const croppingImage = document.getElementById("croppingImage");
-
-        currentImgElement = imgElement; 
-
-        croppingImage.src = imageSrc;
-        cropModal.style.display = "block";
-
-        if (cropper) {
-          cropper.destroy();
-        }
-
-        cropper = new Cropper(croppingImage, {
-          aspectRatio: 1, 
-          viewMode: 2,
-        });
-      }
-
-      function cropImage() {
-  const canvas = cropper.getCroppedCanvas(); 
-
-  canvas.toBlob((blob) => {
-    const croppedFile = new File([blob], currentFile.name, { type: 'image/png' });
-
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(croppedFile); 
-
+  function handleFiles(event) {
+    const imagePreviewDiv = document.getElementById('imagePreview');
     
-    const fileInput = document.getElementById('image');
-    fileInput.files = dataTransfer.files;
+    imagePreviewDiv.innerHTML = '';
 
-    
-    currentImgElement.src = URL.createObjectURL(croppedFile);
+    const files = event.target.files; 
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
 
-    
-    document.getElementById("cropModal").style.display = "none";
+      const imgElement = document.createElement('img');
+      imgElement.style.width = '100px';
+      imgElement.style.marginRight = '10px';
+      imgElement.style.cursor = 'pointer';
+      imgElement.alt = 'New Image';
 
-    
-    cropper.destroy();
-    cropper = null;
-  }, 'image/png'); 
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imgElement.src = e.target.result; 
+      };
+      reader.readAsDataURL(file);
+
+      imagePreviewDiv.appendChild(imgElement);
+    }
+  }
+
+
+let existingImages = [];
+let currentImageIndex = -1;
+let cropper = null;
+let croppedImages = new Map();
+
+function initializeExistingImages() {
+    const imagePreview = document.getElementById('imagePreview');
+    existingImages = Array.from(imagePreview.getElementsByTagName('img')).map(img => {
+        return img.src.split('/').pop(); 
+    });
+    document.getElementById('existingImages').value = JSON.stringify(existingImages);
 }
-      
-    </script>
+function openImageModal(imageName, index) {
+    currentImageIndex = index;
+    const modal = document.getElementById('imageEditModal');
+    const modalImage = document.getElementById('modalImage');
+    modalImage.src = `/assets/uploads/product/${imageName}`;
+    modal.style.display = 'block';
+}
+
+function startImageCropping() {
+    const regularContainer = document.getElementById('regularImageContainer');
+    const cropContainer = document.getElementById('cropContainer');
+    const cropImage = document.getElementById('cropImage');
+    
+    regularContainer.style.display = 'none';
+    cropContainer.style.display = 'block';
+    document.getElementById('saveCropBtn').style.display = 'inline-block';
+    document.getElementById('cancelCropBtn').style.display = 'inline-block';
+    
+    cropImage.src = document.getElementById('modalImage').src;
+    
+    if (cropper) {
+        cropper.destroy();
+    }
+    cropper = new Cropper(cropImage, {
+        aspectRatio: 1,
+        viewMode: 2
+    });
+}
+
+function saveImageCrop() {
+    if (!cropper) return;
+    
+    cropper.getCroppedCanvas().toBlob(blob => {
+        const fileName = existingImages[currentImageIndex];
+        const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
         
-
+        croppedImages.set(currentImageIndex, croppedFile);
         
+        const imagePreview = document.getElementById('imagePreview');
+        const images = imagePreview.getElementsByTagName('img');
+        images[currentImageIndex].src = URL.createObjectURL(blob);
+        
+        closeImageModal();
+    });
+}
 
+document.getElementById('replaceImageInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
 
+    const originalFileName = existingImages[currentImageIndex];
+    const renamedFile = new File([file], originalFileName, { type: file.type });
+    croppedImages.set(currentImageIndex, renamedFile);
 
-    </main>
+    const imagePreview = document.getElementById('imagePreview');
+    const images = imagePreview.getElementsByTagName('img');
+    const modalImage = document.getElementById('modalImage');
+    
+    const newImageUrl = URL.createObjectURL(file);
+    images[currentImageIndex].src = newImageUrl;
+    modalImage.src = newImageUrl;
+});
+
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    formData.set('existingImages', JSON.stringify(existingImages));
+    
+    croppedImages.forEach((file, index) => {
+        formData.append('productimage', file);
+    });
+    
+    fetch(this.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+document.addEventListener('DOMContentLoaded', initializeExistingImages);
+function closeImageModal() {
+    const modal = document.getElementById('imageEditModal');
+    const cropContainer = document.getElementById('cropContainer');
+    const regularContainer = document.getElementById('regularImageContainer');
+    const saveCropBtn = document.getElementById('saveCropBtn');
+    const cancelCropBtn = document.getElementById('cancelCropBtn');
+
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+
+    cropContainer.style.display = 'none';
+    regularContainer.style.display = 'block';
+    
+    saveCropBtn.style.display = 'none';
+    cancelCropBtn.style.display = 'none';
+
+    modal.style.display = 'none';
+
+    currentImageIndex = -1;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const closeBtn = document.querySelector('.img-edit-modal__close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeImageModal);
+    }
+
+    const modal = document.getElementById('imageEditModal');
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            closeImageModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modal.style.display === 'block') {
+            closeImageModal();
+        }
+    });
+});
+
+function cancelImageCropping() {
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+
+    document.getElementById('cropContainer').style.display = 'none';
+    document.getElementById('regularImageContainer').style.display = 'block';
+    document.getElementById('saveCropBtn').style.display = 'none';
+    document.getElementById('cancelCropBtn').style.display = 'none';
+}
+</script>
+
+</main>
 
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>

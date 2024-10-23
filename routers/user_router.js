@@ -15,6 +15,7 @@ const userproduct_controller = require("../controllers/userproduct_controller");
 const usercart_controller = require("../controllers/usercart_controller");
 const checkout_controller = require("../controllers/user_checkout");
 const userprofile_controller = require("../controllers/userprofile_controller");
+const userwishlist_controller = require("../controllers/userwishlist_controller")
 
 user_route.use(bodyparser.urlencoded({ extended: true }));
 
@@ -68,6 +69,11 @@ user_route.post("/delete_address",userprofile_controller.delete_address);
 user_route.get("/order_summary",auth,userprofile_controller.load_ordersummary);
 user_route.get("/my_orders",auth, userprofile_controller.load_myorder);
 user_route.post("/order_cancelled",userprofile_controller.cancell_order);
+
+//user wishlist controller
+user_route.get("/load_wishlist",userwishlist_controller.load_whishlist);
+user_route.post("/addto_wishlisht",userwishlist_controller.addto_wishlist);
+user_route.post("/remove_item",userwishlist_controller.remove_wishlistitem);
 
 
 

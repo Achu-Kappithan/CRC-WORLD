@@ -1,320 +1,508 @@
-    <!--Body Content-->
-    <div id="page-content">
-    	<!--Page Title-->
-    	<div class="page section-header text-center">
-			<div class="page-title">
-        		<div class="wrapper"><h1 class="page-width">Your cart</h1></div>
-      		</div>
-		</div>
-        <!--End Page Title-->
-        
-        <div class="container">
-        	<div class="row">
-                <div class="col-12 col-sm-12 col-md-8 col-lg-8 main-col">
-                	<form action="#" method="post" class="cart style2">
-                		<table>
-                            <thead class="cart__row cart__header">
-                                <tr>
-                                    <th colspan="2" class="text-center">Product</th>
-                                    <th class="text-center">Price</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-right">Total</th>
-                                    <th class="action">&nbsp;</th>
-                                </tr>
-                            </thead>
-                    		<tbody>
-                                
-
-                                <% if (cartdata && cartdata.items.length > 0) { %>
-
-                                    <% var totalPrice = 0; %>
-                                    <% cartdata.items.forEach(item => { %>
-
-                                        <%
-                                        const itemTotal = item.quantity * item.Salesprice;
-                                         totalPrice += itemTotal;
-                                    %>
-                                
-                                <tr class="cart__row border-bottom line1 cart-flex border-top">
-                                    <td class="cart__image-wrapper cart-flex-item">
-                                        <a href="#"><img class="cart__image" src="/assets/uploads/product/<%= item.productimage[0] %>" alt="3/4 Sleeve Kimono Dress"></a>
-                                    </td>
-                                    <td class="cart__meta small--text-left cart-flex-item">
-                                        <div class="list-view-item__title">
-                                            <a href="#"><%= item.name %></a>
-                                        </div>
-                                    </td>
-                                    <td class="cart__price-wrapper cart-flex-item">
-                                        <span class="money">₹<%= item.Salesprice %></span>
-                                    </td>
-                                    <td class="cart__update-wrapper cart-flex-item text-right">
-                                        <div class="cart__qty text-center">
-                                            <div class="qtyField">
-                                                <a class="qtyBtn minus" href="javascript:void(0);"><i class="icon icon-minus"></i></a>
-                                                <input class="cart__qty-input qty" type="text" name="updates[]" id="qty" value="<%= item.quantity %>" pattern="[0-9]*">
-                                                <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right small--hide cart-price">
-                                        <div><span class="money"></span>₹<%= itemTotal %></div>
-                                    </td>
-                                    <td class="text-center small--hide"><a href="#" class="btn btn--secondary cart__remove" title="Remove tem"><i class="icon icon anm anm-times-l"></i></a></td>
-                                </tr>
-                                <% }); %>
-                                <% } else { %>
-                                <h2>Your cart is empty Add some products</h3>
-                              <% } %>
-                            </tbody>
-                    		<tfoot>
-                                <tr>
-                                    <td colspan="3" class="text-left"><a href="http://annimexweb.com/" class="btn--link cart-continue"><i class="icon icon-arrow-circle-left"></i> Continue shopping</a></td>
-                                    <td colspan="3" class="text-right"><button type="submit" name="update" class="btn--link cart-update"><i class="fa fa-refresh"></i> Update</button></td>
-                                </tr>
-                            </tfoot>
-                    </table>
-                    
-                    <div class="currencymsg">We processes all orders in IND. While the content of your cart is currently displayed in IND, the checkout will use USD at the most current exchange rate.</div>
-                    <hr>
-					<div id="shipping-calculator" class="mb-4">
-                    	<h5 class="small--text-center">CRC_WORLD</h5>
-                        <!-- <div class="row">
-                        	<div class="col-12 col-sm-12 col-md-4">
-                            	<div class="form-group">
-                                	<label for="address_country">Country</label>
-                          			<select id="address_country" name="address[country]" data-default="United States"><option value="Belgium" data-provinces="[]">Belgium</option>
-                                        <option value="---" data-provinces="[]">---</option>
-                                        <option value="Afghanistan" data-provinces="[]">Afghanistan</option>
-                                        <option value="Zimbabwe" data-provinces="[]">Zimbabwe</option></select>
-                            	</div>
-                            </div>
-                            <div class="col-12 col-sm-12 col-md-4">
-                            	<div class="form-group">
-                                	<label>State</label>
-                          			<select id="address_province" name="address[province]" data-default="">
-                                      <option value="Alabama">Alabama</option>
-                                      <option value="Armed Forces Europe">Armed Forces Europe</option>
-                                      <option value="Armed Forces Pacific">Armed Forces Pacific</option>
-                                    </select>
-                            	</div>
-                            </div>
-                            <div class="col-12 col-sm-12 col-md-4">
-                            	<div class="form-group">
-                                	<label for="address_zip">Postal/Zip Code</label>
-                          			<input type="text" id="address_zip" name="address[zip]">
-                            	</div>
-                            </div>
-                            <div class="col-12 col-sm-12 col-md-12 actionRow text-center">
-      							<div><input type="button" class="btn btn--secondary get-rates" value="Calculate shipping"></div>
-  							</div>
-                        </div> -->
-                    </div> 
-                    
-                    </form>                   
-               	</div>
-                <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
-                	<div class="cart-note">
-                    </div>
-                    <div class="solid-border">
-                      <div class="row">
-                      	<span class="col-12 col-sm-6 cart__subtotal-title"><strong>Subtotal</strong></span>
-                        <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">₹<%= totalPrice %></span></span>
-                      </div>
-                      <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
-                      <p class="cart_tearm">
-                        <label>
-                          <input type="checkbox" name="tearm" id="cartTearm" class="checkbox" value="tearm" required="">
-                           I agree with the terms and conditions</label>
-                      </p>
-                      <input type="submit" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout" value="Checkout" disabled="disabled">
-                      <div class="paymnet-img"><img src="assets/images/payment-img.jpg" alt="Payment"></div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        
-    </div>
-    <!--End Body Content-->
 
 
 
 
 
-    <!-- // product image -->
 
-    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-        <div class="product-details-img product-single__photos bottom">
-            <div class="zoompro-wrap product-zoom-right pl-20">
-                <div class="zoompro-span">
-                    <img class="blur-up lazyload zoompro" data-zoom-image="/assets/uploads/product/<%= productdata.productimage[0] %>" alt="" src="/assets/uploads/product/<%= productdata.productimage[0] %>" />
-                </div>
-                <div class="product-labels"><span class="lbl on-sale">Sale</span><span class="lbl pr-label1">new</span></div>
-                <div class="product-buttons">
-                    <a href="https://www.youtube.com/watch?v=93A2jOW5Mog" class="btn popup-video" title="View Video"><i class="icon anm anm-play-r" aria-hidden="true"></i></a>
-                    <a href="#" class="btn prlightbox" title="Zoom"><i class="icon anm anm-expand-l-arrows" aria-hidden="true"></i></a>
-                </div>
-            </div>
-            <div class="product-thumb product-thumb-1">
-                <div id="gallery" class="product-dec-slider-1 product-tab-left">
-                    <a data-image="/assets/uploads/product/<%= productdata.productimage[0] %>" data-zoom-image="/assets/uploads/product/<%= productdata.productimage[0] %>" class="slick-slide slick-cloned" data-slick-index="-4" aria-hidden="true" tabindex="-1">
-                        <img class="blur-up lazyload" src="/assets/uploads/product/<%= productdata.productimage[0] %>" alt="" />
-                    </a>
-                    <a data-image="/assets/uploads/product/<%= productdata.productimage[1] %>" data-zoom-image="/assets/uploads/product/<%= productdata.productimage[1] %>" class="slick-slide slick-cloned" data-slick-index="-3" aria-hidden="true" tabindex="-1">
-                        <img class="blur-up lazyload" src="/assets/uploads/product/<%= productdata.productimage[1] %>" alt="" />
-                    </a>
-                    <a data-image="/assets/uploads/product/<%= productdata.productimage[2] %>" data-zoom-image="/assets/uploads/product/<%= productdata.productimage[2] %>" class="slick-slide slick-cloned" data-slick-index="-2" aria-hidden="true" tabindex="-1">
-                        <img class="blur-up lazyload" src="/assets/uploads/product/<%= productdata.productimage[2] %>" alt="" />
-                    </a>
-                </div>
-            </div>
-            <div class="lightboximages">
-            </div>
 
-        </div>
-    </div>
+const existingImages = JSON.parse(req.body.existingImages); // Parse the JSON string to an array
 
 
 
 
-    <!-- //my orders page -->
 
-    <div class="row justify-content-center">
-        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
-            <div class="customer-box returning-customer text-center">
-                <h3>
-                    <i class="icon anm anm-user-al"></i>
-                    <a>Order Details</a>
-                </h3>
+
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../layouts/admin/admin_header.ejs") %>
+
+
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+  <style>
+    .additional-fields {
+        display: none;
+        margin-top: 10px;
+    }
+
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+  }
+
+  .modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 700px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    animation-name: modalFadeIn;
+    animation-duration: 0.4s;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+
+  </style>
+
+
+  <body>
+    <%- include("../layouts/admin/slidbar.ejs") %>
+
+    <main class="main-wrap">
+      <%- include("../layouts/admin/navbar.ejs") %>
+      <%- include("../layouts/admin/admin_footer.ejs") %>
+      <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Update Product</h2>
+                    <% if ((errorMessage.length > 0)) { %>
+                        <div class="alert alert-danger">
+                            <P><%= errorMessage%></P>
+                        </div>
+                    <% } %>  
+                    <% if ((successMessage.length > 0)) { %>
+                        <div class="alert alert-success">
+                            <p><%= successMessage %></p>
+                        </div>
+                    <% } %> 
     
-                <% orderdetails.forEach(order => { %> 
-                <div id="order-details" class="your-order-payment mb-4"> 
+                    <form action="/update_product?pid=<%= productdata._id %>" method="post" onsubmit="return validate()" enctype="multipart/form-data" >
+
+                    <div>
+                        <button type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
                     <div class="card-body">
-                        <div class="row text-left">
-                            <div class="col-md-4">
-                                <h5 class="card-title">Order Summary</h5>
-                                <p>
-                                    <strong>Order ID:</strong> <%= order._id.toString() %><br>
-                                    <strong>Order Date:</strong> <%= new Date(order.orderDate).toLocaleDateString() %><br>
-                                    <strong>Status:</strong> <%= order.status %><br>
-                                    <strong>Total Price:</strong> ₹<%= order.totalPrice.toFixed(2) %><br>
-                                    <strong>Payment Method:</strong> <%= order.paymentMethod %><br>
-                                    <strong>Payment Status:</strong> <%= order.paymentStatus %>
-                                </p>
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Product title</label>
+                                <input name="productname" type="text" value="<%= productdata.productname  %>" class="form-control" id="productname">
+                                <span id="errorname" class="text-danger"></span>
                             </div>
-    
-                            <div class="col-md-4">
-                                <h5 class="card-title">Billing Details</h5>
-                                <p>
-                                    <strong>Name:</strong> <%= order.billingDetails.name %><br>
-                                    <strong>Phone:</strong> <%= order.billingDetails.phone %><br>
-                                    <strong>House Name:</strong> <%= order.billingDetails.housename %><br>
-                                    <strong>Location:</strong> <%= order.billingDetails.locality %>, <%= order.billingDetails.district %>, <%= order.billingDetails.state %><br>
-                                    <strong>PIN:</strong> <%= order.billingDetails.pincode %><br>
-                                    <strong>Email:</strong> <%= order.billingDetails.email %>
-                                </p>
+                            <div class="mb-4">
+                                <label class="form-label">Full description</label>
+                                 <textarea name="productdis" id="productdis" placeholder="Type here" class="form-control" rows="4"><%= productdata.productdescription %></textarea>
+                                 <span id="errordis" class="text-danger"></span>
                             </div>
-    
-                            <div class="col-md-4">
-                                <h5 class="card-title">Ordered Items</h5>
-                                <% order.items.forEach(item => { %> 
-                                <p>
-                                    <strong>Product:</strong> <%= item.productname %><br>
-                                    <strong>Price:</strong> ₹<%= item.Salesprice.toFixed(2) %><br>
-                                    <strong>Quantity:</strong> <%= item.quantity %><br>
-                                    <strong>Size:</strong> <%= item.size %><br>
-                                    <img src="/assets/uploads/product/<%= item.productimage[0] %>" alt="<%= item.productname %>" style="width: 110px; margin-top: 5px;">
-                                </p>
-                                <% }) %>
+                            <label class="form-label">Select Size:</label>
+                            <br><br>
+                            <div class="container mt-4">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <input type="radio" name="size" id="sm" value="SM" <%= productdata.sizes.some(size => size.size === 'SM') ? 'checked' : '' %> >
+                                            <label for="sm">Small</label>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <input type="radio" name="size" id="medium" value="Medium" <%= productdata.sizes.some(size => size.size === 'Medium') ? 'checked' : '' %> >
+                                            <label for="medium">Medium</label>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-lg-4">
+                                        <input type="radio" name="size" id="l" value="L" <%= productdata.sizes.some(size => size.size === 'L') ? 'checked' : '' %> >
+                                        <label for="l">Large</label>
+                                    </div>
+                                </div>
+            
+                                <div id="additionalFieldsSM" class="additional-fields">
+                                    <h5>Small Size</h5>
+                                    <div class="form-group">
+                                        <label for="stockSM">Stock:</label>
+                                        <input type="number" id="stockSM" name="size[SM][stock]" class="form-control" min="0" placeholder="Enter stock count"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'small') || {}).stock || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="actualPriceSM">Actual Price:</label>
+                                        <input type="number" id="actualPriceSM" name="size[SM][actualPrice]" class="form-control" step="0.01" placeholder="Enter actual price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'small') || {}).Actualprice || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="salesPriceSM">Sales Price:</label>
+                                        <input type="number" id="salesPriceSM" name="size[SM][salesPrice]" class="form-control" step="0.01" placeholder="Enter sales price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'small') || {}).Salesprice || '' %>">
+                                    </div>
+                                </div>
+            
+                                <div id="additionalFieldsMedium" class="additional-fields">
+                                    <h5>Medium Size</h5>
+                                    <div class="form-group">
+                                        <label for="stockMedium">Stock:</label>
+                                        <input type="number" id="stockMedium" name="size[Medium][x]" class="form-control" min="0" placeholder="Enter stock count"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).stock || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="actualPriceMedium">Actual Price:</label>
+                                        <input type="number" id="actualPriceMedium" name="size[Medium][actualPrice]" class="form-control" step="0.01" placeholder="Enter actual price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).Actualprice || ''%>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="salesPriceMedium">Sales Price:</label>
+                                        <input type="number" id="salesPriceMedium" name="size[Medium][salesPrice]" class="form-control" step="0.01" placeholder="Enter sales price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).Salesprice|| '' %>">
+                                    </div>
+                                </div>
+            
+                                <div id="additionalFieldsL" class="additional-fields">
+                                    <h5>Large Size</h5>
+                                    <div class="form-group">
+                                        <label for="stockL">Stock:</label>
+                                        <input type="number" id="stockL" name="size[L][stock]" class="form-control" min="0" placeholder="Enter stock count"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Large') || {}).stock || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="actualPriceL">Actual Price:</label>
+                                        <input type="number" id="actualPriceL" name="size[L][actualPrice]" class="form-control" step="0.01" placeholder="Enter actual price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Large') || {}).Actualprice || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="salesPriceL">Sales Price:</label>
+                                        <input type="number" id="salesPriceL" name="size[L][salesPrice]" class="form-control" step="0.01" placeholder="Enter sales price"
+                                            value="<%= (productdata.sizes.find(size => size.size === 'Large') || {}).Salesprice || '' %>">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-    
-                        <% if(order.returnReason) { %>
-                        <div class="row mt-4">
-                            <div class="col">
-                                <h5 class="card-title">Return Reason</h5>
-                                <p><%= order.returnReason %></p>
+            
+                            <div class="mb-4">
+                                <label class="form-label">Tax rate</label>
+                                <input name="taxrate" id="taxrate" type="text" value="<%= productdata.Taxrate %>" class="form-control">
+                                <span id="errortaxrate" class="text-danger"></span>
                             </div>
-                        </div>
-                        <% } %>
-    
-                        <div class="d-flex justify-content-center mt-4">
-                            <a href="/shop" class="btn btn-outline-primary me-2">Continue Shopping</a>
-                            <a href="/orders/<%= order._id.toString() %>/summary" class="btn btn-outline-secondary">View Order Summary</a>
                         </div>
                     </div>
                 </div>
-                <% }); %> 
-            </div>
-        </div>
-    </div>
-    
-    // place order 
+                <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Media</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-upload">
+                            <label for="image" class="form-label">Update Images</label>
+                            <input type="file" name="productimage" class="form-control" id="image" multiple  onchange="handleFiles(event)" />
+                            
+                            <input type="text" id="existingImages" name="existingImages" value="<% let existingImagesArray =productdata.productimage.split(",")  %>">
+                            <div id="imagePreview" class="existing-images mt-3">
+                             
+                              <% productdata.productimage.forEach(function(image, index) { %>
+                                <% existingImagesArray.push(image); %>
+                                <img src="/assets/uploads/product/<%= image %>" alt="Current Image" width="100px" style="margin-right: 10px; cursor: pointer;" onclick="openImageModal('<%= image %>', '<%= index %>')">
+                              <% }) %>
+                              <script>
+                                // console.log("existing data",existingImagesArray)
+                                // document.getElementById('existingImages').value = existingImagesArray;
+                              </script>
+                                </div>
+                              </div>
 
-    const  place_order = async (req,res)=>{
-      try {
-        const addresid  = req.body.selectedAddress;
-        const paymentmethod = req.body.paymentMethod;
-        const userId = req.session.user_id;
+                            
+                              <!-- Modal for editing images -->
+                              <div id="imageModal" class="modal">
+                                <div class="modal-content">
+                                  <span class="close" onclick="closeImageModal()">&times;</span>
+                                  <img id="modalImage" src="" alt="Selected Image" style="max-width: 100%; max-height: 60vh;">
+                                  
+                                  <!-- Action buttons for cropping and replacing -->
+                                  <div class="modal-actions" style="margin-top: 20px;">
+                                    <input type="file" id="replaceImage" style="display: none;" accept="image/*">
+                                    <button type="button" onclick="document.getElementById('replaceImage').click()">Replace Image</button>
+                                    <button type="button" onclick="startCropping()">Crop Image</button>
+                                  </div>
+                            
+                                  <!-- Cropper container for cropping actions -->
+                                  <div id="cropperContainer" style="display: none; margin-top: 20px;">
+                                    <button type="button" onclick="cropImage()">Apply Crop</button>
+                                    <button type="button" onclick="cancelCropping()">Cancel</button>
+                                  </div>
+                                </div>
+                              </div>
+                            
+                              <span id="errorimage" class="text-danger"></span>
+                            </div>
+                      <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Organization</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row gx-2">
+                            
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="productcategory">
+                                    <option value="<%= productdata.category._id %>"><%= productdata.category.name %></option>
+                                    <% categorylist.forEach(category => { %>
+                                        <option value="<%= category._id %>"><%= category.name %></option>                                            <%= category.name %>
+                                    
+                                    <% }) %>
+                                </select>
+                            </div>
+
+                                                        
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Brand</label>
+                                <select class="form-select" name="productbrand">
+                                    <option value="<%= productdata.brand._id %>"><%= productdata.brand.name %></option>
+                                    <% brandlist.forEach(brand => { %>
+                                        <option value="<%= brand._id %>"><%= brand.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                        </div>
+                        </div> 
+                    </div>
+                </div> 
+            </div>
+          </form>
+
+        </div>
+    </section> 
+
+
+    <script>
+        const radios = document.querySelectorAll('input[name="size"]');
+        
+        const additionalFieldsSM = document.getElementById('additionalFieldsSM');
+        const additionalFieldsMedium = document.getElementById('additionalFieldsMedium');
+        const additionalFieldsL = document.getElementById('additionalFieldsL');
     
-        const address = await Adress.findById(addresid);
-        const cartdata = await Cart.findOne({user:userId});
-    
-        const totalprice = cartdata.items.reduce((acc,curr)=>{
-          acc+= (curr.Salesprice * curr.quantity)
-        })
-    
-        const neworder = new Order({
-          userId : userId,
-          items : cartdata.items.map((item) => ({
-            productId : item.productId,
-            productname : item.name,
-            Salesprice : item.Salesprice,
-            quantity : item.quantity,
-            size : item.size,
-            productimage : item.productimage
-          })),
-    
-          totalPrice :totalprice,
-          status : 'Pending',
-          billingDetails : {
-            name :address.name,
-            phone: address.phone,
-            pincode :address.pincode,
-            locality :address.locality,
-            housename : address.housename,
-            district : address.district,
-            state : address.state,
-            landMark : address.landMark,
-            email : address.email
-          },
-          paymentMethod : paymentmethod,
-          paymentStatus : "COD" ,
-          orderDate : Date.now(),
-        })
-    
-        const orderdata = await neworder.save()
-    
-        await Cart.findByIdAndUpdate({user:userId},{items:[]})
-    
-        for(let i=0 ;i<cartdata.items.length; i++){
-          const productstock = await Product.findById(cartdata.itmes[i].productId)
-    
-          if(product){
-            productindex = await productstock.items.findIndex((value)=>{value=== cartdata.itmes[i].size})
-            productstock[productindex].stock -= cartdata.itmes[i].quantity
-    
-            await productstock.save()
-          }
-    
-          
+        function hideAllFields() {
+            additionalFieldsSM.style.display = 'none';
+            additionalFieldsMedium.style.display = 'none';
+            additionalFieldsL.style.display = 'none';
         }
     
-         
-      } catch (err) {
-        console.log("error for updating  placieing order",err)
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                hideAllFields(); 
+                
+                if (radio.value === 'SM') {
+                    additionalFieldsSM.style.display = 'block';
+                } else if (radio.value === 'Medium') {
+                    additionalFieldsMedium.style.display = 'block';
+                } else if (radio.value === 'L') {
+                    additionalFieldsL.style.display = 'block';
+                }
+            });
+        });
+  
+      function validate() {
+        let isValid = true;
+
+        const name = document.getElementById("productname").value.trim();
+        if (name.length < 4) {
+          document.getElementById("errorname").innerText =
+            "Name must be at least 4 characters long";
+          isValid = false;
+        } else {
+          document.getElementById("errorname").innerText = "";
+        }
+
+        const description = document.getElementById("productdis").value.trim();
+        if (description.length < 10) {
+          document.getElementById("errordis").innerText =
+            "Description is required";
+          isValid = false;
+        } else {
+          document.getElementById("errordis").innerText = "";
+        }
+
+        const taxRate = document.getElementById("taxrate").value.trim();
+        if (isNaN(taxRate) || taxRate === "") {
+          document.getElementById("errortaxrate").innerText =
+            "Enter a valid tax rate";
+          isValid = false;
+        } else {
+          document.getElementById("errortaxrate").innerText = "";
+        }
+
+        const images = document.getElementById("image").files;
+        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.WEBP)$/i;
+
+          for (let i = 0; i < images.length; i++) {
+            if (!allowedExtensions.exec(images[i].name)) {
+              document.getElementById("errorimage").innerText =
+                "Only .jpg, .jpeg, .png ,WEBP files are allowed";
+              isValid = false;
+              break;
+            } else {
+              document.getElementById("errorimage").innerText = "";
+            }
+          }
         
+
+        return isValid;
       }
-    }
-    
-    
+
+
+let cropper;
+let currentModalIndex;
+let updatedImages = []; 
+
+
+function openImageModal(imageSrc, index) {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImage');
+  modal.style.display = "block";
+  modalImg.src = "/assets/uploads/product/" + imageSrc;
+  currentModalIndex = index;
+}
+
+function closeImageModal() {
+  document.getElementById('imageModal').style.display = "none";
+  if (cropper) {
+    cropper.destroy();
+    cropper = null;
+  }
+  document.getElementById('cropperContainer').style.display = 'none';
+  document.querySelector('.modal-actions').style.display = 'block';
+}
+
+document.getElementById('replaceImage').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const modalImg = document.getElementById('modalImage');
+      modalImg.src = e.target.result;
+
+      const thumbnails = document.querySelectorAll('#imagePreview img');
+      thumbnails[currentModalIndex].src = e.target.result;
+
+      updatedImages[currentModalIndex] = file; // Store updated image file
+
+      console.log("Replacing image at index: " + currentModalIndex);
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+function startCropping() {
+  const modalImg = document.getElementById('modalImage');
+  document.querySelector('.modal-actions').style.display = 'none';
+  document.getElementById('cropperContainer').style.display = 'block';
+
+  if (cropper) {
+    cropper.destroy();
+  }
+
+  cropper = new Cropper(modalImg, {
+    aspectRatio: 1,
+    viewMode: 2,
+  });
+}
+
+function cropImage() {
+  if (cropper) {
+    const canvas = cropper.getCroppedCanvas();
+    canvas.toBlob((blob) => {
+      const croppedImageUrl = URL.createObjectURL(blob);
+      const modalImg = document.getElementById('modalImage');
+      modalImg.src = croppedImageUrl;
+
+      const thumbnails = document.querySelectorAll('#imagePreview img');
+      thumbnails[currentModalIndex].src = croppedImageUrl;
+
+      updatedImages[currentModalIndex] = blob; // Store cropped image blob
+
+      console.log("Cropped image at index: " + currentModalIndex);
+
+      cancelCropping();
+    }, 'image/png');
+  }
+}
+
+function cancelCropping() {
+  if (cropper) {
+    cropper.destroy();
+    cropper = null;
+  }
+  document.getElementById('cropperContainer').style.display = 'none';
+  document.querySelector('.modal-actions').style.display = 'block';
+}
+
+function handleFiles(event) {
+  const files = event.target.files;
+  for (let i = 0; i < files.length; i++) {
+    updatedImages.push(files[i]); 
+  }
+}
+
+
+</script>
+
+    </main>
+
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="assets/js/vendors/chart.js"></script>
+    <script src="assets/js/main.js" type="text/javascript"></script>
+    <script src="assets/js/custom-chart.js" type="text/javascript"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
