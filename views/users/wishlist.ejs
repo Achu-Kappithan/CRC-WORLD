@@ -32,12 +32,12 @@
                                 </thead>
                                 <tbody>
                                     <% wishlist.forEach(product => { %>
-                                    <tr>
+                                    <tr id="wislistitem-<%=product._id%>">
                                     	<td class="product-remove text-center" valign="middle">
-                                            <form method="post" action="/remove_item">
-                                            <input type="hidden" name="itemid" value="<%=product._id%>">
-                                            <button style="outline: none; border: none; background: none;" type="submit" ><i class="icon icon anm anm-times-l"></i></button>
-                                            </form>
+                                            <!-- <form method="post" action="/remove_item"> -->
+                                            <input type="hidden" id="itemid" value="<%=product._id%>">
+                                            <button style="outline: none; border: none; background: none;" type="button" ><i class="icon icon anm anm-times-l removeitem"></i></button>
+                                            <!-- </form> -->
                                         </td>
                                         <td class="product-thumbnail text-center">
                                             <a href="#"><img src="/assets/uploads/product/<%= product.productimage[0] %>" alt="" title="" /></a>
@@ -74,10 +74,84 @@
       Swal.fire({
           icon: type, // 'success', 'error', 'warning', 'info'
           title: message,
-          showConfirmButton: false,
-          timer: 2000 
+                  toast: true,
+        background: "black",
+        color: "white",
+        position: "top-end",
+        showConfirmButton: false,
+        timerProgressBar: true,
+        timer: 3000,
+        customClass: {
+          popup: "custom-toast",
+        },
+        didOpen: () => {
+          const swalPopup = document.querySelector(".custom-toast");
+          swalPopup.style.marginTop = "70px";
+          swalPopup.style.marginRight = "15px";
+        },
       });
   }
+
+
+document.querySelectorAll(".removeitem").forEach(function(button) {
+    button.addEventListener("click", function() {
+        const id = document.getElementById("itemid").value;
+        console.log("item id", id);
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to remove this item from the cart.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, remove it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("/remove_item", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            text: data.message,
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            timer: 3000,
+                        });
+
+                        const removeditem = document.getElementById(`wislistitem-${id}`);
+                        console.log("removed item", removeditem);
+                        if (removeditem) {
+                            removeditem.remove();
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            text: data.message,
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            timer: 2000,
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error("Error removing wishlist item:", err);
+                });
+            }
+        });
+    });
+});
 </script>
             
     

@@ -19,7 +19,59 @@
   font-size: medium;
 }
 
+        .tabs-listing {
+            border-bottom: 1px solid #e8e8e8;
+            margin: 20px 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        .product-tabs {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 40px;
+        }
+
+        .product-tabs li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .product-tabs .tablink {
+            display: inline-block;
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .product-tabs .tablink:hover {
+            color: #000;
+        }
+
+        .product-tabs .tablink::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #000;
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .product-tabs li.active .tablink::after {
+            transform: scaleX(1);
+        }
+
 </style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
 
         <!--Body Content-->
         <div id="page-content">
@@ -41,28 +93,30 @@
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                                     <div class="product-details-img product-single__photos bottom">
                                         <div class="zoompro-wrap product-zoom-right pl-20">
-                                            <div class="zoompro-span">
-                                                <img class="blur-up lazyload zoompro" data-zoom-image="/assets/uploads/product/<%= productdata.productimage[0] %>" alt="" src="/assets/uploads/product/<%= productdata.productimage[0] %>" />
+                                            <div style="height: 500px; width: 500px;" class="zoompro-span">
+                                                <img id="main-zoom-image" class="blur-up lazyload zoompro"
+                                                    zoomimage="/assets/uploads/product/<%= productdata.productimage[0] %>"
+                                                    src="/assets/uploads/product/<%= productdata.productimage[0] %>" />
                                             </div>
-                                            <div class="product-labels"><span class="lbl on-sale">Sale</span><span class="lbl pr-label1">new</span></div>
-                                            <div class="product-buttons">
-                                                <a href="https://www.youtube.com/watch?v=93A2jOW5Mog" class="btn popup-video" title="View Video"><i class="icon anm anm-play-r" aria-hidden="true"></i></a>
-                                                <a href="#" class="btn prlightbox" title="Zoom"><i class="icon anm anm-expand-l-arrows" aria-hidden="true"></i></a>
+                                            <div class="product-labels">
+                                                <span class="lbl on-sale">Sale</span>
+                                                <span class="lbl pr-label1">new</span>
                                             </div>
                                         </div>
+                                        
                                         <div class="product-thumb product-thumb-1">
-                                            <div id="gallery" class="product-dec-slider-1 product-tab-left">
-                                                <a data-image="/assets/uploads/product/<%= productdata.productimage[0] %>" data-zoom-image="/assets/uploads/product/<%= productdata.productimage[0] %>" class="slick-slide slick-cloned" data-slick-index="-4" aria-hidden="true" tabindex="-1">
-                                                    <img class="blur-up lazyload" src="/assets/uploads/product/<%= productdata.productimage[0] %>" alt="" />
-                                                </a>
-                                                <a data-image="/assets/uploads/product/<%= productdata.productimage[1] %>" data-zoom-image="/assets/uploads/product/<%= productdata.productimage[1] %>" class="slick-slide slick-cloned" data-slick-index="-3" aria-hidden="true" tabindex="-1">
-                                                    <img class="blur-up lazyload" src="/assets/uploads/product/<%= productdata.productimage[1] %>" alt="" />
-                                                </a>
-                                                <a data-image="/assets/uploads/product/<%= productdata.productimage[2] %>" data-zoom-image="/assets/uploads/product/<%= productdata.productimage[2] %>" class="slick-slide slick-cloned" data-slick-index="-2" aria-hidden="true" tabindex="-1">
-                                                    <img class="blur-up lazyload" src="/assets/uploads/product/<%= productdata.productimage[2] %>" alt="" />
-                                                </a>
+                                            <div id="image-gallery" class="product-dec-slider-1 product-tab-left">
+                                                <% productdata.productimage.forEach((image, index) => { %>
+                                                    <a href="" class="thumb-image" 
+                                                      data-image="/assets/uploads/product/<%= image %>"
+                                                      data-zoom-image="/assets/uploads/product/<%= image %>">
+                                                     <img class="blur-up lazyload" 
+                                                     src="/assets/uploads/product/<%= image %>" 
+                                                       alt="Thumbnail Image" />
+                                                    </a>
+                                                <% }) %>
                                             </div>
-                                        </div>
+                                        </div>                                        
                                         <div class="lightboximages">
                                         </div>
             
@@ -102,7 +156,7 @@
                                                 <span class="off">(<span>16</span>%)</span>
                                             </span>  
                                         </p>
-                                    <div  class="product-single__description rte">
+                                        <div  class="product-single__description rte">
                                         <ul>
                                             <li><h3>Product Detailas</h3></li>
                                             <% if (productdata.productdescription) { %>
@@ -114,7 +168,6 @@
                                                     <% }) %>
                                                 </ul>
                                             <% } %>
-                                        
                                         </ul>
                                     </div>
                                     <div id="quantity_message">Hurry! Only  <span class="items">4</span>  left in stock.</div>
@@ -144,10 +197,8 @@
                                                   </div>
                                                 <% } %>
                                             </div>
-                                                                                       
-
-                                        </form> 
                                         </div>
+                                      </form> 
                                         <!-- Product Action -->
                                         <div class="product-action clearfix">
                                             <div class="product-form__item--quantity">
@@ -173,7 +224,7 @@
                                         </div>
                                         <!-- End Product Action -->
                                     
-                                    <div class="display-table shareRow">
+                                        <div class="display-table shareRow">
                                             <div class="display-table-cell medium-up--one-third">
                                                 <div class="wishlist-btn">
                                                     <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist"><i class="icon anm anm-heart-l" aria-hidden="true"></i> <span>Add to Wishlist</span></a>
@@ -206,14 +257,154 @@
                                 </div>
                                 </div>
                                 <!--Product Tabs-->
-                                <!--End Product Tabs-->
+                                <div class="tabs-listing">
+                                    <ul class="product-tabs">
+                                        <li rel="tab2"><a class="tablink">Product Reviews</a></li>
+                                        <li rel="tab4"><a class="tablink">Shipping &amp; Returns</a></li>
+                                    </ul>
+                                    <div class="tab-container">
+                                        
+                                        <div id="tab2" class="tab-content">
+                                            <div id="shopify-product-reviews">
+                                                <div class="spr-container">
+                                                    <div class="spr-header clearfix">
+                                                        <div class="spr-summary">
+                                                            <span class="product-review"><a class="reviewLink"><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i> </a><span class="spr-summary-actions-togglereviews">Based on 6 reviews456</span></span>
+                                                            <span class="spr-summary-actions">
+                                                                <a href="#" class="spr-summary-actions-newreview btn">Write a review</a>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="spr-content">
+                                                        <div class="spr-form clearfix">
+                                                            <form method="post" action="#" id="new-review-form" class="new-review-form">
+                                                                <h3 class="spr-form-title">Write a review</h3>
+                                                                <fieldset class="spr-form-contact">
+                                                                    <div class="spr-form-contact-name">
+                                                                      <label class="spr-form-label" for="review_author_10508262282">Name</label>
+                                                                      <input class="spr-form-input spr-form-input-text " id="review_author_10508262282" type="text" name="review[author]" value="" placeholder="Enter your name">
+                                                                    </div>
+                                                                    <div class="spr-form-contact-email">
+                                                                      <label class="spr-form-label" for="review_email_10508262282">Email</label>
+                                                                      <input class="spr-form-input spr-form-input-email " id="review_email_10508262282" type="email" name="review[email]" value="" placeholder="john.smith@example.com">
+                                                                    </div>
+                                                                </fieldset>
+                                                                <fieldset class="spr-form-review">
+                                                                  <div class="spr-form-review-rating">
+                                                                    <label class="spr-form-label">Rating</label>
+                                                                    <div class="spr-form-input spr-starrating">
+                                                                      <div class="product-review"><a class="reviewLink" href="#"><i class="fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i></a></div>
+                                                                    </div>
+                                                                  </div>
+                                                            
+                                                                  <div class="spr-form-review-title">
+                                                                    <label class="spr-form-label" for="review_title_10508262282">Review Title</label>
+                                                                    <input class="spr-form-input spr-form-input-text " id="review_title_10508262282" type="text" name="review[title]" value="" placeholder="Give your review a title">
+                                                                  </div>
+                                                            
+                                                                  <div class="spr-form-review-body">
+                                                                    <label class="spr-form-label" for="review_body_10508262282">Body of Review <span class="spr-form-review-body-charactersremaining">(1500)</span></label>
+                                                                    <div class="spr-form-input">
+                                                                      <textarea class="spr-form-input spr-form-input-textarea " id="review_body_10508262282" data-product-id="10508262282" name="review[body]" rows="10" placeholder="Write your comments here"></textarea>
+                                                                    </div>
+                                                                  </div>
+                                                                </fieldset>
+                                                                <fieldset class="spr-form-actions">
+                                                                    <input type="submit" class="spr-button spr-button-primary button button-primary btn btn-primary" value="Submit Review">
+                                                                </fieldset>
+                                                            </form>
+                                                        </div>
+                                                        <div class="spr-reviews">
+                                                            <div class="spr-review">
+                                                                <div class="spr-review-header">
+                                                                    <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
+                                                                    <h3 class="spr-review-header-title">Lorem ipsum dolor sit amet</h3>
+                                                                    <span class="spr-review-header-byline"><strong>dsacc</strong> on <strong>Apr 09, 2019</strong></span>
+                                                                </div>
+                                                                <div class="spr-review-content">
+                                                                    <p class="spr-review-content-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="spr-review">
+                                                              <div class="spr-review-header">
+                                                                <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
+                                                                <h3 class="spr-review-header-title">Lorem Ipsum is simply dummy text of the printing</h3>
+                                                                <span class="spr-review-header-byline"><strong>larrydude</strong> on <strong>Dec 30, 2018</strong></span>
+                                                              </div>
+                                                        
+                                                              <div class="spr-review-content">
+                                                                <p class="spr-review-content-body"><br><br>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.<br><br>
+                                                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.<br><br>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<br>
+                                                                </p>
+                                                              </div>
+                                                            </div>
+                                                            <div class="spr-review">
+                                                              <div class="spr-review-header">
+                                                                <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
+                                                                <h3 class="spr-review-header-title">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</h3>
+                                                                <span class="spr-review-header-byline"><strong>quoctri1905</strong> on <strong>Dec 30, 2018</strong></span>
+                                                              </div>
+                                                        
+                                                              <div class="spr-review-content">
+                                                                <p class="spr-review-content-body">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.<br>
+                                                                <br>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                                              </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                        <div id="tab4" class="tab-content">
+                                            <h4>Returns Policy</h4>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eros justo, accumsan non dui sit amet. Phasellus semper volutpat mi sed imperdiet. Ut odio lectus, vulputate non ex non, mattis sollicitudin purus. Mauris consequat justo a enim interdum, in consequat dolor accumsan. Nulla iaculis diam purus, ut vehicula leo efficitur at.</p>
+                                            <p>Interdum et malesuada fames ac ante ipsum primis in faucibus. In blandit nunc enim, sit amet pharetra erat aliquet ac.</p>
+                                            <h4>Shipping</h4>
+                                            <p>Pellentesque ultrices ut sem sit amet lacinia. Sed nisi dui, ultrices ut turpis pulvinar. Sed fringilla ex eget lorem consectetur, consectetur blandit lacus varius. Duis vel scelerisque elit, et vestibulum metus.  Integer sit amet tincidunt tortor. Ut lacinia ullamcorper massa, a fermentum arcu vehicula ut. Ut efficitur faucibus dui Nullam tristique dolor eget turpis consequat varius. Quisque a interdum augue. Nam ut nibh mauris.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     	<!--End-product-single-->
                         <!--Product Sidebar-->
                         <div class="prSidebar sidebar-product">
                     		<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+
+                                <div class="related-product grid-products">
+                                	<header class="section-header">
+                                        <h2 class="section-header__title text-center h2"><span>Related Products</span></h2>
+                                        <p class="sub-heading">You can stop autoplay, increase/decrease aniamtion speed and number of grid to show and products from store admin.</p>
+                                    </header>
+                                    <div class="grid">
+                                        <% relatedproducts.forEach(item=>{ %>
+                                        <div class="grid__item">
+                                          <div class="mini-list-item">
+                                            <div class="mini-view_image">
+                                                <a class="grid-view-item__link" href="#">
+                                                    <img class="grid-view-item__image" src="/assets/uploads/product/<%= item.productimage[0] %>" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="details">
+                                            	<a class="grid-view-item__title" href="#"><%= item.productname %></a>
+                                                <% let price = item.sizes.find(size => size.Salesprice > 0)?.Salesprice %>
+                                              	<div class="grid-view-item__meta"><span class="product-price__price"><span class="money"></span><%= price %></span></div>
+                                                <div class="product-review">
+                                                    <i class="font-13 fa fa-star"></i>
+                                                    <i class="font-13 fa fa-star"></i>
+                                                    <i class="font-13 fa fa-star"></i>
+                                                    <i class="font-13 fa fa-star"></i>
+                                                    <i class="font-13 fa fa-star"></i>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <% }) %>
+                                     </div>
+                                </div>
                                 <!--Product Feature-->
+
                                 <div class="prFeatures">
                                     <div class="row">
                                         <div class="feature">
@@ -235,14 +426,7 @@
                                     </div>
                                 </div>
                                 <!--End Product Feature-->
-                                <div class="related-product grid-products">
-                                	<header class="section-header">
-                                        <h2 class="section-header__title text-center h2"><h2>CrC World</h2></h2>
-                                        <p class="sub-heading">You can manage this section from store admin as describe in above section</p>
-                                    </header>
-                                    <div class="grid">
-                                        
-                                </div>
+
                                	<!--End Recently Viewed Product-->
                             </div>
                         </div>
@@ -262,6 +446,36 @@
 
 <script>
 
+    // product zoom
+
+    $(document).ready(function() {
+    function initZoom() {
+        $('#main-zoom-image').elevateZoom({
+            zoomType: "lens",
+            lensShape: "round",
+            lensSize: 200,
+            scrollZoom: true
+        });
+    }
+    initZoom();
+
+    $('#image-gallery').on('click', 'a.thumb-image', function(e) {
+        e.preventDefault();
+
+        var newImage = $(this).attr('data-image');
+        var newZoomImage = $(this).attr('data-zoom-image');
+        console.log("neq",newImage)
+        console.log("zoom",newZoomImage)
+
+        $('#main-zoom-image').attr('src', newImage);
+        $('#main-zoom-image').attr('zoomimage', newZoomImage);
+
+        // $('.zoomContainer').remove();
+        // $('#main-zoom-image').removeData('elevateZoom');
+
+        initZoom();
+    });
+});
 
 
   function handleSizeChange(sizeId, inputElement) {
@@ -328,6 +542,22 @@
         icon: 'error',
         title: 'Oops...',
         text: 'Please select a size before adding to cart!',
+        toast: true,
+          background: "black",
+            color:"white",
+            position: "top-end",
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 3000,
+            customClass: {
+           popup: 'custom-toast'
+    },
+    didOpen: () => {
+        const swalPopup = document.querySelector('.custom-toast');
+        swalPopup.style.marginTop = '70px';  
+        swalPopup.style.marginRight = '15px'; 
+    }
+
       });
       return;  
     }
@@ -347,6 +577,22 @@
         icon: data.alertType || 'success', 
         title: data.alertTitle || 'Success',
         text: data.alertText || data.message,
+        toast: true,
+          background: "black",
+            color:"white",
+            position: "top-end",
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 3000,
+            customClass: {
+           popup: 'custom-toast'
+    },
+    didOpen: () => {
+        const swalPopup = document.querySelector('.custom-toast');
+        swalPopup.style.marginTop = '70px';  
+        swalPopup.style.marginRight = '15px'; 
+    }
+
       });
     })
     .catch(error => {
@@ -354,6 +600,20 @@
         icon: 'error',
         title: 'Oops...',
         text: 'Something went wrong!',
+        toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 3000,
+            customClass: {
+           popup: 'custom-toast'
+    },
+    didOpen: () => {
+        const swalPopup = document.querySelector('.custom-toast');
+        swalPopup.style.marginTop = '70px';  
+        swalPopup.style.marginRight = '15px'; 
+    }
+
       });
       console.error("Error adding product to cart:", error);
     });

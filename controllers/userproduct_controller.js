@@ -2,6 +2,7 @@ const product = require("../models/product");
 const brand = require("../models/brand");
 const category = require("../models/category");
 const priceHelper = require("../utils/pricehelper");
+const Wishlist = require("../models/wishlist");
 
 // for loading product view page
 const load_productview = async (req, res) => {
@@ -9,9 +10,15 @@ const load_productview = async (req, res) => {
     const size = "size";
     const id = req.query.id;
     const productdata = await product.findOne({ _id: id });
-    return res.render("productview", { productdata, helpers: priceHelper });
+
+    const relatedproducts = await product.find({
+      $or:[{category:productdata.category},
+        {brand:productdata.brand}]});
+
+    // console.log("related productdata ",relatedproducts)
+    return res.render("productview", { productdata, helpers: priceHelper ,relatedproducts });
   } catch (err) {
-    console.log(err);
+    console.log("error for loading product view page",err);
   }
 };
 
@@ -31,7 +38,7 @@ const load_sizesort = async (req, res) => {
       res.json({ success: false, message: "Size not found" });
     }
   } catch (err) {
-    console.error("Error fetching size details:", err);
+    console.error("error fetching size details:", err);
     res.json({ success: false, message: "Error fetching size details" });
   }
 };
@@ -42,7 +49,9 @@ const load_shop = async (req, res) => {
   try {
     const message = req.flash("message");
     const type = req.flash("type");
+    const userid = req.session.user_id;
 
+    const wishlistdata = await Wishlist.findOne({userId:userid})
     const branddata = await brand.find({ is_deleted: false });
     const catdata = await category.find({ is_deleted: false });
     const productdata = await product.find({is_deleted: false})
@@ -55,11 +64,12 @@ const load_shop = async (req, res) => {
       catdata,
       helpers: priceHelper,
       message,
-      type
+      type,
+      wishlist :wishlistdata
     });
   } catch (err) {
     console.log(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).render("user404",{maessage:"Unable load shop-page Try again..!"});
   }
 };
 

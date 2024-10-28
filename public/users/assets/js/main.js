@@ -823,18 +823,18 @@
 	/*--------------------------
       24. Product Zoom
 	---------------------------- */
-	function product_zoom(){
-		$(".zoompro").elevateZoom({
-			gallery: "gallery",
-			galleryActiveClass: "active",
-			zoomWindowWidth: 300,
-			zoomWindowHeight: 100,
-			scrollZoom: false,
-			zoomType: "inner",
-			cursor: "crosshair"
-		});
-	}
-	product_zoom();
+	// function product_zoom(){
+	// 	$(".zoompro").elevateZoom({
+	// 		gallery: "gallery",
+	// 		galleryActiveClass: "active",
+	// 		zoomWindowWidth: 300,
+	// 		zoomWindowHeight: 100,
+	// 		scrollZoom: false,
+	// 		zoomType: "inner",
+	// 		cursor: "crosshair"
+	// 	});
+	// }
+	// product_zoom();
 	
 	/*--------------------------
       25. Product Page Popup ---

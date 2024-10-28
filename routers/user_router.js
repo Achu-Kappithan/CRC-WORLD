@@ -72,7 +72,7 @@ user_route.post("/order_cancelled",userprofile_controller.cancell_order);
 
 //user wishlist controller
 user_route.get("/load_wishlist",userwishlist_controller.load_whishlist);
-user_route.post("/addto_wishlisht",userwishlist_controller.addto_wishlist);
+user_route.post("/addto_wishlist",userwishlist_controller.addto_wishlist);
 user_route.post("/remove_item",userwishlist_controller.remove_wishlistitem);
 
 

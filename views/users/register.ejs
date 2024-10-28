@@ -199,22 +199,32 @@
         .addEventListener("submit", validateForm);
     </script>
 
-        <!-- aditional scriipt for sending message to user -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
-        <script>
-          const message = "<%= message %>";
-          const type = "<%= type %>";
-    
-          if (message && message.length > 0) {
-              Swal.fire({
-                  icon: type, // 'success', 'error', 'warning', 'info'
-                  title: message,
-                  showConfirmButton: true,
-                  timer: 3000 
-              });
-          }
-      </script>
-    
+    <!-- aditional scriipt for sending message to user -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      const message = "<%= message %>";
+      const type = "<%= type %>";
+
+      if (message && message.length > 0) {
+        Swal.fire({
+          icon: type, // 'success', 'error', 'warning', 'info'
+          title: message,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timerProgressBar: true,
+          timer: 3000,
+          customClass: {
+            popup: "custom-toast",
+          },
+          didOpen: () => {
+            const swalPopup = document.querySelector(".custom-toast");
+            swalPopup.style.marginTop = "70px";
+            swalPopup.style.marginRight = "15px";
+          },
+        });
+      }
+    </script>
   </body>
 </html>

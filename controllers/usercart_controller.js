@@ -137,34 +137,26 @@ const addto_cart = async (req, res) => {
 
 const remove_cartitem = async (req,res)=>{
   try {
-    const id = req.body.itemId
+    const id = req.body.id
     const userId = req.session.user_id;
     console.log("id from the form",id)
     console.log("id form session",userId )
 
     if(!userId){
-      req.flash("message","Unauthorized User")
-      req.flash("type","error")
-      res.status(401).redirect("/load_usercart")
+      return res.status(401).json({ success: false, message: "Unauthorized user" });
     }
    const updatedcart = await Cart.findOneAndUpdate({user:userId},
       {$pull:{items:{_id:id}}},
       {new:true});
 
       if(!updatedcart){
-        req.flash("message","Cart not found");
-        req.flash("type","warning")
-        res.status(404).redirect("/load_usercart")
+        return res.status(404).json({ success: false, message: "Cart not found" });
       }
-      req.flash("message","Item successfully removed");
-      req.flash("type","success")
-      res.status(200).redirect("/load_usercart");
+      return res.status(200).json({ success: true, message: "Item successfully removed" });
 
   } catch (err) {
     console.log("error for removing cartitem",err);
-    req.flash("message","Unable to complate the request Tray again..!");
-    req.flash("type","error")
-    res.status(500).redirect("/load_usercart");
+    return res.status(500).json({ success: false, message: "Unable to complete the request. Try again!" });
   }
 }
 
@@ -175,12 +167,24 @@ const update_quentity = async (req,res)=>{
   try {
     const userId = req.session.user_id;
     const { itemId, quantity } = req.body;
+    const itemdata = await Cart.findOne({user:userId})
 
-    const newquentity = await Cart.findOneAndUpdate(
-      {user:userId,"items.productId": itemId},
-      {$set:{"items.$.quantity":quantity}},
-      {new: true}
-    )
+    const availablequentity = itemdata.items.find(item => {
+        return item.productId.toString() === itemId.toString();
+    })?.stock;
+
+    if(availablequentity >= quantity){
+       await Cart.findOneAndUpdate(
+        {user:userId,"items.productId": itemId},
+        {$set:{"items.$.quantity":quantity}},
+        {new: true}
+      )
+      res.json({ success: true }); 
+    } else {
+      res.json({ stockError: true }); 
+    }
+    res.json()
+
   } catch (err) {
     console.log("error for updating the quentity from the cart ",err)
   }

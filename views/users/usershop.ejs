@@ -1,6 +1,32 @@
 <%- include("../layouts/user/header.ejs") %>
 
+<style>
 
+.wishlist-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+}
+
+.wishlist-btn button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.wishlist-btn i {
+    font-size: 20px;
+    color: black; 
+}
+
+.wishlist-btn .active i {
+    color: black; 
+}
+
+
+</style>
     <!--Body Content-->
     <div id="page-content">
     	<!--Collection Banner-->
@@ -28,23 +54,27 @@
                                                 <img class="hover blur-up lazyload" data-src="/assets/uploads/product/<%= productdata[i].productimage[1] %>" src="/assets/uploads/product/<%= productdata[i].productimage[1] %>" alt="image" title="product">
                                                  
                                             </a>
-                                            <div class="button-set">
-                                                <a href="javascript:void(0)" title="Quick View" class="quick-view-popup quick-view" data-toggle="modal" data-target="#content_quickview">
-                                                    <i class="icon anm anm-search-plus-r"></i>
-                                                </a>
-                                                <div class="wishlist-btn">
-                                                    <form method="post" action="/addto_wishlisht?id=<%= productdata[i]._id%>">
-                                                    <button type="submit" class="wishlist add-to-wishlist"  title="Add to Wishlist">
-                                                        <i class="icon anm anm-heart-l"></i>
+                                            <!-- <div>
+                                                <div  class="wishlist-btn">
+                                                    <button id="wishlistbtn" data-id="<%= productdata[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
+                                                        <i class="icon anm <%= wishlist.productIds.includes(productdata[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
                                                     </button>
-                                                    </form>
                                                 </div>
                                                 <div class="compare-btn">
-                                                    <a class="compare add-to-compare" href="compare.html" title="Add to Compare">
-                                                        <i class="icon anm anm-random-r"></i>
-                                                    </a>
                                                 </div>
-                                            </div>
+                                            </div> -->
+
+                                            <div >
+                                                <div class="wishlist-btn">
+                                                    <button id="wishlistbtn" data-id="<%= productdata[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
+                                                      <i class="icon anm <%= wishlist.productIds.includes(productdata[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
+                                                  </button>
+                                                </div>
+                                                <div class="compare-btn">
+                                                </div>
+                                              </div>
+
+
                                         </div>
                                         <div class="product-details text-center">
                                             <div style="font-weight: bold;"  class="product-name">
@@ -198,10 +228,116 @@
       Swal.fire({
           icon: type, // 'success', 'error', 'warning', 'info'
           title: message,
-          showConfirmButton: false,
-          timer: 2000 
+        toast: true,
+        background: "black",
+        color: "white",
+        position: 'bottom-end',
+        showConfirmButton: false,
+        timerProgressBar: true,
+        timer: 3000,
+        customClass: {
+          popup: "custom-toast",
+        },
+        didOpen: () => {
+          const swalPopup = document.querySelector(".custom-toast");
+          swalPopup.style.marginBottom = "70px";
+          swalPopup.style.marginRight = "15px";
+        },
+
       });
   }
+
+
+  // for product add to wishlist 
+
+  document.querySelectorAll(".wishlist").forEach(function(button) {
+    button.addEventListener("click", function() {
+        const id = this.getAttribute("data-id");
+        console.log("item id", id);
+        
+        fetch("/addto_wishlist", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ id: id })
+        })
+        .then(response => response.json())
+        .then((data) => {
+            if (data.success) {
+                this.classList.toggle('active');
+                this.querySelector('i').classList.replace('anm-heart-l', 'anm-heart');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist',
+                    text: 'Product added to your wishlist!',
+                    toast: true,
+                    background: "black",
+                    color: "white",
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 3000,
+                    customClass: {
+                        popup: "custom-toast",
+                    },
+                    didOpen: () => {
+                        const swalPopup = document.querySelector(".custom-toast");
+                        swalPopup.style.marginBottom = "70px";
+                        swalPopup.style.marginRight = "15px";
+                    },
+                });
+            } else if (data.error) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'warning',
+                    text: 'Item alredy in the wishlist!',
+                    toast: true,
+                    background: "black",
+                    color: "white",
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 3000,
+                    customClass: {
+                        popup: "custom-toast",
+                    },
+                    didOpen: () => {
+                        const swalPopup = document.querySelector(".custom-toast");
+                        swalPopup.style.marginBottom = "70px";
+                        swalPopup.style.marginRight = "15px";
+                    },
+                });
+            }
+        })
+        .catch((err) => {
+            console.log("Error adding item to wishlist: ", err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred. Please try again.',
+                toast: true,
+                background: "black",
+                color: "white",
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                timer: 3000,
+                customClass: {
+                    popup: "custom-toast",
+                },
+                didOpen: () => {
+                    const swalPopup = document.querySelector(".custom-toast");
+                    swalPopup.style.marginBottom = "70px";
+                    swalPopup.style.marginRight = "15px";
+                },
+            });
+        });
+    });
+});
+
+
+
   </script>
 
 

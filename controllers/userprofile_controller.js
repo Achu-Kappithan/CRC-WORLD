@@ -160,15 +160,19 @@ const load_myorder = async (req,res)=>{
 
 const cancell_order = async (req,res)=>{
     try {
-        const id = req.query.id
-        // console.log("this is the id for cancell a order",id)
-        await Orders.findByIdAndUpdate(
+        const id = req.body.id.trim()
+        console.log("this is the id for cancell a order",id)
+        const canlledorder = await Orders.findByIdAndUpdate(
             id,
             {$set:{status:"Cancelled"}},
         )
-        req.flash("message","Order Cancelled successfully")
-        req.flash("type","success")
-       return res.status(200).redirect("/my_orders") 
+        console.log(canlledorder)
+        if(!canlledorder){
+       return res.json({success:false,message:"Can't cancelled order try again..!"})
+        }else{
+            return res.json({success:true, message:"Order Cancelled successfully"})
+
+        }
     } catch (err) {
         console.log("error for cancelling a order",err)
         res.status(500).render("user404",{message:"Something went rong Tray again..!"})

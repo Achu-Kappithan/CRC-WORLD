@@ -1,5 +1,34 @@
 <%- include("../layouts/user/header.ejs") %>
 
+
+<style>
+
+  .wishlist-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      border: none;
+  }
+  
+  .wishlist-btn button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+  }
+  
+  .wishlist-btn i {
+      font-size: 20px;
+      color: rgb(0, 0, 0); 
+  }
+  
+  .wishlist-btn .active i {
+      color: black; 
+  }
+  
+  
+  </style>
+  
 <!--Body Content-->
 <div id="page-content">
   <!--Home slider-->
@@ -121,31 +150,13 @@
                   class="variants add">
                  
                 </div>
-                <div class="button-set">
-                  <a
-                    href="javascript:void(0)"
-                    title="Quick View"
-                    class="quick-view-popup quick-view"
-                    data-toggle="modal"
-                    data-target="#content_quickview"
-                  >
-                    <i class="icon anm anm-search-plus-r"></i>
-                  </a>
+                <div >
                   <div class="wishlist-btn">
-                    <form method="post" action="/addto_wishlisht?id=<%= productlist[i]._id%>">
-                      <button style="outline: none; border: none; background: none;" type="submit" class="wishlist add-to-wishlist"  title="Add to Wishlist">
-                          <i class="icon anm anm-heart-l"></i>
-                      </button>
-                      </form>
+                      <button id="wishlistbtn" data-id="<%= productlist[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
+                        <i class="icon anm <%= wishlist.productIds.includes(productlist[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
+                    </button>
                   </div>
                   <div class="compare-btn">
-                    <a
-                      class="compare add-to-compare"
-                      href="compare.html"
-                      title="Add to Compare"
-                    >
-                      <i class="icon anm anm-random-r"></i>
-                    </a>
                   </div>
                 </div>
               </div>
@@ -217,9 +228,13 @@
           <div class="section-header text-center">
             <h2 class="h2">Brand New Bats</h2>
             <p>Our most popular products based on sales</p>
+            <% if(batlist==null){ %>
+              <h3>No Product Available in Category Bat</h3>
+              <% }else{ %>
           </div>
-
           <div class="productSlider grid-products">
+            
+
             <% for(let i =0; i<batlist.length ; i++) {        %>
 
             <div class="col-12 item">
@@ -278,31 +293,15 @@
                     Add To Cart
                   </button>
                 </form> -->
-                <div class="button-set">
-                  <a
-                    href="javascript:void(0)"
-                    title="Quick View"
-                    class="quick-view-popup quick-view"
-                    data-toggle="modal"
-                    data-target="#content_quickview"
-                  >
-                    <i class="icon anm anm-search-plus-r"></i>
-                  </a>
+                <div >
+                  
                   <div class="wishlist-btn">
-                    <form method="post" action="/addto_wishlisht?id=<%= batlist[i]._id%>">
-                      <button style="outline: none; border: none; background: none;" type="submit" class="wishlist add-to-wishlist"  title="Add to Wishlist">
-                          <i class="icon anm anm-heart-l"></i>
-                      </button>
-                      </form>
-                  </div>
+                    <button id="wishlistbtn" data-id="<%= batlist[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
+                      <i class="icon anm <%= wishlist.productIds.includes(batlist[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
+                  </button>
+                </div>
                   <div class="compare-btn">
-                    <a
-                      class="compare add-to-compare"
-                      href="compare.html"
-                      title="Add to Compare"
-                    >
-                      <i class="icon anm anm-random-r"></i>
-                    </a>
+                    
                   </div>
                 </div>
                 <!-- end product button -->
@@ -325,10 +324,8 @@
               </div>
             </div>
             <% }%>
-
-              <!-- End product details -->
-
         </div>
+        <% } %>
       </div>
     </div>
   </div>
@@ -341,6 +338,10 @@
             <div class="section-header text-center">
               <h2 class="h2">Brand New Gadget Collection</h2>
               <p>Our most popular products based on sales</p>
+              <% if(gadlist==null){ %>
+                <h3>No Product Available in Category gadgets</h3>
+                <% }else{ %>
+
             </div>
   
             <div class="productSlider grid-products">
@@ -392,31 +393,15 @@
                   <!-- countdown end -->
   
                   <!-- Start product button -->
-                  <div class="button-set">
-                    <a
-                      href="javascript:void(0)"
-                      title="Quick View"
-                      class="quick-view-popup quick-view"
-                      data-toggle="modal"
-                      data-target="#content_quickview"
-                    >
-                      <i class="icon anm anm-search-plus-r"></i>
-                    </a>
+                  <div >
+                    
                     <div class="wishlist-btn">
-                      <form method="post" action="/addto_wishlisht?id=<%= gadlist[i]._id%>">
-                        <button style="outline: none; border: none; background: none;" type="submit" class="wishlist add-to-wishlist"  title="Add to Wishlist">
-                            <i class="icon anm anm-heart-l"></i>
-                        </button>
-                        </form>
+                      <button id="wishlistbtn" data-id="<%= gadlist[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
+                        <i class="icon anm <%= wishlist.productIds.includes(gadlist[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
+                    </button>
                     </div>
                     <div class="compare-btn">
-                      <a
-                        class="compare add-to-compare"
-                        href="compare.html"
-                        title="Add to Compare"
-                      >
-                        <i class="icon anm anm-random-r"></i>
-                      </a>
+                      
                     </div>
                   </div>
                   <!-- end product button -->
@@ -440,22 +425,13 @@
                 </div>
               </div>
               <% }%>
-  
-                <!-- End product details -->
-  
           </div>
+          <% } %>
         </div>
       </div>
     </div>
    </div>
     <!--Weekly Bestseller-->
-  
-  
-       <div class="row">
-          <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
-            <a href="shop-left-sidebar.html" class="btn">View all</a>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -489,3 +465,95 @@
 <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
 
 <%- include("../layouts/user/footer.ejs") %>
+
+<script>
+// product add to wishlist 
+
+document.querySelectorAll(".wishlist").forEach(function(button){
+  button.addEventListener("click",function(){
+    const id = this.getAttribute("data-id")
+
+    fetch("/addto_wishlist",{
+      method : "POST",
+      headers : {
+        "Content-Type" : "application/json"
+      },
+      body : JSON.stringify({id})
+    })
+    .then(responce =>responce.json())
+    .then((data)=>{
+      if (data.success) {
+                this.classList.toggle('active');
+                this.querySelector('i').classList.replace('anm-heart-l', 'anm-heart');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist',
+                    text: 'Product added to your wishlist!',
+                    toast: true,
+                    background: "black",
+                    color: "white",
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 3000,
+                    customClass: {
+                        popup: "custom-toast",
+                    },
+                    didOpen: () => {
+                        const swalPopup = document.querySelector(".custom-toast");
+                        swalPopup.style.marginBottom = "70px";
+                        swalPopup.style.marginRight = "15px";
+                    },
+                });
+    }else if(data.error){
+      Swal.fire({
+                    icon: 'warning',
+                    title: 'warning',
+                    text: 'Item alredy in the wishlist!',
+                    toast: true,
+                    background: "black",
+                    color: "white",
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 3000,
+                    customClass: {
+                        popup: "custom-toast",
+                    },
+                    didOpen: () => {
+                        const swalPopup = document.querySelector(".custom-toast");
+                        swalPopup.style.marginBottom = "70px";
+                        swalPopup.style.marginRight = "15px";
+                    },
+                });
+    }
+    })
+    .catch((err) => {
+            console.log("Error adding item to wishlist: ", err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred. Please try again.',
+                toast: true,
+                background: "black",
+                color: "white",
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                timer: 3000,
+                customClass: {
+                    popup: "custom-toast",
+                },
+                didOpen: () => {
+                    const swalPopup = document.querySelector(".custom-toast");
+                    swalPopup.style.marginBottom = "70px";
+                    swalPopup.style.marginRight = "15px";
+                },
+            });
+        });
+  })
+})
+
+
+
+</script>

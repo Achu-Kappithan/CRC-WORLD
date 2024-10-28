@@ -28,7 +28,7 @@
             class="position-absolute overlay d-flex flex-column align-items-center justify-content-center w-100 h-100 text-center text-white"
           >
             <h1>Welcome to Cricket World</h1>
-            <p>Your journey begins here</p>
+            <p style="color: rgb(142, 147, 143);">Your journey begins here</p>
           </div>
         </div>
 
@@ -154,12 +154,32 @@
           Swal.fire({
               icon: type, // 'success', 'error', 'warning', 'info'
               title: message,
-              showConfirmButton: true,
-              timer: 3000 // Optional auto-close
-          });
-      }
-  </script>
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timerProgressBar: true,
+              timer: 2000,
+              background: "black",
+              color:"white",
+              customClass:{popup:"swal12-custom-font"},
+              
+            });
+            }
 
-  
+
+              // toast: true,
+              // position: "top-end",
+              //  showConfirmButton: false,
+              //  timer: 3000,
+              //  timerProgressBar: true,
+              //  didOpen: (toast) => {
+              //  toast.onmouseenter = Swal.stopTimer;
+              //  toast.onmouseleave = Swal.resumeTimer;
+              // }
+              // });
+              // Toast.fire({
+              // icon: type,
+              // title: message
+    </script>
   </body>
 </html>

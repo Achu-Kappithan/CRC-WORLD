@@ -4,6 +4,7 @@ const path = require("path")
 const bodyparser = require("body-parser")
 const is_auth = require("../middlewares/admin_auth")
 const auth = is_auth.is_authaticated
+const loged_in = is_auth.is_alredylogedin
 const pageload404 = require("../middlewares/404load")
 
 
@@ -23,7 +24,7 @@ admin_route.set("view engine","ejs")
 admin_route.set('views',path.join(__dirname,"../views/admin"))
 // authotication 
 
-admin_route.get("/admin",admin_controller.load_adminlogin);
+admin_route.get("/admin",loged_in,admin_controller.load_adminlogin);
 admin_route.post("/verify",admin_controller.admin_verify);
 admin_route.get("/admin_home",auth,admin_controller.load_home);
 admin_route.get("/dashbord",auth,admin_controller.load_dashbord);

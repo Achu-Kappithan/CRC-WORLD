@@ -23,7 +23,7 @@ const load_whishlist = async (req,res)=>{
 
 const addto_wishlist = async(req,res)=>{
     try {
-        const productid = req.query.id;
+        const productid = req.body.id;
         const userid = req.session.user_id;
 
         if(!userid){
@@ -41,22 +41,26 @@ const addto_wishlist = async(req,res)=>{
             });
             
             await wishlist.save()
-            req.flash("message","Product add to wishlist")
-            req.flash("type","success")
-            return res.status(200).redirect("/user_shop")
+            res.json({success:true})
 
+        }else{
+            const exisistitem = wishlistdata.productIds.find(item=>{
+                if(item.toString()===productid.toString()){
+                    return true;
+                }
+            })
+            if(exisistitem){
+                res.json({error :"Item alredy in the wishlist"})
         }else{
             await Wishlist.findOneAndUpdate(
                 {userId:userid},
                 {$push:{productIds:productid}
             })
-            req.flash("message","Product add to wishlist")
-            req.flash("type","success")
-            return res.status(200).redirect("/user_shop")
+            res.json({success:true})
+        }
         }
     } catch (err) {
         console.log("error for product addto wishlist",err)
-        return res.status(500).render("user404",{message:"Unable to complate your request"})
     }
 }
 
@@ -64,14 +68,12 @@ const addto_wishlist = async(req,res)=>{
 
 const remove_wishlistitem = async (req,res)=>{
     try {
-        const itemId = req.body.itemid.trim()
+        const itemId = req.body.id
         console.log("itemid",itemId)
         const userid = req.session.user_id;
 
         if(!userid){
-            req.flash("message","User not Authenticated");
-            req.flash("type","warning")
-            return res.status(400).redirect("/load_home")
+           return res.json({success:false, message :"User is not Authaticated"})
         }
         const removeditem = await Wishlist.findOneAndUpdate(
             {userId:userid},
@@ -81,11 +83,9 @@ const remove_wishlistitem = async (req,res)=>{
         if(!removeditem){
             req.flash("message","Failed to remove the procuct")
             req.flash("type","error")
-            return res.status(400).redirect("/load_wishlist")
+            return res.json({success:false, message:"Failed to remove the procuct"})
         }
-        req.flash("message","item removed successfully..")
-        req.flash("type","success")
-        return res.status(200).redirect("/load_wishlist")
+        return res.json({success:true, message:"item removed successfully.."})
         
 
     } catch (err) {

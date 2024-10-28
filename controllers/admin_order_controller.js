@@ -1,3 +1,4 @@
+const { updateLocale } = require("moment");
 const Orders = require("../models/order")
 const User = require("../models/user_models")
 
@@ -46,13 +47,19 @@ const Update_orderstatus = async (req,res)=>{
     try {
         const orderid = req.body.orderid;
         const status = req.body.selectedstatus;
-        console.log("req.body of  update status",req.body)
 
-         await Orders.findByIdAndUpdate(
+        const existingstatus = await Orders.findById({_id:orderid})
+        console.log("esisting",existingstatus)
+
+        if(existingstatus.status =="Cancelled"){
+            return res.json({success:false, message:"Can't change the order status of Cancelled Orders.."})
+        }
+
+        const udpatedata =  await Orders.findByIdAndUpdate(
             orderid,
             {$set:{ status :status }}
         )
-        res.json({ success : true})
+        res.json({ success : true,message:"'Order status has been updated successfully!'"})
     } catch (err) {
         console.log("error for updating the order status",err)
         res.status(500).render("404",{message: "Unable to complate your request"})

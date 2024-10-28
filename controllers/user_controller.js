@@ -7,6 +7,7 @@ const user_otp = require("../models/otp");
 const nodemailer = require("nodemailer");
 const otp_generator = require("otp-generator");
 const priceHelper = require("../utils/pricehelper");
+const Wishlist = require("../models/wishlist")
 
 const crypto = require("crypto");
 require("dotenv").config();
@@ -319,25 +320,31 @@ const userverification = async (req, res) => {
 
 const loadhome = async (req, res) => {
   try {
-    // console.log("this is passing userid ",UserId)
-    const gadgetcat = await category.findOne({ name: "Cricket  Gadgets" });
-    const batcategory = await category.findOne({ name: "Cricket Bat" });
+    const userid = req.session.user_id;
+    const gadgetcat = await category.findOne({name:{$regex:/Gadgets/i}});
+    const batcategory = await category.findOne({name:{$regex:/Bat/i}});
+    const wishlistdata = await Wishlist.findOne({userId:userid});
     // console.log("this is batcat", batcategory)
 
-    if (!batcategory && !gadgetcat) {
+    let batlist = null;
+    let gadlist =null;
+    if (batcategory) {
+       batlist = await Prouduct.find({
+        category: batcategory._id,
+        is_deleted: false,
+      })
+        .populate("category")
+        .populate("brand");
+
     }
-    const batlist = await Prouduct.find({
-      category: batcategory._id,
-      is_deleted: false,
-    })
-      .populate("category")
-      .populate("brand");
-    const gadlist = await Prouduct.find({
-      category: gadgetcat._id,
-      is_deleted: false,
-    })
-      .populate("category")
-      .populate("brand");
+    if(gadgetcat){
+       gadlist = await Prouduct.find({
+        category: gadgetcat._id,
+        is_deleted: false,
+      })
+        .populate("category")
+        .populate("brand");
+    }
     const branddata = await brand.find({ is_deleted: false });
 
     const productlist = await Prouduct.find({ is_deleted: false })
@@ -350,6 +357,7 @@ const loadhome = async (req, res) => {
       gadlist,
       branddata,
       helpers: priceHelper,
+      wishlist :wishlistdata
     });
   } catch (err) {
     console.log("error for loading usnse home page ", err);

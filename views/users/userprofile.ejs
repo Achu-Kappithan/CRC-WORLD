@@ -1,74 +1,124 @@
-
-
 <%- include("../layouts/user/header.ejs") %>
-
 
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Profile</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css"
+    />
+  </head>
 
-<body class="bg-light">
+  <body class="bg-light">
     <div class="container my-5">
-        <div class="row">
-            <div class="col-lg-4 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <img src="assets/images/userpofile.png" alt="Profile Picture" class="rounded-circle mb-3"
-                            width="150" height="150">
-                        <h4><%= userdata.firstname %>  <%= userdata.lastname %></h4>
-                        <p class="text-muted"><%= userdata.email %></p>
-                    </div>
-                </div>
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <img
+                src="assets/images/userpofile.png"
+                alt="Profile Picture"
+                class="rounded-circle mb-3"
+                width="150"
+                height="150"
+              />
+              <h4><%= userdata.firstname %> <%= userdata.lastname %></h4>
+              <p class="text-muted"><%= userdata.email %></p>
             </div>
-            <div class="col-lg-8">
-                <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details"
-                            type="button" role="tab">User Details</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="addresses-tab" data-bs-toggle="tab" data-bs-target="#addresses"
-                            type="button" role="tab">Addresses</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="add-address-tab" data-bs-toggle="tab"
-                            data-bs-target="#add-address" type="button" role="tab">Add Address</button>
-                    </li>
-                </ul>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="details-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#details"
+                type="button"
+                role="tab"
+              >
+                User Details
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="addresses-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#addresses"
+                type="button"
+                role="tab"
+              >
+                Addresses
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="add-address-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#add-address"
+                type="button"
+                role="tab"
+              >
+                Add Address
+              </button>
+            </li>
+          </ul>
 
-                <div class="tab-content" id="profileTabsContent">
-                    <!-- User Details Tab -->
-                    <div class="tab-pane fade show active" id="details" role="tabpanel">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title mb-4">Edit Profile</h5>
-                                <form id="edit-profile-form" method="post" action="{% url 'edit-profile' %}">
-                                    <div class="mb-3 row">
-                                        <label class="col-sm-3 col-form-label">Full Name</label>
-                                        <div class="col-sm-5">
-                                            <input type="text" class="form-control" name="first_name"
-                                                value="<%= userdata.firstname %>" required>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <input type="text" class="form-control" name="last_name"
-                                                value="<%= userdata.lastname %>" required>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <label class="col-sm-3 col-form-label">Email</label>
-                                        <div class="col-sm-9">
-                                            <input type="email" class="form-control" name="email"
-                                                value="<%= userdata.email %>" readonly>
-                                        </div>
-                                    </div>
-                                    <!-- <div class="mb-3 row">
+          <div class="tab-content" id="profileTabsContent">
+            <!-- User Details Tab -->
+            <div class="tab-pane fade show active" id="details" role="tabpanel">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Edit Profile</h5>
+                  <form
+                    id="edit-profile-form"
+                    method="post"
+                    action="{% url 'edit-profile' %}"
+                  >
+                    <div class="mb-3 row">
+                      <label class="col-sm-3 col-form-label">Full Name</label>
+                      <div class="col-sm-5">
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="first_name"
+                          value="<%= userdata.firstname %>"
+                          required
+                        />
+                      </div>
+                      <div class="col-sm-4">
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="last_name"
+                          value="<%= userdata.lastname %>"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="mb-3 row">
+                      <label class="col-sm-3 col-form-label">Email</label>
+                      <div class="col-sm-9">
+                        <input
+                          type="email"
+                          class="form-control"
+                          name="email"
+                          value="<%= userdata.email %>"
+                          readonly
+                        />
+                      </div>
+                    </div>
+                    <!-- <div class="mb-3 row">
                                         <label class="col-sm-3 col-form-label">Mobile</label>
                                         <div class="col-sm-9">
                                             <input type="text" class="form-control" name="phone_number"
@@ -76,271 +126,452 @@
                                                 pattern="\d{10}" title="Please enter a 10-digit phone number">
                                         </div>
                                     </div> -->
-                                    <div class="text-end">
-                                        <button type="submit"  style="background-color: black; color: white; padding: 10px 20px; font-size: 14px; border: none; text-transform: uppercase; cursor: pointer;">
-                                            Save Changes
-                                        </button>
-
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                    <div class="text-end">
+                      <button
+                        type="submit"
+                        style="
+                          background-color: black;
+                          color: white;
+                          padding: 10px 20px;
+                          font-size: 14px;
+                          border: none;
+                          text-transform: uppercase;
+                          cursor: pointer;
+                        "
+                      >
+                        Save Changes
+                      </button>
                     </div>
+                  </form>
+                </div>
+              </div>
+            </div>
 
-                    <!-- Addresses Tab -->
-                    <div class="tab-pane fade" id="addresses" role="tabpanel">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title mb-4">Your Addresses</h5>
-                                <% userdata.addressId.forEach(function(a, index) { %> 
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-2 text-muted"><%= a.name %></h6>
-                                        <p class="card-text">
-                                            House Name  : <%= a.housename %><br>
-                                            Location  : <%= a.locality %> , <%= a.district %> , <%= a.state %><br>
-                                            PIN  : <%= a.pincode %> <br>
-                                            Phone  : <%= a.phone %>
-                                        </p>
-                                        
-                                        <button class="btn btn-sm btn-outline-primary me-2" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#edit-form-<%= a._id %>"
-                                            aria-expanded="false" aria-controls="edit-form-<%= a._id %>">
-                                            Edit
-                                        </button>
-                    
-                                        <form method="POST" action="/delete_address?id=<%= a._id %>" style="display:inline;">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                                        </form>
-                                        
-                                        <div id="edit-form-<%= a._id %>" class="collapse mt-3">
-                                            <form method="POST" action="/edit_address?id=<%= a._id %>">
-                                                <div class="row g-3">
-                                                    <div class="col-md-6">
-                                                        <input type="text" name="name" class="form-control"
-                                                            value="<%= a.name %>" placeholder="Full Name" >
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <input type="text" name="housename" class="form-control"
-                                                            value="<%= a.housename %>" placeholder="House Name" >
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <input type="text" name="locality" class="form-control"
-                                                            value="<%= a.locality %>" placeholder="Locality">
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <input type="text" name="district" class="form-control"
-                                                            value="<%= a.district %>" placeholder="District" >
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <input type="text" name="landmark" class="form-control"
-                                                            value="<%= a.landMark %>" placeholder="District">
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <input type="text" name="phone" class="form-control"
-                                                            value="<%= a.phone %>" placeholder="Phone Number" >
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="text" name="state" class="form-control"
-                                                            value="<%= a.state %>" placeholder="State/Province" >
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="text" name="pincode" class="form-control"
-                                                            value="<%= a.pincode %>" placeholder="Zip/Postal Code" >
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="text" name="altphone" class="form-control"
-                                                            value="<%= a.altPhone0 %>" placeholder="Phone Number">
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
-                                                            Update Address
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <% }) %>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Add Address Tab -->
-                    <div class="tab-pane fade" id="add-address" role="tabpanel">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title mb-4">Add New Address</h5>
-                                <form action="/add_useraddress" onsubmit="return validate()" method="post">
-                                    <div class="row g-3">
+            <!-- Addresses Tab -->
+            <div class="tab-pane fade" id="addresses" role="tabpanel">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Your Addresses</h5>
+                  <% userdata.addressId.forEach(function(a, index) { %>
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <h6 class="card-subtitle mb-2 text-muted">
+                        <%= a.name %>
+                      </h6>
+                      <p class="card-text">
+                        House Name : <%= a.housename %><br />
+                        Location : <%= a.locality %> , <%= a.district %> , <%=
+                        a.state %><br />
+                        PIN : <%= a.pincode %> <br />
+                        Phone : <%= a.phone %>
+                      </p>
 
-                                        <div class="col-md-6">
-                                            <input type="text" id="name" name="name" value="<%= userdata.firstname + userdata.lastname %>" class="form-control" placeholder="Full Name">
-                                            <span id="errname" style="color: red;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                            <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="<%= userdata.email %>">
-                                            <span id="erremail" style="color: red;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                            <input type="text" id="housename" name="housename" class="form-control" placeholder="House Name">
-                                            <span id="errhousename" style="color: red;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                            <input type="text" id="locality" name="locality" class="form-control" placeholder="Locality">
-                                            <span id="errlocality" style="color: red;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                            <input type="text" id="district" name="district" class="form-control" placeholder="District">
-                                            <span id="errdistrict" style="color: red;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                            <input type="text" id="state" name="state" class="form-control" placeholder="State">
-                                            <span id="errstate" style="color: red;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-12">
-                                            <input type="text" id="landmark" name="landmark" class="form-control" placeholder="Landmark">
-                                            <span id="errlandmark" style="color: red;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-4">
-                                            <input type="text" id="pincode" name="pincode" class="form-control" placeholder="Zip/Postal Code">
-                                            <span id="errpincode" style="color: red;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-4">
-                                            <input type="text" id="phonenumber" name="phonenumber" class="form-control" placeholder="Contact Number">
-                                            <span id="errphonenumber" style="color: red;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-4">
-                                            <input type="text" name="altnumber" class="form-control" placeholder="Alternate Number">
-                                        </div>
-                                        
-                                        <div class="col-12">
-                                            <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
-                                                Add Address
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                      <button
+                        class="btn btn-sm btn-outline-primary me-2"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#edit-form-<%= a._id %>"
+                        aria-expanded="false"
+                        aria-controls="edit-form-<%= a._id %>"
+                      >
+                        Edit
+                      </button>
+
+                      <form
+                        method="POST"
+                        action="/delete_address?id=<%= a._id %>"
+                        style="display: inline"
+                      >
+                        <button
+                          type="submit"
+                          class="btn btn-sm btn-outline-danger"
+                        >
+                          Delete
+                        </button>
+                      </form>
+
+                      <div id="edit-form-<%= a._id %>" class="collapse mt-3">
+                        <form
+                          method="POST"
+                          action="/edit_address?id=<%= a._id %>"
+                        >
+                          <div class="row g-3">
+                            <div class="col-md-6">
+                              <input
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                value="<%= a.name %>"
+                                placeholder="Full Name"
+                              />
                             </div>
-                        </div>
+                            <div class="col-md-6">
+                              <input
+                                type="text"
+                                name="housename"
+                                class="form-control"
+                                value="<%= a.housename %>"
+                                placeholder="House Name"
+                              />
+                            </div>
+                            <div class="col-md-6">
+                              <input
+                                type="text"
+                                name="locality"
+                                class="form-control"
+                                value="<%= a.locality %>"
+                                placeholder="Locality"
+                              />
+                            </div>
+                            <div class="col-md-6">
+                              <input
+                                type="text"
+                                name="district"
+                                class="form-control"
+                                value="<%= a.district %>"
+                                placeholder="District"
+                              />
+                            </div>
+                            <div class="col-md-6">
+                              <input
+                                type="text"
+                                name="landmark"
+                                class="form-control"
+                                value="<%= a.landMark %>"
+                                placeholder="District"
+                              />
+                            </div>
+                            <div class="col-md-6">
+                              <input
+                                type="text"
+                                name="phone"
+                                class="form-control"
+                                value="<%= a.phone %>"
+                                placeholder="Phone Number"
+                              />
+                            </div>
+                            <div class="col-md-4">
+                              <input
+                                type="text"
+                                name="state"
+                                class="form-control"
+                                value="<%= a.state %>"
+                                placeholder="State/Province"
+                              />
+                            </div>
+                            <div class="col-md-4">
+                              <input
+                                type="text"
+                                name="pincode"
+                                class="form-control"
+                                value="<%= a.pincode %>"
+                                placeholder="Zip/Postal Code"
+                              />
+                            </div>
+                            <div class="col-md-4">
+                              <input
+                                type="text"
+                                name="altphone"
+                                class="form-control"
+                                value="<%= a.altPhone0 %>"
+                                placeholder="Phone Number"
+                              />
+                            </div>
+                            <div class="col-12">
+                              <button
+                                type="submit"
+                                style="
+                                  background-color: black;
+                                  color: white;
+                                  padding: 10px 20px;
+                                  font-size: 12px;
+                                  border: none;
+                                  text-transform: uppercase;
+                                  cursor: pointer;
+                                "
+                              >
+                                Update Address
+                              </button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
                     </div>
-                </div> <!-- End Tab Content -->
-            </div> <!-- End Col -->
-        </div> <!-- End Row -->
-    </div> <!-- End Container -->
+                  </div>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Address Tab -->
+            <div class="tab-pane fade" id="add-address" role="tabpanel">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">Add New Address</h5>
+                  <form
+                    action="/add_useraddress"
+                    onsubmit="return validate()"
+                    method="post"
+                  >
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value="<%= userdata.firstname + userdata.lastname %>"
+                          class="form-control"
+                          placeholder="Full Name"
+                        />
+                        <span id="errname" style="color: red"></span>
+                      </div>
+
+                      <div class="col-md-6">
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          class="form-control"
+                          placeholder="Email"
+                          value="<%= userdata.email %>"
+                        />
+                        <span id="erremail" style="color: red"></span>
+                      </div>
+
+                      <div class="col-md-6">
+                        <input
+                          type="text"
+                          id="housename"
+                          name="housename"
+                          class="form-control"
+                          placeholder="House Name"
+                        />
+                        <span id="errhousename" style="color: red"></span>
+                      </div>
+
+                      <div class="col-md-6">
+                        <input
+                          type="text"
+                          id="locality"
+                          name="locality"
+                          class="form-control"
+                          placeholder="Locality"
+                        />
+                        <span id="errlocality" style="color: red"></span>
+                      </div>
+
+                      <div class="col-md-6">
+                        <input
+                          type="text"
+                          id="district"
+                          name="district"
+                          class="form-control"
+                          placeholder="District"
+                        />
+                        <span id="errdistrict" style="color: red"></span>
+                      </div>
+
+                      <div class="col-md-6">
+                        <input
+                          type="text"
+                          id="state"
+                          name="state"
+                          class="form-control"
+                          placeholder="State"
+                        />
+                        <span id="errstate" style="color: red"></span>
+                      </div>
+
+                      <div class="col-md-12">
+                        <input
+                          type="text"
+                          id="landmark"
+                          name="landmark"
+                          class="form-control"
+                          placeholder="Landmark"
+                        />
+                        <span id="errlandmark" style="color: red"></span>
+                      </div>
+
+                      <div class="col-md-4">
+                        <input
+                          type="text"
+                          id="pincode"
+                          name="pincode"
+                          class="form-control"
+                          placeholder="Zip/Postal Code"
+                        />
+                        <span id="errpincode" style="color: red"></span>
+                      </div>
+
+                      <div class="col-md-4">
+                        <input
+                          type="text"
+                          id="phonenumber"
+                          name="phonenumber"
+                          class="form-control"
+                          placeholder="Contact Number"
+                        />
+                        <span id="errphonenumber" style="color: red"></span>
+                      </div>
+
+                      <div class="col-md-4">
+                        <input
+                          type="text"
+                          name="altnumber"
+                          class="form-control"
+                          placeholder="Alternate Number"
+                        />
+                      </div>
+
+                      <div class="col-12">
+                        <button
+                          type="submit"
+                          style="
+                            background-color: black;
+                            color: white;
+                            padding: 10px 20px;
+                            font-size: 12px;
+                            border: none;
+                            text-transform: uppercase;
+                            cursor: pointer;
+                          "
+                        >
+                          Add Address
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End Tab Content -->
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Container -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-<%- include("../layouts/user/footer.ejs") %>
+  </body>
+  <%- include("../layouts/user/footer.ejs") %>
 
-<script>
-function validate() {
-    let isValid = true;
+  <script>
+    function validate() {
+      let isValid = true;
 
-    const name = document.getElementById("name").value.trim();
-    if (name.length < 4) {
-        document.getElementById("errname").innerText = "Name must be at least 4 characters.";
+      const name = document.getElementById("name").value.trim();
+      if (name.length < 4) {
+        document.getElementById("errname").innerText =
+          "Name must be at least 4 characters.";
         isValid = false;
-    } else {
+      } else {
         document.getElementById("errname").innerText = "";
-    }
+      }
 
-    const email = document.getElementById("email").value.trim();
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailPattern.test(email)) {
-        document.getElementById("erremail").innerText = "Please enter a valid email address.";
+      const email = document.getElementById("email").value.trim();
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailPattern.test(email)) {
+        document.getElementById("erremail").innerText =
+          "Please enter a valid email address.";
         isValid = false;
-    } else {
+      } else {
         document.getElementById("erremail").innerText = "";
-    }
+      }
 
-    const housename = document.getElementById("housename").value.trim();
-    if (housename.length < 3) {
-        document.getElementById("errhousename").innerText = "Enter a vaild House name.";
+      const housename = document.getElementById("housename").value.trim();
+      if (housename.length < 3) {
+        document.getElementById("errhousename").innerText =
+          "Enter a vaild House name.";
         isValid = false;
-    } else {
+      } else {
         document.getElementById("errhousename").innerText = "";
-    }
+      }
 
-    const locality = document.getElementById("locality").value.trim();
-    if (locality.length < 3) {
-        document.getElementById("errlocality").innerText = "Valid field required.";
+      const locality = document.getElementById("locality").value.trim();
+      if (locality.length < 3) {
+        document.getElementById("errlocality").innerText =
+          "Valid field required.";
         isValid = false;
-    } else {
+      } else {
         document.getElementById("errlocality").innerText = "";
-    }
+      }
 
-    const district = document.getElementById("district").value.trim();
-    if (district.length < 3) {
-        document.getElementById("errdistrict").innerText = "Valid field required.";
+      const district = document.getElementById("district").value.trim();
+      if (district.length < 3) {
+        document.getElementById("errdistrict").innerText =
+          "Valid field required.";
         isValid = false;
-    } else {
+      } else {
         document.getElementById("errdistrict").innerText = "";
-    }
+      }
 
-    const state = document.getElementById("state").value.trim();
-    if (state.length < 3) {
+      const state = document.getElementById("state").value.trim();
+      if (state.length < 3) {
         document.getElementById("errstate").innerText = "Valid field required.";
         isValid = false;
-    } else {
+      } else {
         document.getElementById("errstate").innerText = "";
-    }
+      }
 
-    // const landmark = document.getElementById("landmark").value.trim();
-    // if (landmark.length > 0) {
-    //     document.getElementById("errlandmark").innerText = "Valid field required.";
-    //     isValid = false;
-    // } else {
-    //     document.getElementById("errlandmark").innerText = "";
-    // }
+      // const landmark = document.getElementById("landmark").value.trim();
+      // if (landmark.length > 0) {
+      //     document.getElementById("errlandmark").innerText = "Valid field required.";
+      //     isValid = false;
+      // } else {
+      //     document.getElementById("errlandmark").innerText = "";
+      // }
 
-    const pincode = document.getElementById("pincode").value.trim();
-    if (pincode.length !== 6 || isNaN(pincode)) {
-        document.getElementById("errpincode").innerText = "Please enter a valid 6-digit pincode.";
+      const pincode = document.getElementById("pincode").value.trim();
+      if (pincode.length !== 6 || isNaN(pincode)) {
+        document.getElementById("errpincode").innerText =
+          "Please enter a valid 6-digit pincode.";
         isValid = false;
-    } else {
+      } else {
         document.getElementById("errpincode").innerText = "";
-    }
+      }
 
-    const phone = document.getElementById("phonenumber").value.trim();
-    if (phone.length !== 10 || isNaN(phone)) {
-        document.getElementById("errphonenumber").innerText = "Please enter a valid 10-digit phone number.";
+      const phone = document.getElementById("phonenumber").value.trim();
+      if (phone.length !== 10 || isNaN(phone)) {
+        document.getElementById("errphonenumber").innerText =
+          "Please enter a valid 10-digit phone number.";
         isValid = false;
-    } else {
+      } else {
         document.getElementById("errphonenumber").innerText = "";
+      }
+
+      return isValid;
     }
+  </script>
+  <!-- aditional scriipt for sending message to user -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    return isValid; 
-}
-</script>
-        <!-- aditional scriipt for sending message to user -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
-        <script>
-          const message = "<%= message %>";
-          const type = "<%= type %>";
-    
-          if (message && message.length > 0) {
-              Swal.fire({
-                  icon: type, // 'success', 'error', 'warning', 'info'
-                  title: message,
-                  showConfirmButton: true,
-                  timer: 3000 
-              });
-          }
-      </script>
+  <script>
+    const message = "<%= message %>";
+    const type = "<%= type %>";
 
-
-
-
+    if (message && message.length > 0) {
+      Swal.fire({
+        icon: type, // 'success', 'error', 'warning', 'info'
+        title: message,
+        toast: true,
+        background: "black",
+        color: "white",
+        position: "top-end",
+        showConfirmButton: false,
+        timerProgressBar: true,
+        timer: 3000,
+        customClass: {
+          popup: "custom-toast",
+        },
+        didOpen: () => {
+          const swalPopup = document.querySelector(".custom-toast");
+          swalPopup.style.marginTop = "70px";
+          swalPopup.style.marginRight = "15px";
+        },
+      });
+    }
+  </script>
 </html>

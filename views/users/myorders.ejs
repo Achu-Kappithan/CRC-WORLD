@@ -19,7 +19,7 @@
                             <div class="col-md-4">
                                 <h5 class="card-title">Ordered Items</h5>
                                 <h5 class="card-title" style="display: inline;">Status:</h5>
-                                <h6 style="display: inline;">   <h2 class="badge rounded-pill 
+                                <h6 style="display: inline;">   <h2  class="badge rounded-pill 
                                     <% if (order.status === 'Pending' || order.status === 'Shipped') { %>
                                         alert-warning
                                     <% } else if (order.status === 'Delivered') { %>
@@ -27,7 +27,7 @@
                                     <% } else if (order.status === 'Cancelled' || order.status === 'Returned') { %>
                                         alert-danger
                                     <% } %>
-                                ">
+                                " id="status-<%= order._id %>" >
                                     <%= order.status %>
                                     </h2>   </h6>
                                 <% order.items.forEach(item => { %> 
@@ -54,9 +54,26 @@
     
                             <div class="col-md-4">
                                 <p>
-                                    <form action="/order_cancelled?id=<%= order ._id %>" method="post">
-                                    <button type="submit" class="btn btn-outline-primary me-2" style="width: 200px;">Cancel order</button><br><br><br>
-                                    </form>
+                                    <% if(order.status !== "Cancelled" && order.status !== "Delivered") { %>
+                                        <button id="hidebtn-<%= order._id %>" data-id="<%= order._id %>" 
+                                            type="button" 
+                                            class="btn btn-outline-primary me-2 ordercanellbtn" 
+                                            style="width: 200px;">
+                                            Cancel Order
+                                        </button>
+                                        <br><br><br>
+                                    <% } %>
+
+                                    <% if(order.status === "Delivered") { %>
+                                        <button type="button" 
+                                            class="btn btn-outline-primary me-2 orderReturnbtn" 
+                                            style="width: 200px;">
+                                            Return Order
+                                        </button>
+                                        <br><br><br>
+                                    <% } %>
+
+
                                     <a href="/order_summary?orderid=<%= order ._id %>" class="btn btn-outline-secondary" style="width: 200px;" >Order Summary</a>
                                 </p>
                             </div>
@@ -94,9 +111,96 @@
       Swal.fire({
           icon: type, // 'success', 'error', 'warning', 'info'
           title: message,
-          showConfirmButton: true,
-          timer: 3000 
+          toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 3000,
+            customClass: {
+           popup: 'custom-toast'
+    },
+    didOpen: () => {
+        const swalPopup = document.querySelector('.custom-toast');
+        swalPopup.style.marginTop = '70px';  
+        swalPopup.style.marginRight = '15px'; 
+    }
+
       });
   }
+</script>
+
+<script>
+    // function for cancelling the order
+
+    document.querySelectorAll(".ordercanellbtn").forEach(function(button){
+        button.addEventListener("click",function(){
+            const id = button.getAttribute("data-id");
+            console.log("id for cancellthe order",id);
+
+            Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to cancell this this order.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Cancell !'
+            }).then((result)=>{
+                if(result.isConfirmed) {
+                    
+                    fetch("/order_cancelled",{
+                        method : "POST",
+                        headers : {
+                            "Content-Type" : "application/json"
+                        },
+                        body : JSON.stringify({id})
+                    })
+
+                    .then(responce => responce.json())
+                    .then(data=>{
+                        if(data.success){
+                            Swal.fire({
+                            icon: 'success',
+                            text: data.message,
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            timer: 3000,
+                            })
+
+                            const hidebtn = document.getElementById(`hidebtn-${id}`)
+                            console.log(hidebtn)
+                            if(hidebtn){
+                                hidebtn.style.display='none';
+                            }
+
+                            const statusElement = document.getElementById(`status-${id}`);
+                            if (statusElement) {
+                            statusElement.innerText = 'Cancelled';
+                            statusElement.className = 'badge rounded-pill alert-danger';
+                        }
+                        }
+                        else{
+                            Swal.fire({
+                            icon: 'error',
+                            text: data.message,
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            timer: 3000,
+                            })
+                        }
+                
+                    })
+                    .catch(err=>{
+                        console.log("error for cancel the order",err)
+                    })
+                }
+            })
+        })
+
+    })
 </script>
 
