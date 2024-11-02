@@ -200,30 +200,13 @@
       <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
         <div class="customer-box customer-coupon">
           <h3 class="font-15 xs-font-13">
-            <i class="icon anm anm-gift-l"></i> Have a coupon?
+            <i class="icon anm anm-gift-l"></i> 
             <a
-              href="#have-coupon"
               class="text-white text-decoration-underline"
               data-toggle="collapse"
-              >Click here to enter your code</a
+              >Check and Confirm Order Details</a
             >
           </h3>
-          <div id="have-coupon" class="collapse coupon-checkout-content">
-            <div class="discount-coupon">
-              <div id="coupon" class="coupon-dec tab-pane active">
-                <p class="margin-10px-bottom">
-                  Enter your coupon code if you have one.
-                </p>
-                <label class="required get" for="coupon-code"
-                  ><span class="required-f">*</span> Coupon</label
-                >
-                <input id="coupon-code" required="" type="text" class="mb-3" />
-                <button class="coupon-btn btn" type="button">
-                  Apply Coupon
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -236,7 +219,7 @@
       <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
         <div class="your-order-payment">
           <div class="your-order">
-            <h2 class="order-title mb-4">Your Order</h2>
+            <h2 class="order-title mb-4">Your Orders</h2>
 
             <div class="table-responsive-sm order-table">
               <table
@@ -257,15 +240,16 @@
                   <% cardata.items.forEach((item)=>{  %> 
                   <tr>
                     <td class="text-left"><%= item.name %></td>
-                    <td>₹ <%= item.Salesprice %></td>
+                    <% const price = item.priceafteroffer ? item.priceafteroffer : item.Salesprice  %>
+                    <td>₹ <%= price %></td>
                     <td><%= item.size %></td>
                     <td><%= item.quantity %></td>
-                    <td>₹ <%= item.quantity * item.Salesprice %></td>
+                    <td>₹ <%= item.quantity * price %></td>
                   </tr>
                   <!-- // find the grand total of all products -->
 
                   
-                  <%  grandTotal = grandTotal + (item.quantity * item.Salesprice); %>
+                  <%  grandTotal = grandTotal + (item.quantity * price); %>
 
                  <!-- // find the grand total of all products -->
                 <% }); %>
@@ -287,42 +271,17 @@
           <hr />
 
           <div class="your-payment">
-            <h2 class="payment-title mb-3">payment method</h2>
+            <h2 class="payment-title mb-3">Discount Codes</h2>
             <div class="payment-method">
               <div class="payment-accordion">
                 <div id="accordion" class="payment-section">
-                  <div class="card mb-2">
-                    <div class="card-header">
-                      <a
-                        class="card-link"
-                        data-toggle="collapse"
-                        href="#collapseOne"
-                        >Cash on Delivery
-                      </a>
-                    </div>
-                    <div
-                      id="collapseOne"
-                      class="collapse"
-                      data-parent="#accordion"
-                    >
-                      <div class="card-body">
-                        <input style=" margin: 3px;" class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery" value="COD" required>
-
-                        
-                        <label style="margin-left: 20px;" class="form-check-label" for="cashOnDelivery">
-                          Select Cash On Delivery
-                      
-                      </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- <div class="card mb-2">
+                    <div class="card mb-2">
                     <div class="card-header">
                       <a
                         class="collapsed card-link"
                         data-toggle="collapse"
                         href="#collapseTwo"
-                        >Cheque Payment</a
+                        >Enter your coupon code</a
                       >
                     </div>
                     <div
@@ -331,21 +290,70 @@
                       data-parent="#accordion"
                     >
                       <div class="card-body">
-                        <p class="no-margin font-15">
-                          Please send your cheque to Store Name, Store Street,
-                          Store Town, Store State / County, Store Postcode.
-                        </p>
+                        <div>
+                          <div class="discount-coupon">
+                            <div id="coupon" class="coupon-dec tab-pane active">
+                              <p class="margin-10px-bottom">
+                                Enter your coupon code if you have one.
+                              </p>
+                              <label class="required get" for="coupon-code"
+                                ><span class="required-f">*</span> Coupon</label
+                              >
+                              <input id="coupon-code" required="" type="text" class="mb-3" />
+                              <button class="coupon-btn btn" type="button">
+                                Apply Coupon
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   </div>
-                  <div class="card margin-15px-bottom border-radius-none">
+                  <hr />
+                  <br>
+
+                  <h2 class="payment-title mb-3">payment method</h2>
+                  <div class="card mb-2">
+                    <div class="card-header">
+                      <a
+                        class="card-link"
+                        data-toggle="collapse"
+                        href="#collapseOne"
+                        >Choose Your Payment Method
+                      </a>
+                    </div>
+                    <div
+                      id="collapseOne"
+                      class="collapse"
+                      data-parent="#accordion"
+                    >
+                      <div class="card-body">
+                        <div>
+                        <input style=" margin: 3px;" class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery" value="COD" required>
+                        <label style="margin-left: 20px;" class="form-check-label" for="cashOnDelivery">
+                          Select Cash On Delivery
+                        </div>
+                        <br>
+                        <div>
+                          <input style=" margin: 3px;" class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery" value="onlinepayment" required>
+                          <label style="margin-left: 20px;" class="form-check-label" for="cashOnDelivery">
+                            Online Transaction
+                          </div>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <!-- <div class="card margin-15px-bottom border-radius-none">
                     <div class="card-header">
                       <a
                         class="collapsed card-link"
                         data-toggle="collapse"
                         href="#collapseThree"
                       >
-                        PayPal
+                        Online Payment
                       </a>
                     </div>
                     <div
@@ -358,10 +366,12 @@
                           Pay via PayPal; you can pay with your credit card if
                           you don't have a PayPal account.
                         </p>
+
+                        
                       </div>
                     </div>
-                  </div>
-                  <div class="card mb-2">
+                  </div> -->
+                  <!-- <div class="card mb-2">
                     <div class="card-header">
                       <a
                         class="collapsed card-link"
@@ -375,8 +385,8 @@
                       id="collapseFour"
                       class="collapse"
                       data-parent="#accordion"
-                    >
-                      <div class="card-body">
+                    > -->
+                      <!-- <div class="card-body">
                         <fieldset>
                           <div class="row">
                             <div
@@ -471,17 +481,19 @@
                             </div>
                           </div>
                         </fieldset>
-                      </div> -->
+                      </div>
                     </div>
-                  </div>
+                  </div> -->
+
+
                 </div>
               </div>
               <form id="orderForm" method="post" action="/Placeorder">
                 <input type="hidden" id="selectedAddressInput" name="selectedAddress" value="">
                 <input type="hidden" id="selectedPaymentMethodInput" name="paymentMethod" value="">
-                <input type="text" name="grandtotal" value="<%= grandTotal %>">
+                <input type="hidden" name="grandtotal" value="<%= grandTotal %>">
                 <div class="order-button-payment">
-                    <button class="btn" type="submit">
+                    <button style="font-size: 10px;" class="btn" type="submit">
                         Place order
                     </button>
                 </div>

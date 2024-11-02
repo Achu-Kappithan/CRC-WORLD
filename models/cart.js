@@ -27,7 +27,11 @@ const cartSchema = mongoose.Schema({
                 Salesprice: {
                     type: Number,
                     required: true
-                },stock: {
+                },
+                priceafteroffer: {
+                    type: Number,
+                },
+                stock: {
                     type: Number,
                     required: true,
                     min: 0,

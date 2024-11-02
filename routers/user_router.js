@@ -4,6 +4,7 @@ const path = require("path");
 const bodyparser =require("body-parser");
 const page404 = require("../middlewares/user404load")
 const authmiddleware = require("../middlewares/user_auth")
+const validateCartPrices = require("../middlewares/validatecart")
 
 const auth = authmiddleware.is_authaticated;
 const verify = authmiddleware.is_alredylogined
@@ -15,7 +16,8 @@ const userproduct_controller = require("../controllers/userproduct_controller");
 const usercart_controller = require("../controllers/usercart_controller");
 const checkout_controller = require("../controllers/user_checkout");
 const userprofile_controller = require("../controllers/userprofile_controller");
-const userwishlist_controller = require("../controllers/userwishlist_controller")
+const userwishlist_controller = require("../controllers/userwishlist_controller");
+const order_controller = require("../controllers/userorder_controller");
 
 user_route.use(bodyparser.urlencoded({ extended: true }));
 
@@ -50,16 +52,15 @@ user_route.get("/user_shop",auth,userproduct_controller.load_shop);
 user_route.post("/product_filter", userproduct_controller.filterProducts);
 
 // load cart patge
-user_route.get("/load_usercart",auth,usercart_controller.load_cart);
+user_route.get("/load_usercart",auth,validateCartPrices,usercart_controller.load_cart);
 user_route.post("/addto_cart",usercart_controller.addto_cart);
 user_route.post("/remove_cartitem",usercart_controller.remove_cartitem);
 user_route.post("/update_quntity",usercart_controller.update_quentity);
 
 // checkout page
-user_route.get("/user_checkout",auth,checkout_controller.load_checkout);
+user_route.get("/user_checkout",auth,validateCartPrices,checkout_controller.load_checkout);
 user_route.post("/checkoutedit_address",auth,checkout_controller.checkoutupdate_address);
 user_route.post("/checkout_addaddress",auth,checkout_controller.checkout_newaddress);
-user_route.post("/Placeorder",auth,checkout_controller.place_order)
 
 //user profile 
 user_route.get("/user_Profile",auth,userprofile_controller.load_userprofile);
@@ -74,6 +75,12 @@ user_route.post("/order_cancelled",userprofile_controller.cancell_order);
 user_route.get("/load_wishlist",userwishlist_controller.load_whishlist);
 user_route.post("/addto_wishlist",userwishlist_controller.addto_wishlist);
 user_route.post("/remove_item",userwishlist_controller.remove_wishlistitem);
+
+
+// user order controller 
+
+user_route.post("/Placeorder",auth,order_controller.place_order);
+
 
 
 

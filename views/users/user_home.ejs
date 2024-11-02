@@ -174,7 +174,7 @@
                 
                 <div class="product-price">
                   <span class="old-price"> <%= productlist[i].sizes[2].Actualprice %> </span>
-                  <span class="price">  <%= helpers.formatPrice(helpers.getAvailablePrice(productlist[i].sizes)) %> </span>
+                  <span class="price">  <%= priceHelper(productlist[i].sizes) %> </span>
                 </div>
               </div>
             </div>
@@ -319,7 +319,7 @@
                 <!-- product price -->
                 <div class="product-price">
                   <span class="old-price"><%= batlist[i].sizes[2].Actualprice %></span>
-                  <span class="price"><%= helpers.formatPrice(helpers.getAvailablePrice(batlist[i].sizes)) %></span>
+                  <span class="price"><%= priceHelper(batlist[i].sizes) %></span>
                 </div>
               </div>
             </div>
@@ -420,7 +420,7 @@
                   <!-- product price -->
                   <div class="product-price">
                     <span class="old-price"><%= gadlist[i].sizes[2].Actualprice %></span>
-                    <span class="price"><%= helpers.formatPrice(helpers.getAvailablePrice(gadlist[i].sizes)) %></span>
+                    <span class="price"><%= priceHelper(gadlist[i].sizes) %></span>
                   </div>
                 </div>
               </div>

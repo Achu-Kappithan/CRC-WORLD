@@ -6,8 +6,10 @@ const bcrypt = require("bcrypt");
 const user_otp = require("../models/otp");
 const nodemailer = require("nodemailer");
 const otp_generator = require("otp-generator");
-const priceHelper = require("../utils/pricehelper");
+const { price: priceHelper }  = require("../utils/pricehelper");
 const Wishlist = require("../models/wishlist")
+const { applyofferprice } = require("../utils/offeruils")
+const Cart = require("../models/cart")
 
 const crypto = require("crypto");
 require("dotenv").config();
@@ -335,6 +337,7 @@ const loadhome = async (req, res) => {
       })
         .populate("category")
         .populate("brand");
+      batlist = await applyofferprice(batlist);
 
     }
     if(gadgetcat){
@@ -344,19 +347,24 @@ const loadhome = async (req, res) => {
       })
         .populate("category")
         .populate("brand");
+      gadlist =  await applyofferprice(gadlist);
+
     }
     const branddata = await brand.find({ is_deleted: false });
 
-    const productlist = await Prouduct.find({ is_deleted: false })
+    let productlist = await Prouduct.find({ is_deleted: false })
       .populate("category")
       .populate("brand");
+    productlist = await applyofferprice(productlist);
+
+      console.log("product in the home",productlist)
 
     return res.render("user_home", {
       productlist,
       batlist,
       gadlist,
       branddata,
-      helpers: priceHelper,
+      priceHelper,
       wishlist :wishlistdata
     });
   } catch (err) {

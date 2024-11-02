@@ -34,7 +34,8 @@
                                     <% cartdata.items.forEach(item => { %>
 
                                         <%
-                                        const itemTotal = item.quantity * item.Salesprice;
+                                        let curprice = item.priceafteroffer ? item.priceafteroffer : item.Salesprice
+                                        const itemTotal = item.quantity * curprice;
                                          totalPrice += itemTotal;
                                     %>
 
@@ -52,8 +53,9 @@
                                         Size:<% "  " %><%= item.size %>
                                         </div>
                                     </td>
+                                    <% const price = item.priceafteroffer ? item.priceafteroffer : item.Salesprice  %>
                                     <td class="cart__price-wrapper cart-flex-item">
-                                        <span class="money">₹<%= item.Salesprice %></span>
+                                        <span class="money">₹<%= price %></span>
                                     </td>
                                     <td class="cart__update-wrapper cart-flex-item text-right">
                                         <div class="cart__qty text-center">

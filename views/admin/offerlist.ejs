@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../layouts/admin/admin_header.ejs") %>
+
+  <body>
+    <%- include("../layouts/admin/slidbar.ejs") %>
+
+    <main class="main-wrap">
+      <%- include("../layouts/admin/navbar.ejs") %>
+
+      <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Offers List </h2>
+                <p>All provided offers listed  here.</p>
+            </div>
+            <div>
+                <div>
+                    <a href="/loadcreateoffer" class="btn btn-primary"
+                      ><i class="text-muted material-icons md-post_add"></i>Create New offer</a
+                    >
+                  </div>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-body">
+
+                <div class="col-lg-8">
+                    <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link active"
+                          id="details-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#details"
+                          type="button"
+                          role="tab"
+                        >
+                          Product Offer
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="addresses-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#addresses"
+                          type="button"
+                          role="tab"
+                        >
+                          Category Offer
+                        </button>
+                      </li>
+                      <!-- <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="add-address-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#add-address"
+                          type="button"
+                          role="tab"
+                        >
+                          Add Address
+                        </button>
+                      </li> -->
+                    </ul>
+                    <div style="width: 1300px;"  class="tab-content" id="profileTabsContent">
+                      <div  class="tab-pane fade show active" id="details" role="tabpanel">
+                        <div class="card shadow-sm">
+                          <div class="card-body">
+                            <h5 class="card-title mb-4">Product Offer</h5>
+                                <div class="card mb-4">
+                                    <header class="card-header">
+                                        <div class="row gx-3">
+                                            <div class="col-lg-4 col-md-6 me-auto">
+                                                <input type="text" placeholder="Search..." class="form-control">
+                                            </div>
+                                            <div class="col-lg-2 col-6 col-md-3">
+                                                <select class="form-select">
+                                                    <option>Status</option>
+                                                    <option>Active</option>
+                                                    <option>Disabled</option>
+                                                    <option>Show all</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </header> 
+                                    <div class="card-body">
+                                      <div class="table-responsive">
+                                          <table class="table table-hover table-bordered align-middle">
+                                              <thead>
+                                                  <tr>
+                                                      <th>#ID</th>
+                                                      <th scope="col">Name</th>
+                                                      <th scope="col">Offer (%)</th>
+                                                      <th scope="col">Status</th>
+                                                      <th scope="col">Start Date</th>
+                                                      <th scope="col">End Date</th>
+                                                      <th scope="col">Action</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <% productdata.forEach((item, index) => { %>
+                                                      <% if (item.productOffer) { %>
+                                                          <tr>
+                                                              <td><%= item.productOffer._id %></td>
+                                                              <td><b><%= item.productOffer.offerName %></b></td>
+                                                              <td><%= item.productOffer.offerDiscountPercentage %></td>
+                                                              <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                                              <td><%= new Date(item.productOffer.offerStartDate).toLocaleDateString() %></td>
+                                                              <td><%= new Date(item.productOffer.offerExpiryDate).toLocaleDateString() %></td>
+                                                              <td class="text-end">
+                                                                  <div class="dropdown">
+                                                                      <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> 
+                                                                          <i class="material-icons md-more_horiz"></i> 
+                                                                      </a>
+                                                                      <div class="dropdown-menu dropdown-menu-end">
+                                                                          <a class="dropdown-item" href="/load_editproductoffer?id=<%= item._id %>">Edit info</a>
+                                                                          <form method="post" action="/romove_productoffer?id=<%=item._id  %>">
+                                                                          <button  class="dropdown-item text-danger" href="#">Remove</button>
+                                                                          </form>
+                                                                      </div>
+                                                                  </div>
+                                                              </td>
+                                                          </tr>
+                                                      <% } %>
+                                                  <% }) %>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                                </div> 
+                                
+                            </div>
+                        </div>
+                      </div>
+          
+                      <!-- Addresses Tab -->
+                      <div class="tab-pane fade" id="addresses" role="tabpanel">
+                        <div class="card shadow-sm">
+                          <div class="card-body">
+                            <h5 class="card-title mb-4">Category offer</h5>
+                            <div class="card mb-4">
+                                <header class="card-header">
+                                    <div class="row gx-3">
+                                       
+                                        
+                                        
+                                    </div>
+                                </header> 
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <div class="container mt-4">
+                                                <div class="row">
+                                                  <% category.forEach(category => { %>
+                                                    <div class="col-md-12 mb-4">
+                                                      <div class="card">
+                                                        <div class="card-body">
+                                                          <h5 style="font-weight: 900;" class="card-title"><%= category.name %></h5>
+                                                          <% if (category.categoryoffer) { %>
+                                                            <div id="existingoffers-<%=category._id %>">
+                                                                <h6>Offer Details:</h6>
+                                                                <ul>
+                                                                <li><strong>Offer Name:</strong> <%= category.categoryoffer.offerName %></li>
+                                                                <li><strong>Description:</strong> <%= category.categoryoffer.offerdiscription %></li>
+                                                                <li><strong>Discount Percentage:</strong> <%= category.categoryoffer.offerDiscountPercentage %>%</li>
+                                                                <li><strong>Start Date:</strong> <%= new Date(category.categoryoffer.offerStartDate).toLocaleDateString() %></li>
+                                                                <li><strong>Expiry Date:</strong> <%= new Date(category.categoryoffer.offerExpiryDate).toLocaleDateString() %></li>
+                                                                <li><strong>Status:</strong> <p class=  "badge rounded-pill alert-success"  %> ><%= category.categoryoffer.offerStatus ? "Active" : "Inactive" %></p></li>
+                                                                </ul>
+                                                                <div>
+                                                                    <br>
+                                                                    <a href="/load_catofferedit?id=<%= category._id %>" style="font-size: 0.75rem; padding: 2px 6px;" class="btn btn-primary">
+                                                                    Edit Offer
+                                                                    </a>
+                                                                    <button style="font-size: 0.75rem; padding: 2px 6px;" class="btn btn-danger" onclick="removeOffer('<%= category._id %>')">
+                                                                    Remove Offer
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                          <% } else { %>
+                                                            <p style="color: red;">No offers available for this category.</p>
+                                                            <a href="/loadcreateoffer" style="font-size: 0.75rem; padding: 2px 6px;" class="btn btn-primary">
+                                                                Add new
+                                                            </a>
+                                                          <% } %>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  <% }); %>
+                                                </div>
+                                              </div>
+                                              
+                                        </table>
+                                    </div> 
+                                </div> 
+                            </div> 
+                      </div>
+                        </div>
+                      </div>
+          
+                      <!-- Add Address Tab -->
+                      <!-- <div class="tab-pane fade" id="add-address" role="tabpanel">
+                        <div class="card shadow-sm">
+                          <div class="card-body">
+                            <h5 class="card-title mb-4">Add New Address</h5>
+                            <form id="referralOfferForm">
+                                <div class="mb-4">
+                                    <label class="form-label">Offer Name</label>
+                                    <input type="text" class="form-control" placeholder="Enter offer name" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Referral Type</label>
+                                    <select class="form-select">
+                                        <option value="">Select Referral Type</option>
+                                        <option>First Purchase</option>
+                                        <option>Every Purchase</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Discount Percentage</label>
+                                    <input type="number" class="form-control" placeholder="Enter discount percentage" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Offer</button>
+                                </div>
+                            </form>
+                        </div>
+                        </div>
+                      </div> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+    </section> 
+
+
+      
+      
+
+      <%- include("../layouts/admin/admin_footer.ejs") %>
+
+
+    </main>
+    <!-- content-main end// -->
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="assets/js/vendors/chart.js"></script>
+
+    <script src="assets/js/main.js" type="text/javascript"></script>
+    <script src="assets/js/custom-chart.js" type="text/javascript"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        
+    <script>
+      const message = "<%= message %>";
+      const type = "<%= type %>";
+
+      if (message && message.length > 0) {
+          Swal.fire({
+            icon: type, // 'success', 'error', 'warning', 'info'
+          title: message,
+          showConfirmButton: true,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timerProgressBar: true,
+          timer: 3000,
+          });
+      }
+  </script>
+
+
+
+
+    <script>
+        function removeOffer(id){
+            Swal.fire({
+            title: 'Change Order Status?',
+            text: "You are about to change the status of this order. ?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, change it!'
+        }).then((result)=>{
+            if(result.isConfirmed){
+                fetch(`/removecatoffer?id=${id}`,{
+                    method :"POST",
+                })
+                .then(response => response.json())
+                .then((data)=>{
+                    if(data.success){
+                        Swal.fire({
+                    icon: 'success',
+                    title: 'Status Updated',
+                    text: data.message,
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 4000,            
+                    });
+                    const offerdata = document.getElementById(`existingoffers-${id}`)
+                    console.log("offerdata",offerdata)
+                      if(offerdata){
+                        offerdata.remove();
+                      }
+
+                    }else{
+                        Swal.fire({
+                    icon: 'error',
+                    title: 'Error updating status',
+                    text: data.message,
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 4000,
+                    })
+                    }
+                })
+            }
+        })
+        }
+    </script>
+  </body>
+</html>

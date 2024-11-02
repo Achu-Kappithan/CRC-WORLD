@@ -13,7 +13,8 @@ const pageload404 = require("../middlewares/404load")
 const admin_controller = require("../controllers/admin_controller");
 const brand_controller = require("../controllers/brnd_controller");
 const product_controller = require("../controllers/product_controller");
-const order_controller  = require("../controllers/admin_order_controller")
+const order_controller  = require("../controllers/admin_order_controller");
+const offer_controller = require("../controllers/admin_offercontroller");
 
 const upload = require('../config/multer');
 const uploadProductImages = require('../config/productMulter'); 
@@ -62,6 +63,19 @@ admin_route.post("/sortbystatus",product_controller.admin_productsort);
 admin_route.get("/orders_list",auth,order_controller.load_orderlist);
 admin_route.get("/load_orderdetails",auth,order_controller.load_orderdetails);
 admin_route.post("/change_status",auth,order_controller.Update_orderstatus);
+
+// offer controller
+admin_route.get("/load_offerlist",offer_controller.load_offerlist);
+admin_route.get("/loadcreateoffer",offer_controller.load_newoffer);
+admin_route.post("/add_categoryoffer",offer_controller.add_categoryoffer);
+admin_route.post("/removecatoffer",offer_controller.remove_catoffer);
+admin_route.get("/load_catofferedit",offer_controller.load_editcatoffer);
+admin_route.post("/update_catoffer",offer_controller.update_catoffer);
+admin_route.post("/add_productoffer",offer_controller.add_productoffer);
+admin_route.get("/load_editproductoffer",offer_controller.load_editProductoffer);
+admin_route.post("/update_productoffer",offer_controller.update_productoffer);
+admin_route.post("/romove_productoffer",offer_controller.remove_productoffer);
+
 
 
 

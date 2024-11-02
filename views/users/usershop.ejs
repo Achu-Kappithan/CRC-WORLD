@@ -85,7 +85,7 @@
                                             </div>
                                             <div class="product-price">
                                                 <span class="old-price"><%= productdata[i].sizes[2].Actualprice %></span>
-                                                <span class="price"><%= helpers.formatPrice(helpers.getAvailablePrice(productdata[i].sizes)) %></span>
+                                                <span class="price"><%= priceHelper(productdata[i].sizes)%></span>
                                             </div>
                                             
                                             <div class="product-review">
@@ -344,6 +344,26 @@
     
 <script>
 
+
+const price = function(size) {
+  let finalprice = 0;
+
+  for (let value of size) {
+    if (value.priceafteroffer !== undefined && value.priceafteroffer > 0) {
+      finalprice = value.priceafteroffer;
+    } else if (value.Salesprice > 0) {
+      finalprice = value.Salesprice;
+    }
+
+    if (finalprice > 0) {
+      return Math.round(finalprice);
+    }
+  }
+
+  return "Unavailable";
+};
+
+
 document.getElementById('applyFilterBtn').addEventListener('click', function() {
     
     let selectedCategories = [];
@@ -454,13 +474,8 @@ function updateProductList(products) {
                         <span class="old-price">${product.sizes[2]?.Actualprice || ''}</span>
                         <span class="price">
                              ${
-                                product.sizes[0]?.Salesprice > 0 
-                                ? product.sizes[0].Salesprice 
-                                : product.sizes[1]?.Salesprice > 0 
-                                ? product.sizes[1].Salesprice 
-                                : product.sizes[2]?.Salesprice > 0 
-                                ? product.sizes[2].Salesprice 
-                                : 'Unavailable'
+                                price(product.sizes)
+
                             }
                         </span>
                     </div>

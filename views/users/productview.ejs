@@ -144,9 +144,16 @@
                                         </div>
                                          <p class="product-single__price product-single__price-product-template">
                                             <span class="visually-hidden">Regular price</span>
-                                            <s id="ComparePrice-product-template"><span class="money"><%= productdata.sizes[2].Actualprice%></span></s>
+                                            <s id="ComparePrice-product-template"><span id="salesprice" class="money"><%= productdata.sizes[2].Actualprice%></span></s>
                                             <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
-                                                <span id="ProductPrice-product-template">₹<span class="money" id="product-price"><%= productdata.sizes[0].Salesprice %> </span></span>
+
+                                              <% let price = 0 
+                                              if(productdata.sizes[0].priceafteroffer !== undefined && productdata.sizes[0].priceafteroffer > 0){
+                                                price = productdata.sizes[0].priceafteroffer
+                                              }else{
+                                                price =  productdata.sizes[0].Salesprice
+                                              }  %>
+                                                <span id="ProductPrice-product-template">₹<span class="money" id="product-price"><%= price %> </span></span>
                                             </span>
                                             <span class="discount-badge"> <span class="devider">|</span>&nbsp;
                                                 <span>You Save</span>
@@ -389,7 +396,7 @@
                                             <div class="details">
                                             	<a class="grid-view-item__title" href="#"><%= item.productname %></a>
                                                 <% let price = item.sizes.find(size => size.Salesprice > 0)?.Salesprice %>
-                                              	<div class="grid-view-item__meta"><span class="product-price__price"><span class="money"></span><%= price %></span></div>
+                                              	<div class="grid-view-item__meta"><span class="product-price__price"><span class="money"></span><%= priceHelper(item.sizes) %></span></div>
                                                 <div class="product-review">
                                                     <i class="font-13 fa fa-star"></i>
                                                     <i class="font-13 fa fa-star"></i>
@@ -401,7 +408,7 @@
                                           </div>
                                         </div>
                                         <% }) %>
-                                     </div>
+                                     </div> 
                                 </div>
                                 <!--Product Feature-->
 
@@ -490,8 +497,19 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            document.getElementById('product-price').textContent = data.size.Salesprice;
+
+            console.log(data)
+
+          let price = 0 
+          if(data.size.priceafteroffer !== undefined && data.size.priceafteroffer > 0){
+            price = data.size.priceafteroffer
+          }else{
+            price =  data.size.Salesprice
+          }  
+            
+            document.getElementById('product-price').textContent = Math.round(price);
             document.getElementById('product-stock').textContent = data.size.stock;
+            document.getElementById('salesprice').textContent = data.size.Salesprice;
   
             const stockStatusElement = document.getElementById('stock-status');
             const stock = data.size.stock;
@@ -513,6 +531,7 @@
         .catch(error => console.error('Error fetching size details:', error));
   }
 
+
   window.onload = function() {
       const defaultSizeId = '<%= productdata.sizes[0]._id %>';  
       updateProductDetails(defaultSizeId);  
@@ -526,11 +545,13 @@
   button.addEventListener("click", function() {
     const productId = this.dataset.productId;
     const priceElement = document.getElementById("product-price");
-    const Salesprice = priceElement.textContent;
+    const Offerprice = priceElement.textContent;
     const countDisplay = document.getElementById('countDisplay');
     const quantity = parseInt(countDisplay.textContent);
     const stockElement = document.getElementById("product-stock");
     const stock = parseInt(stockElement.textContent);
+    const salespriceElement = document.getElementById('salesprice');
+    const Salesprice = salespriceElement.textContent;
 
     const selectedSizeRadio = document.querySelector('input[name="size-option"]:checked');
     const Cartsize = selectedSizeRadio ? selectedSizeRadio.value : null;
@@ -569,7 +590,7 @@
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ productId, quantity, Salesprice, stock, Cartsize }),
+      body: JSON.stringify({ productId, quantity, Salesprice, stock, Cartsize, Offerprice }),
     })
     .then(response => response.json())
     .then(data => {

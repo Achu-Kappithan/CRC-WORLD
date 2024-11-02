@@ -1,7 +1,8 @@
 const product = require("../models/product");
 const brand = require("../models/brand");
 const category = require("../models/category");
-const priceHelper = require("../utils/pricehelper");
+const { price: priceHelper } = require("../utils/pricehelper");
+const { applyofferprice } = require("../utils/offeruils")
 const Wishlist = require("../models/wishlist");
 
 // for loading product view page
@@ -9,14 +10,16 @@ const load_productview = async (req, res) => {
   try {
     const size = "size";
     const id = req.query.id;
-    const productdata = await product.findOne({ _id: id });
+    let productdata = await product.findOne({ _id: id });
+    console.log("productdata",productdata)
 
-    const relatedproducts = await product.find({
+
+    let relatedproducts = await product.find({
       $or:[{category:productdata.category},
         {brand:productdata.brand}]});
 
     // console.log("related productdata ",relatedproducts)
-    return res.render("productview", { productdata, helpers: priceHelper ,relatedproducts });
+    return res.render("productview", { productdata, priceHelper ,relatedproducts });
   } catch (err) {
     console.log("error for loading product view page",err);
   }
@@ -54,15 +57,17 @@ const load_shop = async (req, res) => {
     const wishlistdata = await Wishlist.findOne({userId:userid})
     const branddata = await brand.find({ is_deleted: false });
     const catdata = await category.find({ is_deleted: false });
-    const productdata = await product.find({is_deleted: false})
+    let productdata = await product.find({is_deleted: false})
       .populate("brand")
       .populate("category");
+      productdata = await applyofferprice(productdata)
+
       
     return res.render("usershop", {
       productdata,
       branddata,
       catdata,
-      helpers: priceHelper,
+      priceHelper,
       message,
       type,
       wishlist :wishlistdata
@@ -115,6 +120,7 @@ const filterProducts = async (req, res) => {
       .sort(sortOption)
       .populate("brand")
       .populate("category");
+    products = await applyofferprice(products)
 
     console.log("this is productfilter data", products);
 

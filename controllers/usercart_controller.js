@@ -26,12 +26,12 @@ const load_cart = async (req, res) => {
 
 const addto_cart = async (req, res) => {
   try {
-    const { productId, quantity, Salesprice, stock, Cartsize } = req.body;
+    const { productId, quantity, Salesprice, stock, Cartsize , Offerprice } = req.body;
     const userId = req.session.user_id;
-    // console.log(
-    //   "this is the data  get form the frondend for adding cart ",
-    //   req.body
-    // );
+    console.log(
+      "this is the data  get form the frondend for adding cart ",
+      req.body
+    );
 
     if (!userId) {
       return res.status(401).json({
@@ -73,6 +73,7 @@ const addto_cart = async (req, res) => {
             name: product.productname,
             quantity: quantity,
             Salesprice: Salesprice,
+            priceafteroffer : Offerprice,
             stock: stock,
             productimage: product.productimage,
             Taxrate: product.Taxrate,

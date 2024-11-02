@@ -1,4 +1,34 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose");  
+
+const offerSchema =  mongoose.Schema({
+    offerName: {
+        type: String,
+        required: true
+    },
+    offerdiscription : {
+        type : String,
+        required : true
+    },
+    offerDiscountPercentage: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 100
+    },
+    offerStartDate: {
+        type: Date,
+        required: true
+    },
+    offerExpiryDate: {
+        type: Date,
+        required: true
+    },
+    offerStatus: {
+        type: Boolean,
+        default:true
+    }
+},{ timestamps: true })
+
 
 const sizeSchema = mongoose.Schema({
     size: {
@@ -20,6 +50,10 @@ const sizeSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    priceafteroffer :{
+        type: Number,
+        default : 0
+    }
 
 });
 
@@ -62,9 +96,10 @@ const productSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    sizes: [sizeSchema] ,
     
+    productOffer: offerSchema 
 
-    sizes: [sizeSchema] 
 });
 
 module.exports = mongoose.model('Product', productSchema);
