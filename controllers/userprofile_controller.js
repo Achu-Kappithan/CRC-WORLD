@@ -146,7 +146,8 @@ const load_myorder = async (req,res)=>{
         const message = req.flash("message");
         const type =  req.flash("type");
         const userId = req.session.user_id;
-        const order_details = await Orders.find({ userId: userId });
+        const orders = await Orders.find({ userId: userId })
+        const order_details = orders.reverse()
         // console.log("this is orderdetails",order_details)
         return res.status(200).render("myorders",{orderdetails:order_details ,message , type})
         

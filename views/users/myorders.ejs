@@ -1,6 +1,78 @@
 
 <%- include("../layouts/user/header.ejs") %>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+<style>
+    
+    .btn-cancel {
+    background-color: #ff6666;
+    color: white;
+    border-color: white;
+    width: 150px;
+    font-weight: bold;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.btn-cancel:hover {
+    background-color: #ff4d4d;
+    border-color: #ff4d4d;
+}
+
+.btn-return {
+    background-color: #ffc107;
+    color: white;
+    border-color: #ffc107;
+    width: 150px;
+    font-weight: bold;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.btn-return:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+}
+
+.btn-summary {
+    background-color: #6c757d;
+    color: white;
+    border-color: #6c757d;
+    width: 150px;
+    font-weight: bold;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.btn-summary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+}
+
+.btn-retry {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+    width: 150px;
+    font-weight: bold;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.btn-retry:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+}
+
+/* Additional spacing adjustments for a more polished layout */
+p {
+    margin-bottom: 1rem;
+}
+
+</style>
+
     <!-- //my orders page -->
 
     <div class="row justify-content-center">
@@ -47,36 +119,65 @@
                                     <strong>Order ID:</strong> <%= order._id.toString() %><br>
                                     <strong>Order Date:</strong> <%= new Date(order.orderDate).toLocaleDateString() %><br>
                                     <strong>Total Price:</strong> ₹<%= order.totalPrice.toFixed(2) %><br>
-                                    <strong>Payment Method:</strong> <%= order.paymentMethod %><br>
-                                    <strong>Payment Status:</strong> <%= order.paymentStatus %>
+                                    <strong>Payment Method:</strong> <%= order.paymentMethod %><br><br>
+                                    <strong>Payment Status:</strong>
+                                        <% if (order.paymentStatus === 'Success'|| order.paymentStatus === 'COD') { %>
+                                            <h4 class="badge rounded-pill alert-success" style="font-size: 1.1em;">
+                                                <%= order.paymentStatus %>
+                                            </h4>
+                                        <% } else if (order.paymentStatus === 'Pending') { %>
+                                            <h4 class="badge rounded-pill alert-warning" style="font-size: 1.1em;">
+                                                <%= order.paymentStatus %>
+                                            </h4>
+                                        <% } else if (order.paymentStatus === 'Failed') { %>
+                                            <h4 class="badge rounded-pill alert-danger" style="font-size: 1.1em;">
+                                                <%= order.paymentStatus %>
+                                            </h4>
+                                        <% } %>
                                 </p>
+                                <% if(order.paymentStatus === 'Pending') { %>
+                                        <input id="re-total_amt" type="hidden" value="<%= order.totalPrice %>">
+                                        <input id="re-order_id" type="hidden" value ="<%= order._id %>">
+                                    <button onclick="startPayment()"  
+                                        class="btn btn-danger btn-retry me-2 orderRetrybtn">
+                                        Retry Payment
+                                    </button>
+
+                                <% } %>
                             </div>
     
+
                             <div class="col-md-4">
                                 <p>
                                     <% if(order.status !== "Cancelled" && order.status !== "Delivered") { %>
                                         <button id="hidebtn-<%= order._id %>" data-id="<%= order._id %>" 
                                             type="button" 
-                                            class="btn btn-outline-primary me-2 ordercanellbtn" 
-                                            style="width: 200px;">
+                                            class="btn btn-primary btn-cancel me-2 ordercanellbtn">
                                             Cancel Order
                                         </button>
-                                        <br><br><br>
+                                        <br><br>
                                     <% } %>
-
+                            
                                     <% if(order.status === "Delivered") { %>
                                         <button type="button" 
-                                            class="btn btn-outline-primary me-2 orderReturnbtn" 
-                                            style="width: 200px;">
+                                            class="btn btn-warning btn-return me-2 orderReturnbtn">
                                             Return Order
                                         </button>
-                                        <br><br><br>
+                                        <br><br>
                                     <% } %>
-
-
-                                    <a href="/order_summary?orderid=<%= order ._id %>" class="btn btn-outline-secondary" style="width: 200px;" >Order Summary</a>
+                            
+                                    <a href="/order_summary?orderid=<%= order._id %>" 
+                                       class="btn btn-secondary btn-summary" >
+                                       Order Summary
+                                    </a>
+                                    <br><br>
+                                    
+                                    
                                 </p>
                             </div>
+                            
+
+
                         </div>
     
                         <% if(order.returnReason) { %>
@@ -203,4 +304,81 @@
 
     })
 </script>
+
+<!-- script for  retraypayment -->
+<script>
+    async function startPayment() {
+        const totalamt = document.getElementById("re-total_amt").value
+        const order_id = document.getElementById("re-order_id").value
+        console.log("details",totalamt,order_id)
+
+        const response = await fetch("/create-order", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ amount:totalamt , order_id }) 
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const db_orderid = data.db_orderid;
+            const options = {
+                key: "<%= process.env.RAZORPAY_KEY_ID %>", 
+                amount: data.order.amount,
+                currency: "INR",
+                name: "CRC WORLD",
+                description: "Thanks for your order",
+                order_id: data.order.id,
+                db_orderid : data.db_orderid,
+                handler: function (response) {
+                    response.db_orderid = db_orderid;
+                    verifyPayment(response);
+                },
+                theme: {
+                    color: "#3399cc"
+                }
+            };
+            const rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            alert("Failed to create order. Try again.");
+        }
+    }
+
+    async function verifyPayment(response) {
+    const verifyResponse = await fetch("/verify-payment", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            ...response,
+            db_orderid: response.db_orderid 
+        })
+    });
+
+    const data = await verifyResponse.json();
+    if (data.success) {
+        window.location.href = data.redirectUrl; 
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Payment Failed!',
+            text: 'Your payment was not successful. Please try again or go to your orders.',
+            showCancelButton: true,
+            confirmButtonText: 'Retry',
+            cancelButtonText: 'Go to My Orders'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                startPayment(); 
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                window.location.href = '/my_orders'; 
+            }
+        });
+    }
+}
+</script>
+
 

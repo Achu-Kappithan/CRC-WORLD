@@ -80,6 +80,9 @@ user_route.post("/remove_item",userwishlist_controller.remove_wishlistitem);
 // user order controller 
 
 user_route.post("/Placeorder",auth,order_controller.place_order);
+user_route.post("/create-order",order_controller.razorpay_order);
+user_route.post("/verify-payment",order_controller.verify_payment);
+user_route.get("/load_paymentsuccess",order_controller.load_paymentsuccess);
 
 
 

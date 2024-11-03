@@ -2,6 +2,7 @@ const Address = require("../models/address")
 const Cart = require("../models/cart")
 const Order = require("../models/order")
 const Product = require("../models/product")
+const razorpay = require("../config/razorpayconfig")
 
 
 // for placeing a new order
@@ -94,8 +95,78 @@ const place_order = async (req, res) => {
     }
   };
 
+  // for razorpay payment intragration
+
+
+const  razorpay_order = async (req,res)=>{
+    const amount = req.body.amount * 100; 
+    const db_orderid = req.body.order_id;
+
+    try {
+        const options = {
+            amount,
+            currency: "INR",
+            receipt: `order_rcptid_${Math.random().toString(36).substring(7)}`
+        };
+        const order = await razorpay.orders.create(options);
+        res.status(200).json({
+            success: true,
+            order,
+            db_orderid
+        });
+    } catch (error) {
+        console.error("Error in creating Razorpay order:", error);
+        res.status(500).json({
+            success: false,
+            message: "Order creation failed",
+        });
+    }   
+}
+
+
+// verifiying the payment 
+
+const verify_payment = async (req, res) => {
+    const crypto = require("crypto");
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, db_orderid } = req.body;
+
+    const generatedSignature = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+        .digest("hex");
+
+    if (generatedSignature === razorpay_signature) {
+
+        await Order.findByIdAndUpdate({_id:db_orderid}, { paymentStatus: "Success" });
+
+        const totalamt = req.body.amount / 100;
+        return res.json({
+            success: true,
+            redirectUrl: "/load_paymentsuccess",
+            data: {  totalamt, razorpay_payment_id } 
+        });
+    } else {
+        return res.json({ success: false, message: "Payment verification failed" });
+    }
+};
+
+// for loading payment success page
+
+const load_paymentsuccess = async (req,res)=>{
+    try {
+       const totalamt= req.query.amount / 100 
+       console.log("totalamt",totalamt)
+        res.render("payment_success",{totalamt})
+        
+    } catch (err) {
+        console.log("error for loading paymest success page",err)
+        return res.status(500).render("user404",{message:"Unable to complate the request"})
+    }
+}
 
 
   module.exports = {
-    place_order
+    place_order,
+    razorpay_order,
+    verify_payment,
+    load_paymentsuccess
   }

@@ -90,6 +90,12 @@ const orderschema = mongoose.Schema({
     enum: ["COD", "Pending", "Success", "Failed"], 
     default: "COD",
   },
+  razorpay_orderid: {
+    type: String,
+  },
+  razorpay_paymentid: {
+    type: String,
+  },
   orderDate: {
     type: Date,
     default: Date.now, 
