@@ -281,6 +281,19 @@ const remove_productoffer = async (req, res)=>{
     }
 }
 
+// forloading coupon list 
+
+const load_couponlist = async(req,res)=>{
+    try {
+        res.status(200).render("couponslist")
+        
+    } catch (err) {
+        console.log("error for loading coupon list page",err)
+        return res.status(500).render("404",{message: "Can't load coupon page try again....!"})
+        
+    }
+}
+
 
 module.exports ={
     load_offerlist,
@@ -292,5 +305,10 @@ module.exports ={
     add_productoffer,
     load_editProductoffer,
     update_productoffer,
-    remove_productoffer
+    remove_productoffer,
+
+    // coupons 
+    
+    load_couponlist
+
 }

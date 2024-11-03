@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../layouts/admin/admin_header.ejs") %>
+
+  <body>
+    <%- include("../layouts/admin/slidbar.ejs") %>
+
+    <main class="main-wrap">
+      <%- include("../layouts/admin/navbar.ejs") %>
+
+      <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Coupons List </h2>
+                <p>All available Coupons listed  here.</p>
+            </div>
+            <div>
+                <div>
+                    <a href="/loadcreateoffer" class="btn btn-primary"
+                      ><i class="text-muted material-icons md-post_add"></i>Create New offer</a
+                    >
+                  </div>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-body">
+
+                <div class="col-lg-8">
+                    <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link active"
+                          id="details-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#details"
+                          type="button"
+                          role="tab"
+                        >
+                          Coupons List
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="addresses-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#addresses"
+                          type="button"
+                          role="tab"
+                        >
+                          Create new coupons
+                        </button>
+                      </li>
+                    </ul>
+                    <div style="width: 1300px;"  class="tab-content" id="profileTabsContent">
+                      <div  class="tab-pane fade show active" id="details" role="tabpanel">
+                        <div class="card shadow-sm">
+                          <div class="card-body">
+                            <h5 class="card-title mb-4">Available coupons</h5>
+                                <div class="card mb-4">
+                                    <header class="card-header">
+                                        <div class="row gx-3">
+                                            <div class="col-lg-4 col-md-6 me-auto">
+                                                <input type="text" placeholder="Search..." class="form-control">
+                                            </div>
+                                            <!-- <div class="col-lg-2 col-6 col-md-3">
+                                                <select class="form-select">
+                                                    <option>Status</option>
+                                                    <option>Active</option>
+                                                    <option>Disabled</option>
+                                                    <option>Show all</option>
+                                                </select>
+                                            </div> -->
+                                        </div>
+                                    </header> 
+                                    <div class="card-body">
+                                      <div class="table-responsive">
+                                          <table class="table table-hover table-bordered align-middle">
+                                              <thead>
+                                                  <tr>
+                                                      <th>#ID</th>
+                                                      <th scope="col">Name</th>
+                                                      <th scope="col">Offer (%)</th>
+                                                      <th scope="col">Status</th>
+                                                      <th scope="col">Start Date</th>
+                                                      <th scope="col">End Date</th>
+                                                      <th scope="col">Action</th>
+                                                  </tr>
+                                              </thead>
+                                                          <tr>
+                                                              <td><%= %></td>
+                                                              <td><b><%=  %></b></td>
+                                                              <td><%=  %></td>
+                                                              <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                                              <td><%= new Date().toLocaleDateString() %></td>
+                                                              <td><%= new Date().toLocaleDateString() %></td>
+                                                              <td class="text-end">
+                                                                  <div class="dropdown">
+                                                                      <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> 
+                                                                          <i class="material-icons md-more_horiz"></i> 
+                                                                      </a>
+                                                                      <div class="dropdown-menu dropdown-menu-end">
+                                                                          <a class="dropdown-item" href="">Edit info</a>
+                                                                          <form method="post" action="">
+                                                                          <button  class="dropdown-item text-danger" href="#">Remove</button>
+                                                                          </form>
+                                                                      </div>
+                                                                  </div>
+                                                              </td>
+                                                          </tr>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                                </div> 
+                                
+                            </div>
+                        </div>
+                      </div>
+          
+                      <!-- Addresses Tab -->
+                      <div style="width: 800px; margin: 0 auto;" class="tab-pane fade" id="addresses" role="tabpanel">
+                        <div class="d-flex justify-content-center">
+                          <div class="card shadow-sm" style="width: 100%;">
+                            <div class="card-body">
+                              <h5 class="card-title mb-4 text-center">Create Coupons</h5>
+                              <div class="card mb-3">
+                                <div class="card-body">
+                                  <h6 class="card-subtitle mb-2 text-muted text-center"></h6>
+                                  <p class="card-text text-center"></p>
+                                  <form method="post" action="/add_categoryoffer" id="referralOfferForm" onsubmit="return validateCategoryOfferForm()">
+                                    <div class="mb-4">
+                                      <label class="form-label">Offer Name</label>
+                                      <input name="catofrname" type="text" class="form-control" placeholder="Enter offer name" id="catofrname" />
+                                      <span id="errorCatOfferName" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                      <label class="form-label">Description</label>
+                                      <textarea name="catofrdescription" class="form-control" id="catofrdescription"></textarea>
+                                      <span id="errorCatDescription" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                      <label class="form-label">Category</label>
+                                      <select name="catofrid" id="catofrid" class="form-select">
+                                        <option value="">Select Category</option>
+                                        <option value=""></option>
+                                      </select>
+                                      <span id="errorCatCategory" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                      <label class="form-label">Discount Percentage</label>
+                                      <input name="catofrpercentage" type="number" class="form-control" placeholder="Enter discount percentage" id="catofrpercentage" />
+                                      <span id="errorCatDiscount" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                      <label class="form-label">Start Date</label>
+                                      <input name="catofrstartdate" type="date" class="form-control" id="catofrstartdate" />
+                                      <span id="errorCatStartDate" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-4">
+                                      <label class="form-label">Expiry Date</label>
+                                      <input name="catofrenddate" type="date" class="form-control" id="catofrenddate" />
+                                      <span id="errorCatExpiryDate" class="text-danger"></span>
+                                    </div>
+                                    <div class="text-center">
+                                      <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Offer</button>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section> 
+
+
+      
+      
+
+      <%- include("../layouts/admin/admin_footer.ejs") %>
+
+
+    </main>
+    <!-- content-main end// -->
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="assets/js/vendors/chart.js"></script>
+
+    <script src="assets/js/main.js" type="text/javascript"></script>
+    <script src="assets/js/custom-chart.js" type="text/javascript"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        
+    <!-- <script>
+      const message = "";
+      const type = "";
+
+      if (message && message.length > 0) {
+          Swal.fire({
+            icon: type, // 'success', 'error', 'warning', 'info'
+          title: message,
+          showConfirmButton: true,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timerProgressBar: true,
+          timer: 3000,
+          });
+      }
+  </script> -->
+
+
+
+
+    <script>
+        function removeOffer(id){
+            Swal.fire({
+            title: 'Change Order Status?',
+            text: "You are about to change the status of this order. ?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, change it!'
+        }).then((result)=>{
+            if(result.isConfirmed){
+                fetch(`/removecatoffer?id=${id}`,{
+                    method :"POST",
+                })
+                .then(response => response.json())
+                .then((data)=>{
+                    if(data.success){
+                        Swal.fire({
+                    icon: 'success',
+                    title: 'Status Updated',
+                    text: data.message,
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 4000,            
+                    });
+                    const offerdata = document.getElementById(`existingoffers-${id}`)
+                    console.log("offerdata",offerdata)
+                      if(offerdata){
+                        offerdata.remove();
+                      }
+
+                    }else{
+                        Swal.fire({
+                    icon: 'error',
+                    title: 'Error updating status',
+                    text: data.message,
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 4000,
+                    })
+                    }
+                })
+            }
+        })
+        }
+    </script>
+  </body>
+</html>
