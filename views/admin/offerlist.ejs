@@ -75,7 +75,7 @@
                                     <header class="card-header">
                                         <div class="row gx-3">
                                             <div class="col-lg-4 col-md-6 me-auto">
-                                                <input type="text" placeholder="Search..." class="form-control">
+                                                <!-- <input type="text" placeholder="Search..." class="form-control"> -->
                                             </div>
                                             <div class="col-lg-2 col-6 col-md-3">
                                                 <select class="form-select">
@@ -108,7 +108,11 @@
                                                               <td><%= item.productOffer._id %></td>
                                                               <td><b><%= item.productOffer.offerName %></b></td>
                                                               <td><%= item.productOffer.offerDiscountPercentage %></td>
+                                                              <% if(item.productOffer.offerStatus == true){ %>
                                                               <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                                              <% } else { %>
+                                                              <td><span class="badge rounded-pill alert-danger">Inactive</span></td>
+                                                               <% } %>
                                                               <td><%= new Date(item.productOffer.offerStartDate).toLocaleDateString() %></td>
                                                               <td><%= new Date(item.productOffer.offerExpiryDate).toLocaleDateString() %></td>
                                                               <td class="text-end">

@@ -63,16 +63,15 @@
                                     <header class="card-header">
                                         <div class="row gx-3">
                                             <div class="col-lg-4 col-md-6 me-auto">
-                                                <input type="text" placeholder="Search..." class="form-control">
                                             </div>
-                                            <!-- <div class="col-lg-2 col-6 col-md-3">
+                                            <div class="col-lg-2 col-6 col-md-3">
                                                 <select class="form-select">
                                                     <option>Status</option>
                                                     <option>Active</option>
                                                     <option>Disabled</option>
                                                     <option>Show all</option>
                                                 </select>
-                                            </div> -->
+                                            </div>
                                         </div>
                                     </header> 
                                     <div class="card-body">
@@ -83,26 +82,33 @@
                                                       <th>#ID</th>
                                                       <th scope="col">Name</th>
                                                       <th scope="col">Offer (%)</th>
+                                                      <th scope="col">Coupon Code</th>
                                                       <th scope="col">Status</th>
-                                                      <th scope="col">Start Date</th>
-                                                      <th scope="col">End Date</th>
+                                                      <th scope="col">Minimun amount</th>
+                                                      <th scope="col">Maxmium amount</th>
                                                       <th scope="col">Action</th>
                                                   </tr>
                                               </thead>
+                                                          <% coupondata.forEach((coupondata)=>{ %>
                                                           <tr>
-                                                              <td><%= %></td>
-                                                              <td><b><%=  %></b></td>
-                                                              <td><%=  %></td>
+                                                              <td><%=coupondata._id %></td>
+                                                              <td><%=coupondata.couponName %></td>
+                                                              <td><b><%=coupondata.couponDiscount %></b></td>
+                                                              <td><%=coupondata.couponCode  %></td>
+                                                              <% if(coupondata.couponStatus == true){ %>
                                                               <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                                              <td><%= new Date().toLocaleDateString() %></td>
-                                                              <td><%= new Date().toLocaleDateString() %></td>
+                                                              <% }else { %>
+                                                              <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                                              <% } %>
+                                                              <td><%=coupondata.minAmount  %></td>
+                                                              <td><%= coupondata.maxAmount %></td>
                                                               <td class="text-end">
                                                                   <div class="dropdown">
                                                                       <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> 
                                                                           <i class="material-icons md-more_horiz"></i> 
                                                                       </a>
                                                                       <div class="dropdown-menu dropdown-menu-end">
-                                                                          <a class="dropdown-item" href="">Edit info</a>
+                                                                          <a class="dropdown-item" href="/load_editcoupon">Edit info</a>
                                                                           <form method="post" action="">
                                                                           <button  class="dropdown-item text-danger" href="#">Remove</button>
                                                                           </form>
@@ -110,6 +116,7 @@
                                                                   </div>
                                                               </td>
                                                           </tr>
+                                                          <% }) %>
                                               </tbody>
                                           </table>
                                       </div>
@@ -130,42 +137,53 @@
                                 <div class="card-body">
                                   <h6 class="card-subtitle mb-2 text-muted text-center"></h6>
                                   <p class="card-text text-center"></p>
-                                  <form method="post" action="/add_categoryoffer" id="referralOfferForm" onsubmit="return validateCategoryOfferForm()">
+                                  <form method="post" action="/add_coupon"  onsubmit="return ">
                                     <div class="mb-4">
-                                      <label class="form-label">Offer Name</label>
-                                      <input name="catofrname" type="text" class="form-control" placeholder="Enter offer name" id="catofrname" />
-                                      <span id="errorCatOfferName" class="text-danger"></span>
+                                      <label class="form-label">Coupon Name</label>
+                                      <input name="couponName" type="text" class="form-control" placeholder="Enter offer name" id="couponName" required />
+                                      <span id="errorCouponName" class="text-danger"></span>
                                     </div>
+                                  
                                     <div class="mb-4">
                                       <label class="form-label">Description</label>
-                                      <textarea name="catofrdescription" class="form-control" id="catofrdescription"></textarea>
-                                      <span id="errorCatDescription" class="text-danger"></span>
+                                      <textarea name="couponDescription" class="form-control" id="couponDescription" placeholder="Enter description"></textarea>
+                                      <span id="errorCouponDescription" class="text-danger"></span>
                                     </div>
+                                  
                                     <div class="mb-4">
-                                      <label class="form-label">Category</label>
-                                      <select name="catofrid" id="catofrid" class="form-select">
-                                        <option value="">Select Category</option>
-                                        <option value=""></option>
-                                      </select>
-                                      <span id="errorCatCategory" class="text-danger"></span>
+                                      <label class="form-label">Coupon Code</label>
+                                      <input name="couponCode" type="text" class="form-control" placeholder="Enter coupon code" id="couponCode" required />
+                                      <span id="errorCouponCode" class="text-danger"></span>
                                     </div>
+                                  
                                     <div class="mb-4">
                                       <label class="form-label">Discount Percentage</label>
-                                      <input name="catofrpercentage" type="number" class="form-control" placeholder="Enter discount percentage" id="catofrpercentage" />
-                                      <span id="errorCatDiscount" class="text-danger"></span>
+                                      <input name="couponDiscount" type="number" class="form-control" placeholder="Enter discount percentage" id="couponDiscount" required />
+                                      <span id="errorCouponDiscount" class="text-danger"></span>
                                     </div>
+                                  
                                     <div class="mb-4">
-                                      <label class="form-label">Start Date</label>
-                                      <input name="catofrstartdate" type="date" class="form-control" id="catofrstartdate" />
-                                      <span id="errorCatStartDate" class="text-danger"></span>
+                                      <label class="form-label">Max Amount</label>
+                                      <input name="maxAmount" type="number" class="form-control" placeholder="Enter maximum discount amount" id="maxAmount" required />
+                                      <span id="errorMaxAmount" class="text-danger"></span>
                                     </div>
+                                  
                                     <div class="mb-4">
-                                      <label class="form-label">Expiry Date</label>
-                                      <input name="catofrenddate" type="date" class="form-control" id="catofrenddate" />
-                                      <span id="errorCatExpiryDate" class="text-danger"></span>
+                                      <label class="form-label">Min Amount</label>
+                                      <input name="minAmount" type="number" class="form-control" placeholder="Enter minimum purchase amount" id="minAmount" required />
+                                      <span id="errorMinAmount" class="text-danger"></span>
                                     </div>
+                                  
+                                  
+                                    <div class="mb-4">
+                                      <label class="form-label">Users Limit</label>
+                                      <input name="userlimint" type="text" class="form-control" id="catofrstartdate" placeholder="Enter Users limint" />
+                                      <span id="erroruserlimit" class="text-danger"></span>
+                                    </div>
+                                  
+                                  
                                     <div class="text-center">
-                                      <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Offer</button>
+                                      <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Coupon</button>
                                     </div>
                                   </form>
                                 </div>
@@ -198,7 +216,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         
-    <!-- <script>
+    <script>
       const message = "";
       const type = "";
 
@@ -214,61 +232,66 @@
           timer: 3000,
           });
       }
-  </script> -->
+  </script>
 
-
-
-
-    <script>
-        function removeOffer(id){
-            Swal.fire({
-            title: 'Change Order Status?',
-            text: "You are about to change the status of this order. ?",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, change it!'
-        }).then((result)=>{
-            if(result.isConfirmed){
-                fetch(`/removecatoffer?id=${id}`,{
-                    method :"POST",
-                })
-                .then(response => response.json())
-                .then((data)=>{
-                    if(data.success){
-                        Swal.fire({
-                    icon: 'success',
-                    title: 'Status Updated',
-                    text: data.message,
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                    timer: 4000,            
-                    });
-                    const offerdata = document.getElementById(`existingoffers-${id}`)
-                    console.log("offerdata",offerdata)
-                      if(offerdata){
-                        offerdata.remove();
-                      }
-
-                    }else{
-                        Swal.fire({
-                    icon: 'error',
-                    title: 'Error updating status',
-                    text: data.message,
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                    timer: 4000,
-                    })
-                    }
-                })
-            }
-        })
+  <script>
+    function validateCategoryOfferForm() {
+        let isValid = true;
+        const offerName = document.getElementById("catofrname");
+        const description = document.getElementById("catofrdescription");
+        const category = document.getElementById("catofrid");
+        const discountPercentage = document.getElementById("catofrpercentage");
+        const startDate = document.getElementById("catofrstartdate");
+        const expiryDate = document.getElementById("catofrenddate");
+    
+        document.getElementById("errorCatOfferName").textContent = "";
+        document.getElementById("errorCatDescription").textContent = "";
+        document.getElementById("errorCatCategory").textContent = "";
+        document.getElementById("errorCatDiscount").textContent = "";
+        document.getElementById("errorCatStartDate").textContent = "";
+        document.getElementById("errorCatExpiryDate").textContent = "";
+    
+        if (offerName.value.trim() === "") {
+            document.getElementById("errorCatOfferName").textContent = "Offer name is required.";
+            isValid = false;
         }
+    
+        if (description.value.trim() === "") {
+            document.getElementById("errorCatDescription").textContent = "Description is required.";
+            isValid = false;
+        }
+    
+        if (category.value === "") {
+            document.getElementById("errorCatCategory").textContent = "Please select a category.";
+            isValid = false;
+        }
+    
+        if (discountPercentage.value === "" || discountPercentage.value < 0 || discountPercentage.value > 100) {
+            document.getElementById("errorCatDiscount").textContent = "Enter a discount between 0 and 100.";
+            isValid = false;
+        }
+    
+        if (startDate.value === "") {
+            document.getElementById("errorCatStartDate").textContent = "Start date is required.";
+            isValid = false;
+        }
+    
+        if (expiryDate.value === "") {
+            document.getElementById("errorCatExpiryDate").textContent = "Expiry date is required.";
+            isValid = false;
+        } else if (startDate.value && expiryDate.value && new Date(startDate.value) > new Date(expiryDate.value)) {
+            document.getElementById("errorCatExpiryDate").textContent = "Expiry date cannot be earlier than start date.";
+            isValid = false;
+        }
+    
+        return isValid;
+    }
     </script>
+
+
+
+
+
+
   </body>
 </html>

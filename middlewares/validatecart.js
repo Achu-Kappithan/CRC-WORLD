@@ -2,40 +2,6 @@ const Cart = require("../models/cart");
 const Product = require("../models/product"); 
 const Category = require("../models/category");
 
-// const validateCartPrices = async (req, res, next) => {
-//   try {
-//     const userId = req.session.user_id; 
-//     const cart = await Cart.findOne({ user: userId }).populate("items.productId");
-
-//     let updated = false;
-
-//     for (let item of cart.items) {
-//       const product = await Product.findById(item.productId);
-
-//       if (product) {
-//         const productSize = product.sizes.find(size => size.size === item.size);
-//         if (productSize) {
-//           if (item.priceafteroffer !== productSize.priceafteroffer || item.stock !== productSize.stock) {
-//             item.priceafteroffer = productSize.priceafteroffer;
-//             item.stock = productSize.stock;
-//             updated = true;
-//           }
-//         }
-//       }
-//     }
-
-//     if (updated) {
-//       await cart.save(); 
-//     }
-
-//     next(); 
-//   } catch (error) {
-//     console.error("Error validating cart prices:", error);
-//     res.status(500).json({ message: "Error validating cart prices" });
-//   }
-// };
-
-// module.exports = validateCartPrices;
 
 const validateCartPrices = async (req, res, next) => {
   try {

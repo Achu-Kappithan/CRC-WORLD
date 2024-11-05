@@ -44,17 +44,17 @@
             title="Shop Our New Collection"
           />
           <div class="slideshow__text-wrap slideshow__overlay classic middle">
-            <div class="slideshow__text-content middle">
+            <!-- <div class="slideshow__text-content middle">
               <div class="container">
                 <div class="wrap-caption center">
-                  <h2 class="h1 mega-title slideshow__title">KD &amp;DF</h2>
+                  <h2 class="h1 mega-title slideshow__title"> &amp;DF</h2>
                   <span class="mega-subtitle slideshow__subtitle"
                     >DFDSJKLFK</span
                   >
                   <span class="btn">S</span>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@
             title="Summer Bikini Collection"
           />
           <div class="slideshow__text-wrap slideshow__overlay classic middle">
-            <div class="slideshow__text-content middle">
+            <!-- <div class="slideshow__text-content middle">
               <div class="container">
                 <div class="wrap-caption center">
                   <h2 class="h1 mega-title slideshow__title">
@@ -80,7 +80,7 @@
                   <span class="btn">Shop now</span>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -152,9 +152,11 @@
                 </div>
                 <div >
                   <div class="wishlist-btn">
+                    <% if(wishlist){ %>
                       <button id="wishlistbtn" data-id="<%= productlist[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
                         <i class="icon anm <%= wishlist.productIds.includes(productlist[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
                     </button>
+                    <% } %>
                   </div>
                   <div class="compare-btn">
                   </div>
@@ -199,7 +201,7 @@
         alt=""
       />
       <div class="hero__inner">
-        <div class="container">
+        <!-- <div class="container">
           <div class="wrap-text left text-small font-bold">
             <h2 class="h2 mega-title">
               Belle <br />
@@ -212,7 +214,7 @@
             </div>
             <a href="#" class="btn">Purchase Now</a>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -296,9 +298,11 @@
                 <div >
                   
                   <div class="wishlist-btn">
+                    <% if(wishlist){ %>
                     <button id="wishlistbtn" data-id="<%= batlist[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
                       <i class="icon anm <%= wishlist.productIds.includes(batlist[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
                   </button>
+                  <% } %>
                 </div>
                   <div class="compare-btn">
                     
@@ -396,9 +400,11 @@
                   <div >
                     
                     <div class="wishlist-btn">
+                      <% if(wishlist){ %>
                       <button id="wishlistbtn" data-id="<%= gadlist[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
                         <i class="icon anm <%= wishlist.productIds.includes(gadlist[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
                     </button>
+                    <% } %>
                     </div>
                     <div class="compare-btn">
                       
@@ -465,6 +471,9 @@
 <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
 
 <%- include("../layouts/user/footer.ejs") %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script>
 // product add to wishlist 
@@ -557,3 +566,37 @@ document.querySelectorAll(".wishlist").forEach(function(button){
 
 
 </script>
+
+<script>
+  const message = "<%= message %>";
+  const type = "<%= type %>"; 
+
+  if (message && message.length > 0) {
+    Swal.fire({
+      icon: type, 
+      title: message,
+      toast: true,
+      position: "bottom" ,
+      showConfirmButton: false,
+      timerProgressBar: true,
+      timer: 5000, 
+      customClass: {
+        popup: 'swal-custom-popup'
+      },
+      didOpen: (toast) => {
+        toast.style.backgroundColor = 'white';   
+        toast.style.color = 'red';              
+        toast.style.border = '2px solid red';   
+        toast.style.borderRadius = '8px';          
+        toast.style.padding = '16px';            
+        toast.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)'; 
+      },
+      iconColor: 'red', 
+      titleText: message,
+      didClose: () => {
+        console.log("Alert closed");
+      }
+    });
+  }
+</script>
+

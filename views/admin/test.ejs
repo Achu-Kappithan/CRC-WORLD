@@ -1,319 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmation</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-        .order-card {
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease-in-out;
-        }
-        .order-card:hover {
-            transform: translateY(-5px);
-        }
-        .order-header {
-            background-color: #007bff;
-            color: #ffffff;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            padding: 20px;
-        }
-        .order-body {
-            padding: 30px;
-        }
-        .product-item {
-            border-bottom: 1px solid #e9ecef;
-            padding: 10px 0;
-        }
-        .product-item:last-child {
-            border-bottom: none;
-        }
-        .total-price {
-            font-size: 24px;
-            font-weight: bold;
-            color: #28a745;
-        }
-        .btn-pay-now {
-            background-color: #28a745;
-            border: none;
-            padding: 12px 30px;
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-        .btn-pay-now:hover {
-            background-color: #218838;
-            transform: scale(1.05);
-        }
-        .payment-animation {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .payment-animation .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="order-card">
-                    <div class="order-header">
-                        <h2 class="mb-0">Order Confirmation</h2>
-                    </div>
-                    <div class="order-body">
-                        <h4 class="mb-4">Order #12345</h4>
-                        <div class="product-item d-flex justify-content-between align-items-center">
-                            <span>Product A</span>
-                            <span>$29.99</span>
-                        </div>
-                        <div class="product-item d-flex justify-content-between align-items-center">
-                            <span>Product B</span>
-                            <span>$49.99</span>
-                        </div>
-                        <div class="product-item d-flex justify-content-between align-items-center">
-                            <span>Product C</span>
-                            <span>$19.99</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <h5 class="mb-0">Total:</h5>
-                            <span class="total-price">$99.97</span>
-                        </div>
-                        <div class="text-center mt-5">
-                            <button id="payNowBtn" class="btn btn-pay-now btn-lg text-white">
-                                Pay Now
-                            </button>
-                        </div>
-                        <div id="paymentAnimation" class="payment-animation">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-3">Processing your payment...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<form method="post" action=""  onsubmit="return validateform()">
+    <div class="mb-4">
+      <label class="form-label">Coupon Name</label>
+      <input name="couponName" type="text" class="form-control" placeholder="Enter offer name" id="couponName" required />
+      <span id="errorCouponName" class="text-danger"></span>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('payNowBtn').addEventListener('click', function() {
-            this.style.display = 'none';
-            document.getElementById('paymentAnimation').style.display = 'block';
-            
-            setTimeout(function() {
-                alert('Payment successful! Thank you for your order.');
-                window.location.href = '/thank-you.html'; // Redirect to a thank you page
-            }, 3000);
-        });
-    </script>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket Equipment Order Confirmation</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
-        body {
-            background-color: #f0f2f5;
-            font-family: 'Poppins', sans-serif;
-            color: #333;
-        }
-        .order-card {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        .order-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        }
-        .order-header {
-            background: linear-gradient(135deg, #1a5f7a 0%, #57c1e8 100%);
-            color: #ffffff;
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-        .order-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: repeating-linear-gradient(45deg, #ffffff33 0, #ffffff33 10px, #ffffff22 0, #ffffff22 20px);
-            transform: rotate(30deg);
-            animation: headerAnimation 20s linear infinite;
-        }
-        @keyframes headerAnimation {
-            0% { transform: rotate(30deg) translateY(0); }
-            100% { transform: rotate(30deg) translateY(100px); }
-        }
-        .order-body {
-            padding: 40px;
-        }
-        .product-item {
-            border-bottom: 1px solid #e9ecef;
-            padding: 15px 0;
-            transition: all 0.3s ease;
-        }
-        .product-item:hover {
-            background-color: #f8f9fa;
-            transform: scale(1.02);
-        }
-        .product-item:last-child {
-            border-bottom: none;
-        }
-        .total-price {
-            font-size: 28px;
-            font-weight: bold;
-            color: #1a5f7a;
-        }
-        .btn-pay-now {
-            background: linear-gradient(135deg, #1a5f7a 0%, #57c1e8 100%);
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-pay-now:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
-        }
-        .btn-pay-now::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(135deg, #ffffff44 0%, #ffffff00 50%, #ffffff44 100%);
-            transform: rotate(45deg);
-            transition: all 0.3s ease;
-        }
-        .btn-pay-now:hover::after {
-            left: 100%;
-            transition: all 0.7s ease;
-        }
-        .payment-animation {
-            display: none;
-            text-align: center;
-            margin-top: 30px;
-        }
-        .payment-animation .spinner-border {
-            width: 4rem;
-            height: 4rem;
-            color: #1a5f7a;
-        }
-        .order-number {
-            font-size: 18px;
-            color: #ffffff99;
-            position: relative;
-            z-index: 1;
-        }
-        .product-icon {
-            font-size: 24px;
-            margin-right: 15px;
-            color: #1a5f7a;
-        }
-    </style>
-</head>
-<body>
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-10">
-                <div class="order-card">
-                    <div class="order-header">
-                        <h2 class="mb-0 fw-bold">Cricket Equipment Order Confirmation</h2>
-                        <p class="order-number mb-0 mt-2">Order #CR12345</p>
-                    </div>
-                    <div class="order-body">
-                        <div class="product-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="fas fa-cricket-bat-ball product-icon"></i>
-                                <span>Premium Cricket Bat</span>
-                            </div>
-                            <span>$199.99</span>
-                        </div>
-                        <div class="product-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="fas fa-baseball product-icon"></i>
-                                <span>Cricket Ball Set (6 pcs)</span>
-                            </div>
-                            <span>$49.99</span>
-                        </div>
-                        <div class="product-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="fas fa-mitten product-icon"></i>
-                                <span>Batting Gloves</span>
-                            </div>
-                            <span>$39.99</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <h4 class="mb-0 fw-bold">Total:</h4>
-                            <span class="total-price">$289.97</span>
-                        </div>
-                        <div class="text-center mt-5">
-                            <button id="payNowBtn" class="btn btn-pay-now btn-lg text-white">
-                                Pay Now
-                            </button>
-                        </div>
-                        <div id="paymentAnimation" class="payment-animation">
-                            <div class="spinner-border" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-3 fs-5">Processing your payment...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  
+    <div class="mb-4">
+      <label class="form-label">Description</label>
+      <textarea name="couponDescription" class="form-control" id="couponDescription" placeholder="Enter description"></textarea>
+      <span id="errorCouponDescription" class="text-danger"></span>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('payNowBtn').addEventListener('click', function() {
-            this.style.display = 'none';
-            document.getElementById('paymentAnimation').style.display = 'block';
-            
-            setTimeout(function() {
-                alert('Payment successful! Thank you for your cricket equipment order.');
-                window.location.href = '/thank-you.html'; // Redirect to a thank you page
-            }, 3000);
-        });
-    </script>
-</body>
-</html>
+  
+    <div class="mb-4">
+      <label class="form-label">Coupon Code</label>
+      <input name="couponCode" type="text" class="form-control" placeholder="Enter coupon code" id="couponCode" required />
+      <span id="errorCouponCode" class="text-danger"></span>
+    </div>
+  
+    <div class="mb-4">
+      <label class="form-label">Discount Percentage</label>
+      <input name="couponDiscount" type="number" class="form-control" placeholder="Enter discount percentage" id="couponDiscount" required />
+      <span id="errorCouponDiscount" class="text-danger"></span>
+    </div>
+  
+    <div class="mb-4">
+      <label class="form-label">Max Amount</label>
+      <input name="maxAmount" type="number" class="form-control" placeholder="Enter maximum discount amount" id="maxAmount" required />
+      <span id="errorMaxAmount" class="text-danger"></span>
+    </div>
+  
+    <div class="mb-4">
+      <label class="form-label">Min Amount</label>
+      <input name="minAmount" type="number" class="form-control" placeholder="Enter minimum purchase amount" id="minAmount" required />
+      <span id="errorMinAmount" class="text-danger"></span>
+    </div>
+  
+    <div class="mb-4">
+      <label class="form-label">Coupon Status</label>
+      <select name="couponStatus" class="form-control" id="couponStatus" required>
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+      </select>
+      <span id="errorCouponStatus" class="text-danger"></span>
+    </div>
+  
+    <div class="mb-4">
+      <label class="form-label">Start Date</label>
+      <input name="catofrstartdate" type="date" class="form-control" id="catofrstartdate" />
+      <span id="errorCatStartDate" class="text-danger"></span>
+    </div>
+  
+    <div class="mb-4">
+      <label class="form-label">Expiry Date</label>
+      <input name="catofrenddate" type="date" class="form-control" id="catofrenddate" />
+      <span id="errorCatExpiryDate" class="text-danger"></span>
+    </div>
+  
+    <div class="text-center">
+      <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Offer</button>
+    </div>
+  </form>

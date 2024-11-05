@@ -33,7 +33,7 @@
     	<div class="collection-header">
 			<div class="collection-hero">
         		<div style="height: 500px;" class="collection-hero__image"><img class="blur-up lazyload" data-src="assets/images/crc/shope.jpg" src="assets/images/crc/shope.jpg" alt="Women" title="Women" /></div>
-        		<div class="collection-hero__title-wrapper"><h1 class="collection-hero__title page-width">Shop Right Sidebar</h1></div>
+        		<div class="collection-hero__title-wrapper"><h1 class="collection-hero__title page-width">CrC world</h1></div>
       		</div>
 		</div>
         <!--End Collection Banner-->
@@ -54,21 +54,14 @@
                                                 <img class="hover blur-up lazyload" data-src="/assets/uploads/product/<%= productdata[i].productimage[1] %>" src="/assets/uploads/product/<%= productdata[i].productimage[1] %>" alt="image" title="product">
                                                  
                                             </a>
-                                            <!-- <div>
-                                                <div  class="wishlist-btn">
-                                                    <button id="wishlistbtn" data-id="<%= productdata[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
-                                                        <i class="icon anm <%= wishlist.productIds.includes(productdata[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="compare-btn">
-                                                </div>
-                                            </div> -->
 
                                             <div >
                                                 <div class="wishlist-btn">
+                                                    <% if(wishlist){ %>
                                                     <button id="wishlistbtn" data-id="<%= productdata[i]._id%>" class="wishlist add-to-wishlist"  title="Add to Wishlist">
                                                       <i class="icon anm <%= wishlist.productIds.includes(productdata[i]._id.toString()) ? 'anm-heart' : 'anm-heart-l' %>"></i>
                                                   </button>
+                                                  <% } %>
                                                 </div>
                                                 <div class="compare-btn">
                                                 </div>
@@ -199,18 +192,14 @@
                         <!-- Brand -->
             
 
-                        <!--Banner-->
-                        <div class="sidebar_widget static-banner">
-                        	<img src="assets/images/side-banner-2.jpg" alt="" />
+                        <!-- <div class="sidebar_widget static-banner">
+                        	<img src="assets/images/crc/new-Cricket-baneer.png" alt="new-Cricket-baneer.png" />
                         </div>
-                        <!--Banner-->
-                        <!--Information-->
                         <div class="sidebar_widget">
                             <div class="widget-title"><h2>Information</h2></div>
                             <div class="widget-content"><p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p></div>
                         </div>
-                        <!--end Information-->
-                    </div>
+                    </div> -->
                 </div>
                 <!--End Sidebar-->
             </div>

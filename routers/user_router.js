@@ -31,8 +31,9 @@ user_route.get("/otp",user_controller.user_send_otp);
 user_route.post("/veryfing",user_controller.verify_otp);
 user_route.post("/resend_otp",user_controller.resend_otp);
 
-//  user login 
-user_route.get("/load_home",auth,user_controller.loadhome);
+//  user login
+user_route.get("/",user_controller.loadhome);
+user_route.get("/load_home",user_controller.loadhome);
 user_route.post("/user_veryfing",user_controller.userverification);
 user_route.get('/login',verify,user_controller.loadlogin);
 user_route.get("/logout_user",user_controller.logout_user)
@@ -44,16 +45,16 @@ user_route.get('/reset_password/:token',user_controller.reset_password);
 user_route.post("/update_password/:token",user_controller.update_password);
 
 //product view page
-user_route.get("/load_productview",auth,userproduct_controller.load_productview);
+user_route.get("/load_productview",userproduct_controller.load_productview);
 user_route.get("/get-size-details",userproduct_controller.load_sizesort);
 
 // load shop page
-user_route.get("/user_shop",auth,userproduct_controller.load_shop);
+user_route.get("/user_shop",userproduct_controller.load_shop);
 user_route.post("/product_filter", userproduct_controller.filterProducts);
 
 // load cart patge
 user_route.get("/load_usercart",auth,validateCartPrices,usercart_controller.load_cart);
-user_route.post("/addto_cart",usercart_controller.addto_cart);
+user_route.post("/addto_cart",auth,usercart_controller.addto_cart);
 user_route.post("/remove_cartitem",usercart_controller.remove_cartitem);
 user_route.post("/update_quntity",usercart_controller.update_quentity);
 
@@ -72,8 +73,8 @@ user_route.get("/my_orders",auth, userprofile_controller.load_myorder);
 user_route.post("/order_cancelled",userprofile_controller.cancell_order);
 
 //user wishlist controller
-user_route.get("/load_wishlist",userwishlist_controller.load_whishlist);
-user_route.post("/addto_wishlist",userwishlist_controller.addto_wishlist);
+user_route.get("/load_wishlist",auth,userwishlist_controller.load_whishlist);
+user_route.post("/addto_wishlist",auth,userwishlist_controller.addto_wishlist);
 user_route.post("/remove_item",userwishlist_controller.remove_wishlistitem);
 
 

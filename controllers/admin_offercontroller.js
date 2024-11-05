@@ -3,6 +3,7 @@ const { findByIdAndUpdate } = require("../models/otp");
 const product = require("../models/product");
 const { findById } = require("../models/user_models");
 const {findbestoffer} = require("../utils/findbestprice")
+const Coupon = require("../models/coupons")
 
 // for loading offerlist page
 
@@ -12,6 +13,27 @@ const load_offerlist = async (req,res)=>{
         const type = req.flash("type")
         const category = await Category.find()
         const  productdata = await product.find()
+        console.log("productdata",productdata)
+        const currentdate = Date.now();
+
+        for (const product of productdata) {
+            if (product.productOffer) {
+                if (product.productOffer.offerExpiryDate <= currentdate) {  
+                    product.productOffer.offerStatus = false;
+                    await product.save();  
+                }
+            }
+        }  
+        
+        for(const cate of category){
+            if(cate.categoryoffer){
+                if(cate.categoryoffer.offerExpiryDate <= currentdate){
+                    cate.categoryoffer.offerStatus = false;
+                    await cate.save()
+                }
+            }
+        }
+        
         return res.status(200).render("offerlist",{category, message, type, productdata })
     } catch (err) {
         console.log("error for  loading offerlist page",err);
@@ -285,12 +307,53 @@ const remove_productoffer = async (req, res)=>{
 
 const load_couponlist = async(req,res)=>{
     try {
-        res.status(200).render("couponslist")
+        const message = req.flash("message")
+        const type = req.flash("type")
+        const coupondata = await Coupon.find()
+        return res.status(200).render("couponslist",{message,type,coupondata})
         
     } catch (err) {
         console.log("error for loading coupon list page",err)
         return res.status(500).render("404",{message: "Can't load coupon page try again....!"})
+    }
+}
+
+
+// for adding new coupon 
+
+const add_coupon = async (req,res)=>{
+    try {
+        const {couponName, couponDescription, couponCode, couponDiscount, maxAmount, minAmount, userlimint, }= req.body
+
+        const coupondata = new Coupon({
+            couponName : couponName, 
+            couponDescription : couponDescription, 
+            couponCode : couponCode, 
+            couponDiscount : couponDiscount, 
+            maxAmount : maxAmount, 
+            minAmount : minAmount, 
+            Userlimit : userlimint,
+            couponStatus : true 
+        })
+
+        await coupondata. save()
+        req.flash("message","Coupon added successfully")
+        req.flash("type","success")
+        res.status(200).redirect("/load_couponlist")
+    } catch (err) {
+        console.log("error for adding coupons",err)
+        return res.status(500).render("404",{message: "Unable to complate your request"})
+    }
+}
+
+// for loading coupon edit page
+
+const load_editcoupon = async (req,res)=>{
+    try {
         
+    } catch (err) {
+        console.log("error for loading couponedit page",err)
+        return res.status(500).render("404",{message: "Unable to load Coupon edit page try again..!"})
     }
 }
 
@@ -308,7 +371,9 @@ module.exports ={
     remove_productoffer,
 
     // coupons 
-    
-    load_couponlist
+
+    load_couponlist,
+    add_coupon,
+    load_editcoupon
 
 }

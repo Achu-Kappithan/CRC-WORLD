@@ -7,10 +7,14 @@ const is_authaticated = async (req,res,next)=>{
             next();
         }else{
             req.session.destroy()
-            res.redirect("/login")
+            req.flash("message","Your account is blocked. Please contact support.")
+            req.flash("type","warning")
+            res.redirect("/load_home")
         }
     }else{
-        res.redirect("/login")
+        req.flash("message","You need to be logged in to access this page.")
+        req.flash("type","warning")
+        res.redirect("/load_home")
     }
 }
 

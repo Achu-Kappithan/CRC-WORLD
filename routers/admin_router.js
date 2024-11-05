@@ -77,6 +77,8 @@ admin_route.post("/update_productoffer",offer_controller.update_productoffer);
 admin_route.post("/romove_productoffer",offer_controller.remove_productoffer);
 // coupon  controller
 admin_route.get("/load_couponlist",offer_controller.load_couponlist);
+admin_route.post("/add_coupon",offer_controller.add_coupon);
+admin_route.get("/load_editcoupon",)
 
 
 

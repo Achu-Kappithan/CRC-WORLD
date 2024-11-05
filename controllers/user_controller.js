@@ -322,6 +322,8 @@ const userverification = async (req, res) => {
 
 const loadhome = async (req, res) => {
   try {
+    const message = req.flash("message")
+    const type = req.flash("type")
     const userid = req.session.user_id;
     const gadgetcat = await category.findOne({name:{$regex:/Gadgets/i}});
     const batcategory = await category.findOne({name:{$regex:/Bat/i}});
@@ -365,7 +367,9 @@ const loadhome = async (req, res) => {
       gadlist,
       branddata,
       priceHelper,
-      wishlist :wishlistdata
+      wishlist :wishlistdata,
+      message,
+      type
     });
   } catch (err) {
     console.log("error for loading usnse home page ", err);
