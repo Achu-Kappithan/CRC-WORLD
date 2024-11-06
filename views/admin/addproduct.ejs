@@ -80,12 +80,12 @@
                   <label class="form-label">Full description</label>
                   <textarea
                     name="productdis"
-                    id="productdis"
+                    id="productdiscription"
                     placeholder="Type here"
                     class="form-control"
                     rows="4"
                   ></textarea>
-                  <span id="errordis" class="text-danger"></span>
+                  <span id="errdiscription" class="text-danger"></span>
                 </div>
 
                 <label class="form-label">Select Size:</label>
@@ -139,17 +139,6 @@
                         placeholder="Enter actual price"
                       />
                     </div>
-                    <div class="form-group">
-                      <label for="salesPriceSM">Sales Price:</label>
-                      <input
-                        type="number"
-                        id="salesPriceSM"
-                        name="size[SM][salesPrice]"
-                        class="form-control"
-                        step="0.01"
-                        placeholder="Enter sales price"
-                      />
-                    </div>
                   </div>
 
                   <div id="additionalFieldsMedium" class="additional-fields">
@@ -174,17 +163,6 @@
                         class="form-control"
                         step="0.01"
                         placeholder="Enter actual price"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label for="salesPriceMedium">Sales Price:</label>
-                      <input
-                        type="number"
-                        id="salesPriceMedium"
-                        name="size[Medium][salesPrice]"
-                        class="form-control"
-                        step="0.01"
-                        placeholder="Enter sales price"
                       />
                     </div>
                   </div>
@@ -213,31 +191,9 @@
                         placeholder="Enter actual price"
                       />
                     </div>
-                    <div class="form-group">
-                      <label for="salesPriceL">Sales Price:</label>
-                      <input
-                        type="number"
-                        id="salesPriceL"
-                        name="size[L][salesPrice]"
-                        class="form-control"
-                        step="0.01"
-                        placeholder="Enter sales price"
-                      />
-                    </div>
                   </div>
                 </div>
 
-                <div class="mb-4">
-                  <label for="taxrate" class="form-label">Tax Rate</label>
-                  <input
-                    name="taxrate"
-                    id="taxrate"
-                    type="text"
-                    placeholder="%"
-                    class="form-control"
-                  />
-                  <span id="errortaxrate" class="text-danger"></span>
-                </div>
               </div>
             </div>
           </div>
@@ -247,6 +203,9 @@
               <div class="card-header">
                 <h4>Media</h4>
               </div>
+
+              <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
               <div class="input-upload">
                 <label for="image" class="form-label">Upload Images</label>
                 <input
@@ -261,9 +220,18 @@
                 <span id="errorimage" class="text-danger"></span>
               </div>
 
+              <div id="cropModal" style="display: none;">
+                <img id="croppingImage" style="width: 100%;">
+                <button type="button" onclick="cropImage()">Crop</button>
+                <button type="button" onclick="closeCropper()">Cancel</button>
+              </div>
+
+
+
+
               <div id="cropModal" style="display: none">
                 <img id="croppingImage" style="max-width: 100%" />
-                <button type="button" id="cropButton" onclick="cropImage()">
+                <button  type="button" id="cropButton" onclick="cropImage()">
                   Crop Image
                 </button>
               </div>
@@ -345,23 +313,15 @@
           document.getElementById("errorname").innerText = "";
         }
 
-        const description = document.getElementById("productdis").value.trim();
-        if (description.length < 10) {
-          document.getElementById("errordis").innerText =""
-            "Description is required";
+        const descriptons = document.getElementById("productdiscription").value.trim()
+        if (descriptons.length < 10) {
+          document.getElementById("errdiscription").innerText="Description is required";
+            
           isValid = false;
         } else {
-          document.getElementById("errordis").innerText = "";
+          document.getElementById("errdiscription").innerText = "";
         }
 
-        const taxRate = document.getElementById("taxrate").value.trim();
-        if (isNaN(taxRate) || taxRate === "") {
-          document.getElementById("errortaxrate").innerText =
-            "Enter a valid tax rate";
-          isValid = false;
-        } else {
-          document.getElementById("errortaxrate").innerText = "";
-        }
 
         const images = document.getElementById("image").files;
         const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.WEBP)$/i;
@@ -385,53 +345,86 @@
         return isValid;
       }
 
+
+
 let cropper;
-let croppedFiles = []; 
-let originalFiles = []; 
+let croppedFiles = [];
+let originalFiles = [];
+let currentFile;
+let currentImgElement;
+let currentIndex = null; 
 
 function handleFiles(event) {
-  const imagePreviewContainer = document.getElementById("imagePreview");
-  imagePreviewContainer.innerHTML = "";
-
   const files = event.target.files;
+
   if (files) {
-    originalFiles = Array.from(files);
-
-    originalFiles.forEach((file, index) => {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        img.style.width = "100px";
-        img.style.marginRight = "10px";
-        img.style.cursor = "pointer";
-        img.onclick = () => openCropper(e.target.result, img, index);
-
-        imagePreviewContainer.appendChild(img);
-      };
-
-      reader.readAsDataURL(file);
+    Array.from(files).forEach((file) => {
+      addImagePreview(file);
+      originalFiles.push(file);
     });
   }
 }
 
-function openCropper(imageSrc, imgElement, fileIndex) {
+function addImagePreview(file) {
+  const imagePreviewContainer = document.getElementById("imagePreview");
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    const imgContainer = document.createElement("div");
+    imgContainer.style.display = "inline-block";
+    imgContainer.style.position = "relative";
+    imgContainer.style.marginRight = "10px";
+
+    const img = document.createElement("img");
+    img.src = e.target.result;
+    img.style.width = "100px";
+    img.style.cursor = "pointer";
+    img.onclick = () => openCropper(e.target.result, img, originalFiles.indexOf(file));
+
+    const removeIcon = document.createElement("i");
+    removeIcon.classList.add("fas", "fa-trash-alt");
+    removeIcon.style.position = "absolute";
+    removeIcon.style.top = "5px";
+    removeIcon.style.right = "5px";
+    removeIcon.style.cursor = "pointer";
+    removeIcon.onclick = (event) => {
+      event.stopPropagation(); 
+      removeImage(file);
+    };
+
+    const replaceIcon = document.createElement("i");
+    replaceIcon.classList.add("fas", "fa-sync-alt");
+    replaceIcon.style.position = "absolute";
+    replaceIcon.style.bottom = "5px";
+    replaceIcon.style.right = "5px";
+    replaceIcon.style.cursor = "pointer";
+    replaceIcon.onclick = (event) => {
+      event.stopPropagation(); 
+      replaceImage(file);
+    };
+
+    imgContainer.appendChild(img);
+    imgContainer.appendChild(removeIcon);
+    imgContainer.appendChild(replaceIcon);
+    imagePreviewContainer.appendChild(imgContainer);
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function openCropper(imageSrc, imgElement, index) {
+  currentFile = croppedFiles[index] || originalFiles[index];
+  currentImgElement = imgElement;
+  currentIndex = index;
+
   const cropModal = document.getElementById("cropModal");
   const croppingImage = document.getElementById("croppingImage");
-
-  currentFile = croppedFiles[fileIndex] || originalFiles[fileIndex]; 
-  currentImgElement = imgElement; 
-
   croppingImage.src = imageSrc;
   cropModal.style.display = "block";
 
-  if (cropper) {
-    cropper.destroy();
-  }
-
+  if (cropper) cropper.destroy();
   cropper = new Cropper(croppingImage, {
-    aspectRatio: 1, 
+    aspectRatio: 1,
     viewMode: 2,
   });
 }
@@ -440,27 +433,71 @@ function cropImage() {
   const canvas = cropper.getCroppedCanvas();
 
   canvas.toBlob((blob) => {
-    const croppedFile = new File([blob], currentFile.name, { type: 'image/png' });
+    const croppedFile = new File([blob], currentFile.name, { type: "image/png" });
 
-    const fileIndex = originalFiles.indexOf(currentFile); 
-    croppedFiles[fileIndex] = croppedFile; 
+    croppedFiles[currentIndex] = croppedFile;
 
     const dataTransfer = new DataTransfer();
-
     originalFiles.forEach((file, index) => {
-      dataTransfer.items.add(croppedFiles[index] || file); 
+      dataTransfer.items.add(croppedFiles[index] || file);
     });
 
-    const fileInput = document.getElementById('image');
-    fileInput.files = dataTransfer.files; 
+    const fileInput = document.getElementById("image");
+    fileInput.files = dataTransfer.files;
 
     currentImgElement.src = URL.createObjectURL(croppedFile);
 
-    document.getElementById("cropModal").style.display = "none"; 
-
+    document.getElementById("cropModal").style.display = "none";
     cropper.destroy();
     cropper = null;
-  }, 'image/png');
+  }, "image/png");
+}
+
+function removeImage(fileToRemove) {
+  const fileIndex = originalFiles.indexOf(fileToRemove);
+  if (fileIndex > -1) {
+    originalFiles.splice(fileIndex, 1);
+    croppedFiles.splice(fileIndex, 1);
+  }
+
+  const dataTransfer = new DataTransfer();
+  originalFiles.forEach((file) => dataTransfer.items.add(file));
+
+  const fileInput = document.getElementById("image");
+  fileInput.files = dataTransfer.files;
+
+  document.getElementById("imagePreview").innerHTML = "";
+  originalFiles.forEach((file) => addImagePreview(file));
+}
+
+function replaceImage(fileToReplace) {
+  const fileIndex = originalFiles.indexOf(fileToReplace);
+  const newFileInput = document.createElement("input");
+  newFileInput.type = "file";
+  newFileInput.accept = "image/*";
+  newFileInput.onchange = (event) => {
+    const newFile = event.target.files[0];
+    if (newFile) {
+      originalFiles[fileIndex] = newFile;
+      croppedFiles[fileIndex] = null;
+
+      const dataTransfer = new DataTransfer();
+      originalFiles.forEach((file) => dataTransfer.items.add(file));
+
+      const fileInput = document.getElementById("image");
+      fileInput.files = dataTransfer.files;
+
+      document.getElementById("imagePreview").innerHTML = "";
+      originalFiles.forEach((file) => addImagePreview(file));
+    }
+  };
+  newFileInput.click();
+}
+
+function closeCropper() {
+  document.getElementById("cropModal").style.display = "none";
+  if (cropper) cropper.destroy();
+  cropper = null;
 }
 
       

@@ -28,10 +28,10 @@ const addto_cart = async (req, res) => {
   try {
     const { productId, quantity, Salesprice, stock, Cartsize , Offerprice } = req.body;
     const userId = req.session.user_id;
-    console.log(
-      "this is the data  get form the frondend for adding cart ",
-      req.body
-    );
+    // console.log(
+    //   "this is the data  get form the frondend for adding cart ",
+    //   req.body
+    // );
 
     if (!userId) {
       return res.status(401).json({
@@ -87,7 +87,7 @@ const addto_cart = async (req, res) => {
           item.productId.toString() === productId && item.size === Cartsize
       );
       // console.log("This is datatbase size",cart.items[0].size)
-      console.log(Cartsize);
+      // console.log(Cartsize);
 
       if (itemIndex > -1) {
         return res.status(404).json({
@@ -111,7 +111,8 @@ const addto_cart = async (req, res) => {
       }
     }
 
-    await cart.save();
+    const newdata = await cart.save();
+    const updatedCartCount = newdata.items.length;
 
     res.status(200).json({
       success: true,
@@ -120,6 +121,7 @@ const addto_cart = async (req, res) => {
       alertType: "success",
       alertTitle: "Added to Cart!",
       alertText: `Added ${quantity} of ${product.productname} to your cart!`,
+      count: updatedCartCount,
     });
   } catch (error) {
     console.error("Error adding to cart:", error);
@@ -138,26 +140,34 @@ const addto_cart = async (req, res) => {
 
 const remove_cartitem = async (req,res)=>{
   try {
-    const id = req.body.id
+    const id = req.query.id
     const userId = req.session.user_id;
-    console.log("id from the form",id)
-    console.log("id form session",userId )
+    // console.log("id from the form",id)
+    // console.log("id form session",userId )
 
     if(!userId){
-      return res.status(401).json({ success: false, message: "Unauthorized user" });
+      req.flash("message","Unauthorized user")
+      req.flash("type","error")
+      return res.status(401).redirect ("/load_usercart");
     }
    const updatedcart = await Cart.findOneAndUpdate({user:userId},
       {$pull:{items:{_id:id}}},
       {new:true});
 
       if(!updatedcart){
-        return res.status(404).json({ success: false, message: "Cart not found" });
+      req.flash("message","Cart not found")
+      req.flash("type","error")
+      return res.status(404).redirect ("/load_usercart");
+
       }
-      return res.status(200).json({ success: true, message: "Item successfully removed" });
+      req.flash("message","Item successfully removed")
+      req.flash("type","success")
+      return res.status(200).redirect ("/load_usercart");
+
 
   } catch (err) {
     console.log("error for removing cartitem",err);
-    return res.status(500).json({ success: false, message: "Unable to complete the request. Try again!" });
+    return res.status(500).render("user404",{ message: "Unable to complete the request. Try again!" });
   }
 }
 
@@ -188,6 +198,28 @@ const update_quentity = async (req,res)=>{
 
   } catch (err) {
     console.log("error for updating the quentity from the cart ",err)
+    res.render("user404",{message:"Unable to  complete the request"})
+  }
+}
+
+
+// for loading cart count  
+
+const get_cartcount =async (req,res)=>{
+  try {
+    const id = req.session.user_id;
+    let count = 0;
+    if(id){
+    const data = await Cart.findOne({user:id})
+     count = data.items.length
+    console.log("cart count is ",count)
+    return res.json({ success: true, count: count });
+    }
+    return res.json({ success: true, count: count });
+  } catch (err) {
+    console.log("error for loading cart count", err);
+    return res.status(500).json({ message: "Something went wrong" });
+    
   }
 }
 
@@ -195,5 +227,6 @@ module.exports = {
   load_cart,
   addto_cart,
   remove_cartitem,
-  update_quentity
+  update_quentity,
+  get_cartcount
 };

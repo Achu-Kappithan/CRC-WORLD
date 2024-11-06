@@ -42,7 +42,7 @@ const validateCartPrices = async (req, res, next) => {
             discountMultiplier = Math.min(discountMultiplier, (100 - categoryOffer.offerDiscountPercentage) / 100);
           }
 
-          const bestPriceAfterOffer = productSize.Salesprice * discountMultiplier;
+          const bestPriceAfterOffer = productSize.Actualprice * discountMultiplier;
 
           if (item.priceafteroffer !== bestPriceAfterOffer || item.stock !== productSize.stock) {
             item.priceafteroffer = Math.round( bestPriceAfterOffer);

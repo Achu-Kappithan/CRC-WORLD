@@ -76,10 +76,22 @@
                                             <div class="product-name">
                                                 <a href="#"><%= productdata[i].productname %></a>
                                             </div>
-                                            <div class="product-price">
+                                            <!-- <div class="product-price">
                                                 <span class="old-price"><%= productdata[i].sizes[2].Actualprice %></span>
                                                 <span class="price"><%= priceHelper(productdata[i].sizes)%></span>
-                                            </div>
+                                            </div> -->
+
+                                            <div class="product-price">
+                                                <% if(productdata[i].sizes[0].Actualprice !== productdata[i].sizes[0].priceafteroffer){ %>
+                                                <span class="old-price"> <%= productdata[i].sizes[0].Actualprice ? productdata[i].sizes[0].Actualprice : productdata[i].sizes[1].Actualprice ? productdata[i].sizes[1].Actualprice : productdata[i].sizes[2].Actualprice  %> <%=  %> </span>
+                                                <% } %>
+                                                
+                                                <span class="price"><span style="color: rgb(216, 41, 41);">  <%= priceHelper(productdata[i].sizes) %> </span>
+                                                  <% if(productdata[i].sizes[0].Actualprice !== productdata[i].sizes[0].priceafteroffer){ %>
+                                                  <% const  percentage = ((productdata[i].sizes[0].Actualprice - productdata[i].sizes[0].priceafteroffer) / productdata[i].sizes[0].Actualprice) * 100 %>
+                                                    <span style="color: green;"><%= percentage.toFixed()%>% off</span> <% } %> </span>
+                                              </div>
+                              
                                             
                                             <div class="product-review">
                                                 <i class="font-13 fa fa-star"></i>
@@ -353,44 +365,47 @@ const price = function(size) {
 };
 
 
-document.getElementById('applyFilterBtn').addEventListener('click', function() {
-    
+
+const searchBar = document.getElementById("search-input");
+const applyFilterBtn = document.getElementById("applyFilterBtn");
+const productListDiv = document.getElementById('product-list');
+
+function debounce(func, delay) {
+    let debounceTimer;
+    return function (...args) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+function applyFilter() {
     let selectedCategories = [];
     document.querySelectorAll('.category-filter:checked').forEach((checkbox) => {
         selectedCategories.push(checkbox.value);
     });
 
-    
     let selectedBrands = [];
     document.querySelectorAll('.brand-filter:checked').forEach((checkbox) => {
         selectedBrands.push(checkbox.value);
     });
 
-    
     let selectedSort = [];
     document.querySelectorAll('.sort-filter:checked').forEach((checkbox) => {
         selectedSort.push(checkbox.value);
     });
 
+    let searchQuery = searchBar.value.trim();  
 
-    let searchquery = document.getElementById("search-input").value;
-
-
-    
     let filterData = {
         categories: selectedCategories,
         brands: selectedBrands,
         sort: selectedSort,
-        search: searchquery
+        search: searchQuery
     };
 
-    console.log("this is the filter ",filterData);
-    
-    
-    const productListDiv = document.getElementById('product-list');
-    productListDiv.innerHTML = '<p>Loading...</p>';
+    console.log("This is the filter:", filterData);
 
-    
+    productListDiv.innerHTML = '<p>Loading...</p>'; 
     fetch('/product_filter', {
         method: 'POST',
         headers: {
@@ -405,19 +420,22 @@ document.getElementById('applyFilterBtn').addEventListener('click', function() {
         return response.json();
     })
     .then(data => {
-        // console.log("Received data:", data);
         if (data && data.products && data.products.length > 0) {
-            updateProductList(data.products); 
+            updateProductList(data.products);
         } else {
             updateProductList([]);
         }
     })
     .catch(error => console.error('Error:', error));
-});
+}
+
+const debouncedSearch = debounce(applyFilter, 300);  
+
+applyFilterBtn.addEventListener('click', applyFilter);
+searchBar.addEventListener('input', debouncedSearch);  
 
 function updateProductList(products) {
-    const productListDiv = document.getElementById('product-list');
-    productListDiv.innerHTML = '';  
+    productListDiv.innerHTML = '';
 
     if (products.length === 0) {
         productListDiv.innerHTML = '<p>No products found</p>';
@@ -425,6 +443,11 @@ function updateProductList(products) {
     }
 
     products.forEach(product => {
+        let percentage = 0;
+        if (product.sizes[0].Actualprice !== product.sizes[0].priceafteroffer) {
+            percentage = ((product.sizes[0].Actualprice - product.sizes[0].priceafteroffer) / product.sizes[0].Actualprice) * 100;
+        }
+
         const productHTML = `
             <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
                 <div class="product-image">
@@ -453,19 +476,18 @@ function updateProductList(products) {
                 </div>
                 <div class="product-details text-center">
                     <div style="font-weight: bold;" class="product-name">
-                        <!-- Handle the brand name if available -->
                         <a href="#">${product.brand.name || 'Brand Name'}</a>
                     </div>
                     <div class="product-name">
                         <a href="#">${product.productname}</a>
                     </div>
                     <div class="product-price">
-                        <span class="old-price">${product.sizes[2]?.Actualprice || ''}</span>
-                        <span class="price">
-                             ${
-                                price(product.sizes)
-
-                            }
+                        ${product.sizes[0].Actualprice !== product.sizes[0].priceafteroffer 
+                            ? `<span class="old-price">${product.sizes[0].Actualprice}</span>` 
+                            : ''}
+                        <span class="price" style="color: rgb(216, 41, 41);">
+                            ${product.sizes[0].priceafteroffer}
+                            ${percentage > 0 ? `<span style="color: green;">${percentage.toFixed(0)}% off</span>` : ''}
                         </span>
                     </div>
                     <div class="product-review">
@@ -478,10 +500,11 @@ function updateProductList(products) {
                 </div>
             </div>
         `;
-        
+
         productListDiv.insertAdjacentHTML('beforeend', productHTML);
     });
 }
+
 
 </script>
     

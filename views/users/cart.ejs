@@ -54,7 +54,7 @@
                                         </div>
                                     </td>
                                     <% const price = item.priceafteroffer ? item.priceafteroffer : item.Salesprice  %>
-                                    <td class="cart__price-wrapper cart-flex-item">
+                                    <td class="cart__price-wrapper cart-flex-item" data-price="<%= curprice %>">
                                         <span class="money">₹<%= price %></span>
                                     </td>
                                     <td class="cart__update-wrapper cart-flex-item text-right">
@@ -65,23 +65,21 @@
                                                     <input class="cart__qty-input qty" type="text" name="updates[]" id="qty-<%= item.productId %>" value="<%= item.quantity %>" pattern="[0-9]*" readonly>
                                                     <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a>
                                                 </div>
-                                                 <!-- <div><span class="money"><%= item.quantity %></span></div> -->
-
-
-
                                             </div>
                                         </div>
                                     </td>
                                     <td class="text-right small--hide cart-price">
                                         <div><span class="money">₹<%= itemTotal %></span></div>
                                     </td>
-                                  </form>                   
+                                </form>                   
 
                                     <td class="text-center small--hide">
                                             <input id="productid" type="hidden" name="itemId" value="<%= item._id %>">
-                                            <button type="button" id="removeitem"  class="btn btn--secondary cart__remove" title="Remove Item">
-                                                <i class="icon icon anm anm-times-l"></i>
-                                            </button>
+                                            <form id="removeItemForm-<%= item._id %>" method="post" action="/remove_cartitem?id=<%= item._id %>">
+                                                <button type="submit" class="btn btn--secondary cart__remove" title="Remove Item">
+                                                    <i class="icon icon anm anm-times-l"></i>
+                                                </button>
+                                            </form>
                                     </td>
                                 </tr>
 
@@ -304,12 +302,86 @@ qnt_incre();
 
 
 // function  remove the  cart item
-document.querySelectorAll(".cart__remove").forEach(function(button) {
-    button.addEventListener("click", function() {
-        const id = document.getElementById("productid").value;
-        console.log("this is cart remove id", id);
+// document.querySelectorAll(".cart__remove").forEach(function(button) {
+//     button.addEventListener("click", function() {
+//         const id = document.getElementById("productid").value;
+//         console.log("this is cart remove id", id);
 
-        // Confirmation dialog with SweetAlert
+//         Swal.fire({
+//             title: 'Are you sure?',
+//             text: "You are about to remove this item from the cart.",
+//             icon: 'warning',
+//             showCancelButton: true,
+//             confirmButtonColor: '#d33',
+//             cancelButtonColor: '#3085d6',
+//             confirmButtonText: 'Yes, remove it!'
+//         }).then((result) => {
+//             if (result.isConfirmed) {
+//                 fetch("/remove_cartitem", {
+//                     method: "POST",
+//                     headers: {
+//                         "Content-Type": "application/json"
+//                     },
+//                     body: JSON.stringify({ id })
+//                 })
+//                 .then(response => response.json())
+//                 .then(data => {
+//                     console.log(data);
+//                     if (data.success) {
+//                         Swal.fire({
+//                             icon: 'success',
+//                             text: data.message,
+//                             toast: true,
+//                             position: "top-end",
+//                             showConfirmButton: false,
+//                             timerProgressBar: true,
+//                             timer: 3000,
+//                         });
+
+//                         // Remove the cart item from the DOM
+//                         const cartitem = document.getElementById(`cartitem-${id}`);
+//                         if (cartitem) {
+//                             cartitem.remove();
+//                         }
+
+//                         // Recalculate the total price based on remaining items
+//                         let newTotalPrice = 0;
+//                         document.querySelectorAll(".cart__row").forEach(function(row) {
+//                             const price = parseFloat(row.querySelector(".cart__price-wrapper").getAttribute("data-price"));
+//                             const quantity = parseInt(row.querySelector(".qty").value);
+//                             newTotalPrice += price * quantity;
+//                         });
+
+//                         // Update the total price in the DOM
+//                         document.getElementById("total-price").textContent = `₹${newTotalPrice.toFixed(2)}`;
+                        
+//                     } else {
+//                         Swal.fire({
+//                             icon: 'error',
+//                             text: data.message,
+//                             toast: true,
+//                             position: "top-end",
+//                             showConfirmButton: false,
+//                             timerProgressBar: true,
+//                             timer: 3000,
+//                         });
+//                     }
+//                 })
+//                 .catch(error => {
+//                     console.error("error for remove cartitem", error);
+//                 });
+//             }
+//         });
+//     });
+// });
+
+
+document.querySelectorAll(".cart__remove").forEach(function(button) {
+    button.addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent form submission
+        
+        const form = button.closest("form"); // Get the form related to the button
+        
         Swal.fire({
             title: 'Are you sure?',
             text: "You are about to remove this item from the cart.",
@@ -320,49 +392,7 @@ document.querySelectorAll(".cart__remove").forEach(function(button) {
             confirmButtonText: 'Yes, remove it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Fetch request to remove the cart item
-                fetch("/remove_cartitem", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ id })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            text: data.message,
-                            toast: true,
-                            position: "top-end",
-                            showConfirmButton: false,
-                            timerProgressBar: true,
-                            timer: 3000,
-                        });
-
-                        // Remove the item from DOM if it exists
-                        const cartitem = document.getElementById(`cartitem-${id}`);
-                        console.log('cartitem is', cartitem);
-                        if (cartitem) {
-                            cartitem.remove();
-                        }
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            text: data.message,
-                            toast: true,
-                            position: "top-end",
-                            showConfirmButton: false,
-                            timerProgressBar: true,
-                            timer: 3000,
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error("error for remove cartitem", error);
-                });
+                form.submit(); // Submit the form if confirmed
             }
         });
     });

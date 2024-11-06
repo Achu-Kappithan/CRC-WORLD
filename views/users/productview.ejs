@@ -615,6 +615,9 @@
     }
 
       });
+    console.log("updated cartcount",data.count)
+    document.getElementById("CartCount").textContent = data.count
+
     })
     .catch(error => {
       Swal.fire({

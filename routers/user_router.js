@@ -57,6 +57,7 @@ user_route.get("/load_usercart",auth,validateCartPrices,usercart_controller.load
 user_route.post("/addto_cart",auth,usercart_controller.addto_cart);
 user_route.post("/remove_cartitem",usercart_controller.remove_cartitem);
 user_route.post("/update_quntity",usercart_controller.update_quentity);
+user_route.get("/getcart_count",usercart_controller.get_cartcount);
 
 // checkout page
 user_route.get("/user_checkout",auth,validateCartPrices,checkout_controller.load_checkout);

@@ -146,10 +146,10 @@
                     <!--Mobile Logo-->
                     <div class="col-4 col-sm-3 col-md-3 col-lg-2">
                       <div class="site-cart">
-                          <a href="#" class="site-header__cart" title="Cart">
+                            <a href="#" class="site-header__cart" title="Cart">
                               <i class="icon anm anm-bag-l"></i>
-                                <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span>
-                            </a>
+                              <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">0</span>
+                          </a>
                             <!--Minicart Popup-->
                             <div id="header-cart" class="block block-cart">
                                 <div class="total">
@@ -205,4 +205,23 @@
           </ul>
       </div>
       <!--End Mobile Menu-->
-  
+
+      <script src="/controllers/usercart_controller.js" defer></script>
+<script>
+function updatecartcount() {
+  console.log("cartfunction is working")
+    fetch("/getcart_count") 
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("CartCount").textContent = data.count; 
+            } else {
+                console.error("faild to update the cart count :", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("error fetching cart count:", error);
+        });
+}  
+updatecartcount() ;
+</script>

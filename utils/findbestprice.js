@@ -29,7 +29,7 @@ const findbestoffer = async (product) => {
             discountMultiplier = Math.min(discountMultiplier, (100 - categoryOffer.offerDiscountPercentage) / 100);
         }
 
-        size.priceafteroffer = size.Salesprice * discountMultiplier;
+        size.priceafteroffer = size.Actualprice * discountMultiplier;
     }
 
     await product.save(); 

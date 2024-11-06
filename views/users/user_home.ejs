@@ -173,10 +173,15 @@
                 <div class="product-name">
                   <a href="/load_productview?id=<%= productlist[i]._id%>"><%= productlist[i].productname %></a>
                 </div>
-                
                 <div class="product-price">
-                  <span class="old-price"> <%= productlist[i].sizes[2].Actualprice %> </span>
-                  <span class="price">  <%= priceHelper(productlist[i].sizes) %> </span>
+                  <% if(productlist[i].sizes[0].Actualprice !== productlist[i].sizes[0].priceafteroffer){ %>
+                  <span class="old-price"> <%= productlist[i].sizes[0].Actualprice ? productlist[i].sizes[0].Actualprice : productlist[i].sizes[1].Actualprice ? productlist[i].sizes[1].Actualprice : productlist[i].sizes[2].Actualprice  %> <%=  %> </span>
+                  <% } %>
+                  
+                  <span class="price"><span style="color: rgb(216, 41, 41);">  <%= priceHelper(productlist[i].sizes) %> </span>
+                    <% if(productlist[i].sizes[0].Actualprice !== productlist[i].sizes[0].priceafteroffer){ %>
+                    <% const  percentage = ((productlist[i].sizes[0].Actualprice - productlist[i].sizes[0].priceafteroffer) / productlist[i].sizes[0].Actualprice) * 100 %>
+                      <span style="color: green;"><%= percentage.toFixed()%>% off</span> <% } %> </span>
                 </div>
               </div>
             </div>
@@ -319,12 +324,18 @@
                 <div class="product-name">
                   <a href="/load_productview?id=<%= batlist[i]._id%>"><%= batlist[i].productname %></a>
                 </div>
-                <!-- End product name -->
-                <!-- product price -->
                 <div class="product-price">
-                  <span class="old-price"><%= batlist[i].sizes[2].Actualprice %></span>
-                  <span class="price"><%= priceHelper(batlist[i].sizes) %></span>
+                  <% if(batlist[i].sizes[0].Actualprice !== batlist[i].sizes[0].priceafteroffer){ %>
+                  <span class="old-price"> <%= batlist[i].sizes[0].Actualprice ? batlist[i].sizes[0].Actualprice : batlist[i].sizes[1].Actualprice ? batlist[i].sizes[1].Actualprice : batlist[i].sizes[2].Actualprice  %> <%=  %> </span>
+                  <% } %>
+                  
+                  <span class="price"><span style="color: rgb(216, 41, 41);">  <%= priceHelper(batlist[i].sizes) %> </span>
+                    <% if(batlist[i].sizes[0].Actualprice !== batlist[i].sizes[0].priceafteroffer){ %>
+                    <% const  percentage = ((batlist[i].sizes[0].Actualprice - batlist[i].sizes[0].priceafteroffer) / batlist[i].sizes[0].Actualprice) * 100 %>
+                      <span style="color: green;"><%= percentage.toFixed()%>% off</span> <% } %> </span>
                 </div>
+
+
               </div>
             </div>
             <% }%>
@@ -422,12 +433,23 @@
                   <div class="product-name">
                     <a href="/load_productview?id=<%= gadlist[i]._id%>"><%= gadlist[i].productname %></a>
                   </div>
-                  <!-- End product name -->
-                  <!-- product price -->
-                  <div class="product-price">
+                  <!-- <div class="product-price">
                     <span class="old-price"><%= gadlist[i].sizes[2].Actualprice %></span>
                     <span class="price"><%= priceHelper(gadlist[i].sizes) %></span>
-                  </div>
+                  </div> -->
+
+                <div class="product-price">
+                  <% if(gadlist[i].sizes[0].Actualprice !== gadlist[i].sizes[0].priceafteroffer){ %>
+                  <span class="old-price"> <%= gadlist[i].sizes[0].Actualprice ? gadlist[i].sizes[0].Actualprice : gadlist[i].sizes[1].Actualprice ? gadlist[i].sizes[1].Actualprice : gadlist[i].sizes[2].Actualprice  %> <%=  %> </span>
+                  <% } %>
+                  
+                  <span class="price"><span style="color: rgb(216, 41, 41);">  <%= priceHelper(gadlist[i].sizes) %> </span>
+                    <% if(gadlist[i].sizes[0].Actualprice !== gadlist[i].sizes[0].priceafteroffer){ %>
+                    <% const  percentage = ((gadlist[i].sizes[0].Actualprice - gadlist[i].sizes[0].priceafteroffer) / gadlist[i].sizes[0].Actualprice) * 100 %>
+                      <span style="color: green;"><%= percentage.toFixed()%>%off</span> <% } %> </span>
+                </div>
+
+
                 </div>
               </div>
               <% }%>

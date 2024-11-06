@@ -44,7 +44,6 @@ const sizeSchema = mongoose.Schema({
     },
     Salesprice: {
         type: Number,
-        required: true
     },
     Actualprice: {
         type: Number,
@@ -79,10 +78,6 @@ const productSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "brand",
         required: true
-    },
-    Taxrate: {
-        type: Number,
-        default: 0
     },
     rating: {
         type: Number,

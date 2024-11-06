@@ -20,7 +20,7 @@ const loadadd_product = async (req, res) => {
 
 const add_product = async (req, res) => {
   try {
-    const { productname, productdis, taxrate, productcategory, productbrand } =
+    const { productname, productdis, productcategory, productbrand } =
       req.body;
     const exsitingproduct = await product.findOne({ productname: productname });
     // console.log("this is the data for check product is exist",product)
@@ -47,7 +47,6 @@ const add_product = async (req, res) => {
       sizes.push({
         size: "small",
         stock: req.body.size.SM.stock || 0,
-        Salesprice: req.body.size.SM.salesPrice || 0,
         Actualprice: req.body.size.SM.actualPrice || 0,
       });
     }
@@ -56,7 +55,6 @@ const add_product = async (req, res) => {
       sizes.push({
         size: "Medium",
         stock: req.body.size.Medium.stock || 0,
-        Salesprice: req.body.size.Medium.salesPrice || 0,
         Actualprice: req.body.size.Medium.actualPrice || 0,
       });
     }
@@ -65,7 +63,6 @@ const add_product = async (req, res) => {
       sizes.push({
         size: "Large",
         stock: req.body.size.L.stock || 0,
-        Salesprice: req.body.size.L.salesPrice || 0,
         Actualprice: req.body.size.L.actualPrice || 0,
       });
     }
@@ -75,7 +72,6 @@ const add_product = async (req, res) => {
       productdescription: productdis,
       category: productcategory,
       brand: productbrand,
-      Taxrate: taxrate,
       sizes: sizes,
       productimage: productImages,
     });
@@ -184,7 +180,7 @@ const update_product = async (req, res) => {
       existingImages = [];
     }
 
-    const { productname, productdis, taxrate, productcategory, productbrand } =
+    const { productname, productdis,  productcategory, productbrand } =
       req.body;
 
     const productId = req.query.pid;
@@ -197,7 +193,6 @@ const update_product = async (req, res) => {
       sizes.push({
         size: "small",
         stock: req.body.size.SM.stock || 0,
-        Salesprice: req.body.size.SM.salesPrice || 0,
         Actualprice: req.body.size.SM.actualPrice || 0,
       });
     }
@@ -206,7 +201,6 @@ const update_product = async (req, res) => {
       sizes.push({
         size: "Medium",
         stock: req.body.size.Medium.stock || 0,
-        Salesprice: req.body.size.Medium.salesPrice || 0,
         Actualprice: req.body.size.Medium.actualPrice || 0,
       });
     }
@@ -215,7 +209,6 @@ const update_product = async (req, res) => {
       sizes.push({
         size: "Large",
         stock: req.body.size.L.stock || 0,
-        Salesprice: req.body.size.L.salesPrice || 0,
         Actualprice: req.body.size.L.actualPrice || 0,
       });
     }
@@ -238,7 +231,6 @@ const update_product = async (req, res) => {
       productdescription: productdis,
       category: productcategory,
       brand: productbrand,
-      Taxrate: taxrate,
       sizes: sizes,
       productimage: productimage,
     };

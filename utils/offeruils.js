@@ -59,7 +59,7 @@ async function applyofferprice(products) {
 
         product.sizes = product.sizes.map(size => ({
             ...size.toObject(),
-            priceafteroffer: size.Salesprice * discountMultiplier
+            priceafteroffer: size.Actualprice * discountMultiplier
         }));
 
         await product.save(); 
