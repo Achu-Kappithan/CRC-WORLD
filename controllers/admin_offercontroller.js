@@ -1,5 +1,5 @@
 const Category = require("../models/category");
-const { findByIdAndUpdate } = require("../models/otp");
+const { findByIdAndUpdate, findByIdAndDelete } = require("../models/otp");
 const product = require("../models/product");
 const { findById } = require("../models/user_models");
 const {findbestoffer} = require("../utils/findbestprice")
@@ -350,10 +350,63 @@ const add_coupon = async (req,res)=>{
 
 const load_editcoupon = async (req,res)=>{
     try {
+        const message = req.flash("message")
+        const type = req.flash("type")
+        const id = req.query.id;
+        console.log("this is the idcoupon",id)
+        const coupondata = await Coupon.findById({_id:id})
+        return res.status(200).render("editcoupons",{coupondata ,message ,type})
         
     } catch (err) {
         console.log("error for loading couponedit page",err)
         return res.status(500).render("404",{message: "Unable to load Coupon edit page try again..!"})
+    }
+}
+
+// for upload updated coupon data
+
+const update_coupons = async (req,res)=>{
+    try {
+        const id = req.query.id
+        const {couponname, couponsdis, couponcode, couponpercentage, maxamt, minamt, userlimint }= req.body;
+
+        await Coupon.findByIdAndUpdate(
+            {_id: id},
+            {
+                couponName : couponname,
+                couponDescription : couponsdis,
+                couponCode : couponcode,
+                couponDiscount : couponpercentage,
+                maxAmount : maxamt,
+                minAmount : minamt,
+                Userlimit : userlimint,
+                couponStatus : true
+            }
+        );
+        req.flash("message","Coupon Updated successfully")
+        req.flash("type","success")
+        return res.status(200).redirect("/load_couponlist");
+        
+    } catch (err) {
+        console.log("error for uploading coupos edited data",err)
+        return res.status(500).render("user404",{message: "Unable to compelate the request"})
+    }
+}
+
+
+// for removing  coupons
+
+const remove_coupons = async (req,res)=>{
+    try {
+        const id = req.query.id;
+        await Coupon.findByIdAndDelete ({_id:id})
+        req.flash("message","Coupons remove successfully...")
+        req.flash("type","success")
+        return res.status(500).redirect("/load_couponlist")
+        
+    } catch (err) {
+        console.log("error for removing coupons",err)
+        return res.status(500).render("user404",{messsage: "Unable to complete the request try again..!"})
     }
 }
 
@@ -374,6 +427,8 @@ module.exports ={
 
     load_couponlist,
     add_coupon,
-    load_editcoupon
+    load_editcoupon,
+    update_coupons,
+    remove_coupons
 
 }

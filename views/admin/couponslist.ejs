@@ -79,7 +79,7 @@
                                           <table class="table table-hover table-bordered align-middle">
                                               <thead>
                                                   <tr>
-                                                      <th>#ID</th>
+                                                      <!-- <th>#ID</th> -->
                                                       <th scope="col">Name</th>
                                                       <th scope="col">Offer (%)</th>
                                                       <th scope="col">Coupon Code</th>
@@ -91,7 +91,7 @@
                                               </thead>
                                                           <% coupondata.forEach((coupondata)=>{ %>
                                                           <tr>
-                                                              <td><%=coupondata._id %></td>
+                                                              <!-- <td><%=coupondata._id %></td> -->
                                                               <td><%=coupondata.couponName %></td>
                                                               <td><b><%=coupondata.couponDiscount %></b></td>
                                                               <td><%=coupondata.couponCode  %></td>
@@ -108,15 +108,15 @@
                                                                           <i class="material-icons md-more_horiz"></i> 
                                                                       </a>
                                                                       <div class="dropdown-menu dropdown-menu-end">
-                                                                          <a class="dropdown-item" href="/load_editcoupon">Edit info</a>
-                                                                          <form method="post" action="">
-                                                                          <button  class="dropdown-item text-danger" href="#">Remove</button>
+                                                                          <a class="dropdown-item" href="/load_editcoupon?id=<%=coupondata._id %>">Edit info</a>
+                                                                          <form method="post" action="/remove_coupons?id=<%=coupondata._id %>">
+                                                                          <button  class="dropdown-item text-danger">Remove</button>
                                                                           </form>
                                                                       </div>
                                                                   </div>
                                                               </td>
                                                           </tr>
-                                                          <% }) %>
+                                                        <% }) %>
                                               </tbody>
                                           </table>
                                       </div>
@@ -158,19 +158,19 @@
                                   
                                     <div class="mb-4">
                                       <label class="form-label">Discount Percentage</label>
-                                      <input name="couponDiscount" type="number" class="form-control" placeholder="Enter discount percentage" id="couponDiscount" required />
+                                      <input name="couponDiscount" type="number" class="form-control" placeholder="Enter discount percentage" id="couponDiscount"  />
                                       <span id="errorCouponDiscount" class="text-danger"></span>
                                     </div>
                                   
                                     <div class="mb-4">
                                       <label class="form-label">Max Amount</label>
-                                      <input name="maxAmount" type="number" class="form-control" placeholder="Enter maximum discount amount" id="maxAmount" required />
+                                      <input name="maxAmount" type="number" class="form-control" placeholder="Enter maximum discount amount" id="maxAmount"  />
                                       <span id="errorMaxAmount" class="text-danger"></span>
                                     </div>
                                   
                                     <div class="mb-4">
                                       <label class="form-label">Min Amount</label>
-                                      <input name="minAmount" type="number" class="form-control" placeholder="Enter minimum purchase amount" id="minAmount" required />
+                                      <input name="minAmount" type="number" class="form-control" placeholder="Enter minimum purchase amount" id="minAmount"  />
                                       <span id="errorMinAmount" class="text-danger"></span>
                                     </div>
                                   
@@ -217,8 +217,8 @@
 
         
     <script>
-      const message = "";
-      const type = "";
+  const message = "<%= message %>";
+  const type = "<%= type %>";
 
       if (message && message.length > 0) {
           Swal.fire({
