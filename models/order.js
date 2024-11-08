@@ -20,6 +20,9 @@ const orderschema = mongoose.Schema({
         type: Number,
         required: true,
       },
+      finalprie: {
+        type: Number,
+      },
       quantity: {
         type: Number,
         default: 1, 
@@ -39,6 +42,9 @@ const orderschema = mongoose.Schema({
   totalPrice: {
     type: Number,
     default: 0,
+  },
+  coupondiscout: {
+    type: Number,
   },
   status: {
     type: String,

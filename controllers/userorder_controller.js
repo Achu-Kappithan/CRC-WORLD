@@ -14,11 +14,11 @@ const place_order = async (req, res) => {
       const userId = req.session.user_id;
       const grandtotal = req.body.grandtotal; 
       
-      if(grandtotal>10000){
-        req.flash("message","Cash on Delivery is only available for orders below ₹10,000. Please select another payment method to proceed")
-        req.flash("type","info")
-        return res.status(401).redirect("/user_checkout")
-      }
+      // if(grandtotal>10000){
+      //   req.flash("message","Cash on Delivery is only available for orders below ₹10,000. Please select another payment method to proceed")
+      //   req.flash("type","info")
+      //   return res.status(401).redirect("/user_checkout")
+      // }
 
       if(!addressId && !paymentMethod){
         req.flash("message","Plz Select address and Payment Method");

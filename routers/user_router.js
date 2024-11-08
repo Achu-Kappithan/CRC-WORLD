@@ -63,6 +63,8 @@ user_route.get("/getcart_count",usercart_controller.get_cartcount);
 user_route.get("/user_checkout",auth,validateCartPrices,checkout_controller.load_checkout);
 user_route.post("/checkoutedit_address",auth,checkout_controller.checkoutupdate_address);
 user_route.post("/checkout_addaddress",auth,checkout_controller.checkout_newaddress);
+user_route.post("/apply_coupons",checkout_controller.applycouppons);
+user_route.post("/remove_coupon",checkout_controller.remove_coupons);
 
 //user profile 
 user_route.get("/user_Profile",auth,userprofile_controller.load_userprofile);

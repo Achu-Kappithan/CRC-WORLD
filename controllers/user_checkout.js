@@ -4,20 +4,22 @@ const Address = require("../models/address")
 const Cart = require("../models/cart")
 const Order = require("../models/order")
 const Product = require("../models/product")
+const Coupons = require("../models/coupons")
 
 //for loading  chekout page
 
 const  load_checkout = async (req,res)=>{
     try {
         const userId = req.session.user_id;
+        const coupons = await Coupons.find({ couponStatus: true })
         const userdata =  await User.findById({_id:userId}).populate('addressId').exec()
         const cardata  = await Cart.findOne({user:userId})
-        console.log("this is the cart data for current user",cardata)
+        // console.log("this is the cart data for current user",cardata)
         const message = req.flash("message");
         const type =  req.flash("type");
 
         // console.log("this is the data send to user profile",userdata)
-       return res.status(200).render("checkout",{userdata ,cardata ,message ,type })
+       return res.status(200).render("checkout",{userdata ,cardata ,message ,type ,coupons})
     } catch (err) {
 
         console.log("error for loading checkout page ",err)
@@ -103,97 +105,64 @@ const checkout_newaddress = async (req,res)=>{
         res.status(500).render("user404",{message:"unable to add address try again...!"})
     }
 }
+
+// for  applaying coupons
+
+const applycouppons = async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const { couponcode, grandTotal } = req.body; 
+        const grandtotal = Number(grandTotal);
+
+
+        console.log("typeof:", typeof(grandtotal));
+        console.log("grandtotal:", grandtotal); 
+
+        const coupons = await Coupons.findOne({ couponCode: couponcode, couponStatus: true });
+        if (!coupons) {
+            return res.json({ success: false, message: "Invalid or inactive coupon code" });
+        }
+
+        if (coupons.userBy.includes(userId)) {
+            return res.json({ success: false, message: "You have already used this coupon" });
+        }
+
+        if (grandtotal < coupons.minAmount) {
+            return res.json({ success: false, message: `This coupon is available only for purchases over ${coupons.minAmount}` });
+        }
+
+        const offerprice = Math.min((grandtotal * coupons.couponDiscount) / 100, coupons.maxAmount);
+        console.log("offerprice:", offerprice); 
+
+
+        res.status(200).json({ offerprice, success: true, message: "Coupon added successfully" });
+    } catch (err) {
+        console.log("Error applying coupon:", err);
+        res.status(500).render("user404", { message: "Unable to complete the request" });
+    }
+};
+
+// for removing existing coupons
+
+const remove_coupons = async (req,res)=>{
+    try {
+        const userid = req.session.user_id
+        const { grandTotal ,couponcode } = req.body;
+        const offerprice = 0;
+
+        return res.json({success : true , message :"Coupon removed successfully"})
+        
+    } catch (err) {
+        console.log("error for removeing coupoons ",err)
+        return res.status(500).render("user404",{message : "Unable to complete the request try again..!"})
+    }
+}
  
-// for placeing a new order
-
-// const place_order = async (req, res) => {
-//     try {
-//       const addressId = req.body.selectedAddress; 
-//       const paymentMethod = req.body.paymentMethod; 
-//       const userId = req.session.user_id;
-//       const grandtotal = req.body.grandtotal; 
-      
-//       if(grandtotal>10000){
-//         req.flash("message","Cash on Delivery is only available for orders below ₹10,000. Please select another payment method to proceed")
-//         req.flash("type","info")
-//         return res.status(401).redirect("/user_checkout")
-//       }
-
-//       if(!addressId && !paymentMethod){
-//         req.flash("message","Plz Select address and Payment Method");
-//         req.flash("type","warning")
-//         return res.status(400).redirect("/user_checkout");
-//       }
-  
-//       const orderAddress = await Address.findById(addressId);
-//       const cartData = await Cart.findOne({ user: userId });
-  
-//       if (!cartData || cartData.items.length === 0) {
-//         req.flash("message","Your cart is empty plz add items");
-//         req.flash("type","warning")
-//         return res.status(400).redirect("/user_checkout");
-//       }
-  
-//       const totalPrice = cartData.items.reduce((acc, curr) => {
-//         return acc + (curr.Salesprice * curr.quantity);
-//       }, 0);
-  
-//       const neworder = new Order({
-//         userId: userId,
-//         items: cartData.items.map((item) => ({
-//           productId: item.productId,
-//           productname: item.name,
-//           Salesprice: item.Salesprice,
-//           quantity: item.quantity,
-//           size: item.size,
-//           productimage: item.productimage,
-//         })),
-
-//         totalPrice: totalPrice,
-//         status: "Pending",
-
-//         billingDetails: {
-//           name: orderAddress.name,
-//           phone: orderAddress.phone,
-//           pincode: orderAddress.pincode,
-//           locality: orderAddress.locality,
-//           housename: orderAddress.housename,
-//           district: orderAddress.district,
-//           state: orderAddress.state,
-//           landMark: orderAddress.landMark || "", 
-//           email: orderAddress.email,
-//         },
-//         paymentMethod: paymentMethod,
-//         paymentStatus: paymentMethod, 
-//         orderDate: Date.now(),
-//       });
-  
-//       await neworder.save();
-
-//       for (let item of cartData.items) {
-//         const product = await Product.findById(item.productId);
-  
-//         if (product) {
-//           const sizeIndex = product.sizes.findIndex((sizeObj) => sizeObj.size === item.size);
-//             product.sizes[sizeIndex].stock -= item.quantity;
-//             await product.save();
-          
-//         }
-//       } 
-
-//       await Cart.findOneAndUpdate({ user: userId }, { items: [] });
-//       return res.status(200).render("order_successfull",{  newOrder:neworder });
-      
-//     } catch (err) {
-//       console.error("Error while placing order:", err);
-//      return  res.status(500).render("user404",{message:"Something went wrong. Please try again."});
-//     }
-//   };
-
-
 
 module.exports = {
     load_checkout,
     checkoutupdate_address,
     checkout_newaddress,
+    applycouppons,
+    remove_coupons
 }

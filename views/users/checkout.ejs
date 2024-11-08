@@ -125,8 +125,8 @@
                   <div class="card mb-3">
                       <div class="card-body">
                         <div style="padding: 5px;margin-right: 10px;">
-                          <!-- <input type="radio" id="address-<%= a._id %>" name="selectedAddress" value="<%= a._id %>" class="form-check-input"> -->
-                          <input type="radio" id="address-<%= a._id %>" name="selectedAddress" value="<%= a._id %>" class="form-check-input" <% if (index === 0) { %> checked <% } %> required>
+                          <input type="radio" id="address-<%= a._id %>" name="selectedAddress" value="<%= a._id %>" class="form-check-input" <% if(index ==0) {%> checked <% } %> required>
+                          <label class="form-check-label" for="address-<%= a._id %>"><%= a.addressLine %></label>
 
 
                         </div>
@@ -235,11 +235,13 @@
                 <tbody>
 
                   <% var grandTotal = 0 %>
+                  
                   <% cardata.items.forEach((item)=>{  %> 
                   <tr>
                     <td class="text-left"><%= item.name %></td>
                     <% const price = item.priceafteroffer ? item.priceafteroffer : item.Salesprice  %>
                     <td>₹ <%= price %></td>
+                    
                     <td><%= item.size %></td>
                     <td><%= item.quantity %></td>
                     <td>₹ <%= item.quantity * price %></td>
@@ -258,21 +260,57 @@
                     <td>₹ 0.00</td>
                   </tr>
                   <tr>
+                    <td colspan="4" class="text-right">Coupons</td>
+                    <td id="offerprice">₹ 0.00</td>
+                  </tr>
+                  <tr>
                     <td colspan="4" class="text-right">Total</td>
-                    <td name >₹ <%= grandTotal %></td>
+                    <td id="total-display">₹ <%= grandTotal.toFixed(2) %></td>
+                    <input id="totalamt" type="hidden" value="<%= grandTotal.toFixed(2) %>" data-original-total="<%= grandTotal.toFixed(2) %>">
+ 
                   </tr>
                 </tfoot>
               </table>
             </div>
           </div>
+          <button id="removeCoupon" style="display: none;" >Remove Coupon</button>
 
           <hr />
+          <h2 class="payment-title mb-3">Discount Codes</h2>
 
           <div class="your-payment">
-            <h2 class="payment-title mb-3">Discount Codes</h2>
             <div class="payment-method">
               <div class="payment-accordion">
+                <div class="card mb-2">
+                  <div class="card-header">
+                      <a class="card-link" data-toggle="collapse" href="#collapseOne">available coupons </a>
+                  </div>
+                  <div id="collapseOne" class="collapse" data-parent="#accordion">
+                      <div class="card-body">
+                        <table
+                        class="bg-white table table-bordered table-hover text-center"
+                      >
+                        <thead>
+                          <tr>
+                            <th>Coupon Name</th>
+                            <th>Coupon code</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% coupons.forEach((item)=>{ %>
+                          <tr>
+                            <td> <%= item.couponName %></td>
+                            <td> <%= item.couponCode %> </td>
+                          </tr>
+                          <% }) %>
+                        </tbody>
+                        </table>
+                      </div>
+                  </div>
+              </div>
+      
                 <div id="accordion" class="payment-section">
+                  
                   <div class="card mb-2">
                     <div class="card-header">
                       <a
@@ -298,7 +336,7 @@
                                 ><span class="required-f">*</span> Coupon</label
                               >
                               <input id="coupon-code" required="" type="text" class="mb-3" />
-                              <button class="coupon-btn btn" type="button">
+                              <button id="applaycoupons" class="coupon-btn btn" type="button">
                                 Apply Coupon
                               </button>
                             </div>
@@ -317,12 +355,12 @@
                       <a
                         class="card-link"
                         data-toggle="collapse"
-                        href="#collapseOne"
+                        href="#collapseThree"
                         >Choose Your Payment Method
                       </a>
                     </div>
                     <div
-                      id="collapseOne"
+                      id="collapseThree"
                       class="collapse"
                       data-parent="#accordion"
                     >
@@ -369,7 +407,7 @@
                       </div>
                     </div>
                   </div> -->
-                  <!-- <div class="card mb-2">
+              <!-- <div class="card mb-2">
                     <div class="card-header">
                       <a
                         class="collapsed card-link"
@@ -485,11 +523,11 @@
 
 
                 </div>
-              </div>
+              </div>  
               <form id="orderForm" method="post" action="/Placeorder">
                 <input type="hidden" id="selectedAddressInput" name="selectedAddress" value="">
                 <input type="hidden" id="selectedPaymentMethodInput" name="paymentMethod" value="">
-                <input type="hidden" name="grandtotal" value="<%= grandTotal %>">
+                <input  id="orderfinalamt" type="text" name="grandtotal" value="<%= grandTotal.toFixed(2) %>">
                 <div class="order-button-payment">
                     <button style="font-size: 10px;" class="btn" type="submit">
                         Place order
@@ -616,18 +654,31 @@
 <!-- address selection -->
 
 <script>
-  document.querySelectorAll('input[name="selectedAddress"]').forEach(function(radio) {
-    radio.addEventListener('change', function() {
-      document.getElementById('selectedAddressInput').value = this.value;
-    });
-  });
+document.addEventListener("DOMContentLoaded", function() {
+  const checkedRadio = document.querySelector('input[name="selectedAddress"]:checked');
+  if (checkedRadio) {
+    document.getElementById('selectedAddressInput').value = checkedRadio.value;
+  }
+});
 
-  document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio) {
-    radio.addEventListener('change', function() {
-      document.getElementById('selectedPaymentMethodInput').value = this.value;
-    });
+document.querySelectorAll('input[name="selectedAddress"]').forEach(function(radio) {
+  radio.addEventListener('change', function() {
+    document.getElementById('selectedAddressInput').value = this.value;
   });
-  
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  const checkedRadio = document.querySelector('input[name="paymentMethod"]:checked');
+  if (checkedRadio) {
+    document.getElementById('selectedPaymentMethodInput').value = checkedRadio.value;
+  }
+});
+
+document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio) {
+  radio.addEventListener('change', function() {
+    document.getElementById('selectedPaymentMethodInput').value = this.value;
+  });
+});
     
 </script>
 
@@ -666,6 +717,118 @@
           }
       });
   });
+
+  // for applaying cupons
+
+  document.getElementById("applaycoupons").addEventListener("click", function() {
+    const couponcode = document.getElementById("coupon-code").value;
+    const grandTotal = parseFloat(document.getElementById('totalamt').value); 
+    console.log("grandTotal:", grandTotal); 
+
+    fetch("/apply_coupons", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ couponcode, grandTotal })  
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: "success", 
+                title: data.message,
+                toast: true,
+                background: "black",
+                color: "white",
+                position: "top-end",
+                showConfirmButton: false,
+                timerProgressBar: true,
+                timer: 5000,
+                customClass: {
+                    popup: 'custom-toast'
+                },
+                didOpen: () => {
+                    const swalPopup = document.querySelector('.custom-toast');
+                    swalPopup.style.marginTop = '70px';  
+                    swalPopup.style.marginRight = '15px'; 
+                }
+            });
+
+            console.log("updated data", data.offerprice);
+            document.getElementById("offerprice").textContent = `₹ ${data.offerprice.toFixed(2)}`;  
+            document.getElementById('totalamt').value = (grandTotal - data.offerprice).toFixed(2);  
+            document.getElementById('total-display').textContent = `₹ ${(grandTotal - data.offerprice).toFixed(2)}`;  
+            document.getElementById("orderfinalamt").value = (grandTotal - data.offerprice).toFixed(2)
+
+            document.getElementById("removeCoupon").style.display = "block";
+
+
+        } else {
+            Swal.fire({
+                icon: "error", 
+                title: data.message,
+                toast: true,
+                background: "black",
+                color: "white",
+                position: "top-end",
+                showConfirmButton: false,
+                timerProgressBar: true,
+                timer: 5000,
+                customClass: {
+                    popup: 'custom-toast'
+                },
+                didOpen: () => {
+                    const swalPopup = document.querySelector('.custom-toast');
+                    swalPopup.style.marginTop = '70px';  
+                    swalPopup.style.marginRight = '15px'; 
+                }
+            });
+        }
+    });
+});
+
+
+// for removing coupons
+
+document.getElementById("removeCoupon").addEventListener("click", function() {
+    const grandTotal = parseFloat(document.getElementById('totalamt').dataset.originalTotal);
+    const couponcode = document.getElementById("coupon-code").value
+
+    fetch("/remove_coupon", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ grandTotal , couponcode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                toast: true,
+                background: "black",
+                color: "white",
+                position: "top-end",
+                showConfirmButton: false,
+                timerProgressBar: true,
+                timer: 5000
+            });
+
+            document.getElementById("offerprice").textContent = `₹ 0.00`;
+            document.getElementById('totalamt').value = grandTotal.toFixed(2);
+            document.getElementById('total-display').textContent = `₹ ${grandTotal.toFixed(2)}`;
+            document.getElementById("orderfinalamt").value = grandTotal.toFixed(2);
+
+            // Hide the "Remove Coupon" button
+            document.getElementById("removeCoupon").style.display = "none";
+        }
+    });
+});
+
+
 </script>
 
 <style>
