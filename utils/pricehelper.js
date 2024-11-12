@@ -20,8 +20,8 @@ const price = function(size) {
   for (let value of size) {
     if (value.priceafteroffer !== undefined && value.priceafteroffer > 0) {
       finalprice = value.priceafteroffer;
-    } else if (value.Salesprice > 0) {
-      finalprice = value.Salesprice;
+    } else if (value.Actualprice > 0) {
+      finalprice = value.Actualprice;
     }
 
     if (finalprice > 0) {

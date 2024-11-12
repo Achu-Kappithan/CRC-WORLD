@@ -43,7 +43,7 @@
                                             <a href="#"><img src="/assets/uploads/product/<%= product.productimage[0] %>" alt="" title="" /></a>
                                         </td>
                                         <td class="product-name"><h4 class="no-margin"><a href="#"><%= product.productname %></a></h4></td>
-                                        <td class="product-price text-center"><span class="amount"><%= product.sizes[0].Salesprice > 0 ? product.sizes[0].Salesprice : (product.sizes[1].Salesprice > 0 ? product.sizes[1].Salesprice : (product.sizes[2].Salesprice > 0 ? product.sizes[2].Salesprice : "Not available")) %>
+                                        <td class="product-price text-center"><span class="amount"><%= product.sizes[0].priceafteroffer  > 0 ? product.sizes[0].priceafteroffer   : (product.sizes[1].priceafteroffer   > 0 ? product.sizes[1].priceafteroffer    : (product.sizes[2].priceafteroffer    > 0 ? product.sizes[2].priceafteroffer     : "Not available")) %>
                                         </span></td>
                                         <td class="stock text-center">
                                             <% let availablestock = product.sizes[0].stock >0 ? product.sizes[0].stock : (product.sizes[1].stock >0 ? product.sizes[1].stock :  product.sizes[2].stock )%>
@@ -100,7 +100,7 @@ document.querySelectorAll(".removeitem").forEach(function(button) {
 
         Swal.fire({
             title: 'Are you sure?',
-            text: "You are about to remove this item from the cart.",
+            text: "You are about to remove this item from the Wishlist.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',

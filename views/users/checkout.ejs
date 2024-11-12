@@ -528,6 +528,8 @@
                 <input type="hidden" id="selectedAddressInput" name="selectedAddress" value="">
                 <input type="hidden" id="selectedPaymentMethodInput" name="paymentMethod" value="">
                 <input  id="orderfinalamt" type="text" name="grandtotal" value="<%= grandTotal.toFixed(2) %>">
+                <input type="text" id="applyiedcoupon" name="couponcode" value="">
+                <input type="text" name="couponamt" id="couponamt" value="">
                 <div class="order-button-payment">
                     <button style="font-size: 10px;" class="btn" type="submit">
                         Place order
@@ -760,6 +762,8 @@ document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio)
             document.getElementById('totalamt').value = (grandTotal - data.offerprice).toFixed(2);  
             document.getElementById('total-display').textContent = `₹ ${(grandTotal - data.offerprice).toFixed(2)}`;  
             document.getElementById("orderfinalamt").value = (grandTotal - data.offerprice).toFixed(2)
+            document.getElementById("applyiedcoupon").value = couponcode
+            document.getElementById("couponamt").value = ` ${data.offerprice}`;
 
             document.getElementById("removeCoupon").style.display = "block";
 

@@ -3,6 +3,8 @@ const Cart = require("../models/cart")
 const Order = require("../models/order")
 const Product = require("../models/product")
 const razorpay = require("../config/razorpayconfig")
+const Coupon = require("../models/coupons")
+const { findOneAndUpdate } = require("../models/user_models")
 
 
 // for placeing a new order
@@ -13,12 +15,14 @@ const place_order = async (req, res) => {
       const paymentMethod = req.body.paymentMethod; 
       const userId = req.session.user_id;
       const grandtotal = req.body.grandtotal; 
+      const couponcode = req.body.couponcode?   req.body.couponcode : null
+      const couponamt = req.body.couponamt;
       
-      // if(grandtotal>10000){
-      //   req.flash("message","Cash on Delivery is only available for orders below ₹10,000. Please select another payment method to proceed")
-      //   req.flash("type","info")
-      //   return res.status(401).redirect("/user_checkout")
-      // }
+      if(grandtotal>10000 && paymentMethod=="COD" ){
+        req.flash("message","Cash on Delivery is only available for orders below ₹10,000. Please select another payment method to proceed")
+        req.flash("type","info")
+        return res.status(401).redirect("/user_checkout")
+      }
 
       if(!addressId && !paymentMethod){
         req.flash("message","Plz Select address and Payment Method");
@@ -38,19 +42,34 @@ const place_order = async (req, res) => {
       const totalPrice = cartData.items.reduce((acc, curr) => {
         return acc + (curr.Salesprice * curr.quantity);
       }, 0);
-  
+
+      function generateOrderId() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let orderId = '';
+        
+        for (let i = 0; i < 12; i++) {
+          const randomIndex = Math.floor(Math.random() * characters.length);
+          orderId += characters[randomIndex];
+        }
+        
+        return orderId;
+      }
+
       const neworder = new Order({
         userId: userId,
+        Orderid : generateOrderId(),
         items: cartData.items.map((item) => ({
           productId: item.productId,
           productname: item.name,
           Salesprice: item.Salesprice,
+          finalprie : item.priceafteroffer,
           quantity: item.quantity,
           size: item.size,
           productimage: item.productimage,
         })),
 
-        totalPrice: totalPrice,
+        totalPrice: grandtotal,
+        coupondiscout : couponamt,
         status: "Pending",
 
         billingDetails: {
@@ -71,6 +90,7 @@ const place_order = async (req, res) => {
   
      const orderdata = await neworder.save();
 
+
       for (let item of cartData.items) {
         const product = await Product.findById(item.productId);
   
@@ -81,6 +101,10 @@ const place_order = async (req, res) => {
           
         }
       } 
+
+      await  Coupon.findOneAndUpdate({couponCode: couponcode},
+        {$push:{userBy: userId}}
+      ) 
 
       await Cart.findOneAndUpdate({ user: userId }, { items: [] });
 

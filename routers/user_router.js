@@ -71,9 +71,13 @@ user_route.get("/user_Profile",auth,userprofile_controller.load_userprofile);
 user_route.post("/add_useraddress",auth,userprofile_controller.add_newaddress);
 user_route.post("/edit_address",userprofile_controller.update_address);
 user_route.post("/delete_address",userprofile_controller.delete_address);
+//Order summary and details
 user_route.get("/order_summary",auth,userprofile_controller.load_ordersummary);
 user_route.get("/my_orders",auth, userprofile_controller.load_myorder);
 user_route.post("/order_cancelled",userprofile_controller.cancell_order);
+user_route.post("/return_order",userprofile_controller.return_order);
+// user wallet
+user_route.get("/load_wallet",userprofile_controller.load_wallet);
 
 //user wishlist controller
 user_route.get("/load_wishlist",auth,userwishlist_controller.load_whishlist);

@@ -26,7 +26,7 @@ const load_cart = async (req, res) => {
 
 const addto_cart = async (req, res) => {
   try {
-    const { productId, quantity, Salesprice, stock, Cartsize , Offerprice } = req.body;
+    const { productId, quantity, Actualprice, stock, Cartsize , Offerprice } = req.body;
     const userId = req.session.user_id;
     // console.log(
     //   "this is the data  get form the frondend for adding cart ",
@@ -72,7 +72,7 @@ const addto_cart = async (req, res) => {
             productId: product._id,
             name: product.productname,
             quantity: quantity,
-            Salesprice: Salesprice,
+            Salesprice: Actualprice,
             priceafteroffer : Offerprice,
             stock: stock,
             productimage: product.productimage,
@@ -102,7 +102,8 @@ const addto_cart = async (req, res) => {
           productId: product._id,
           name: product.productname,
           quantity: quantity,
-          Salesprice: Salesprice,
+          Salesprice: Actualprice,
+          priceafteroffer : Offerprice,
           stock: stock,
           productimage: product.productimage,
           Taxrate: product.Taxrate,
@@ -112,6 +113,7 @@ const addto_cart = async (req, res) => {
     }
 
     const newdata = await cart.save();
+    console.log("new data added to cart",newdata)
     const updatedCartCount = newdata.items.length;
 
     res.status(200).json({

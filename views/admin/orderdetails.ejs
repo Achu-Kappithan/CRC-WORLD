@@ -13,7 +13,7 @@
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Order detail</h2>
-            <p>Details for Order ID: <%= order._id %></p>
+            <p>Details for Order ID: <%= order.Orderid%></p>
         </div>
     </div>
     <div class="card">
@@ -23,7 +23,7 @@
                     <span>
                         <i class="material-icons md-calendar_today"></i> <b> <%= new Date(order.orderDate).toLocaleDateString() %></b>
                     </span> <br>
-                    <small class="text-muted">Order ID:   </small>
+                    <small class="text-muted">Order ID: <%= order.Orderid%>   </small>
                 </div>
                 <div class="col-lg-6 col-md-6 ms-auto text-md-end">
                     <select  id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
@@ -100,7 +100,9 @@
                                 <tr>
                                     <th width="40%">Product</th>
                                     <th width="20%">Unit Price</th>
+                                    <th width="20%">offer deduction</th>
                                     <th width="20%">Quantity</th>
+                                    
                                     <th width="20%" class="text-end">Total</th>
                                 </tr>
                             </thead>
@@ -110,7 +112,7 @@
 
                                 <% order.items.forEach((item)=>{ %>
 
-                                    <% let itemtotal =  item.Salesprice * item.quantity %>
+                                    <% let itemtotal =  item.finalprie * item.quantity %>
                                     <% subtotal+=itemtotal %>
                                 <tr>
                                     <td>
@@ -122,13 +124,14 @@
                                         </a>
                                     </td>
                                     <td> ₹<%= item.Salesprice %> </td>
+                                    <td> ₹  <span style="color: red;"> <%= item.Salesprice-item.finalprie %> </span> </td>
                                     <td> <%= item.quantity %> </td>
                                     <td class="text-end"> ₹<%= itemtotal %></td>
 
                                 </tr>
                                 <% }) %>
                                 <tr>
-                                    <td colspan="4">
+                                    <td colspan="6">
                                         <article class="float-end">
                                             <dl class="dlist">
                                                 <dt>Subtotal: </dt>
@@ -139,8 +142,12 @@
                                                 <dd>₹ 00.00</dd>
                                             </dl>
                                             <dl class="dlist">
+                                                <dt>Coupon deducation:</dt>
+                                                <dd>₹ <span style="color: red;"><%= order.coupondiscout? order.coupondiscout : "0.00" %></span></dd>
+                                            </dl>
+                                            <dl class="dlist">
                                                 <dt>Grand total:</dt>
-                                                <dd> <b class="h5">₹<%= subtotal %></b> </dd>
+                                                <dd> <b class="h5">₹<%= subtotal-order.coupondiscout %></b> </dd>
                                             </dl>
                                             <dl class="dlist">
                                                 <dt class="text-muted">Payment Status:</dt>
@@ -153,14 +160,14 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div> <!-- table-responsive// -->
-                    <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a>
-                </div> <!-- col// -->
+                    </div> 
+                    <!-- <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a> -->
+                </div> 
                 <div class="col-lg-1"></div>
                 <div class="col-lg-4">
                     <div class="box shadow-sm bg-light">
                         <h6 class="mb-15">Payment info</h6>
-                        <p><span class="badge rounded-pill alert-success text-success"><%= order.paymentStatus %></span>
+                        <p> Payment status : <span class="badge rounded-pill alert-success text-success"><%= order.paymentStatus %></span>
                             <!-- <img src="assets/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br>
                             Business name: Grand Market LLC <br>
                             Phone: +1 (800) 555-154-52 -->
@@ -173,10 +180,10 @@
                         </div>
                         <button class="btn btn-primary">Save note</button>
                     </div> -->
-                </div> <!-- col// -->
+                </div> 
             </div>
-        </div> <!-- card-body end// -->
-    </div> <!-- card end// -->
+        </div> 
+    </div> 
 </section> 
 
 <!-- content-main end// -->

@@ -144,23 +144,23 @@
                                         </div>
                                          <p class="product-single__price product-single__price-product-template">
                                             <span class="visually-hidden">Regular price</span>
-                                            <s id="ComparePrice-product-template"><span id="salesprice" class="money"><%= productdata.sizes[2].Actualprice%></span></s>
+                                            <s id="ComparePrice-product-template"><span id="salesprice" class="money"><%= productdata.sizes[0].Actualprice%></span></s>
                                             <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
 
                                               <% let price = 0 
                                               if(productdata.sizes[0].priceafteroffer !== undefined && productdata.sizes[0].priceafteroffer > 0){
                                                 price = productdata.sizes[0].priceafteroffer
                                               }else{
-                                                price =  productdata.sizes[0].Salesprice
+                                                price =  productdata.sizes[0].Actualprice
                                               }  %>
                                                 <span id="ProductPrice-product-template">₹<span class="money" id="product-price"><%= price %> </span></span>
                                             </span>
                                             <span class="discount-badge"> <span class="devider">|</span>&nbsp;
-                                                <span>You Save</span>
-                                                <span id="SaveAmount-product-template" class="product-single__save-amount">
-                                                <span class="money">$100.00</span>
+                                                <span>You Save</span> 
+                                                <span  class="product-single__save-amount">
+                                                <span id="SaveAmount" class="money"></span>
                                                 </span>
-                                                <span class="off">(<span>16</span>%)</span>
+                                                <span class="off">(<span id="discount-percentage" ></span>%)</span>
                                             </span>  
                                         </p>
                                         <div  class="product-single__description rte">
@@ -193,7 +193,7 @@
                                                       type="radio"
                                                       name="size-option"
                                                       value="<%= productdata.sizes[i].size %>"
-                                                      data-price="<%= productdata.sizes[i].Salesprice %>"
+                                                      data-price="<%= productdata.sizes[i].Actualprice %>"
                                                       data-stock="<%= productdata.sizes[i].stock %>"
                                                       onchange="handleSizeChange('<%= productdata.sizes[i]._id %>', this)"
                                                       <% if (i === 0) { %> checked <% } %> 
@@ -395,7 +395,7 @@
                                             </div>
                                             <div class="details">
                                             	<a class="grid-view-item__title" href="#"><%= item.productname %></a>
-                                                <% let price = item.sizes.find(size => size.Salesprice > 0)?.Salesprice %>
+                                                <% let price = item.sizes.find(size => size.Actualprice > 0)?.Actualprice %>
                                               	<div class="grid-view-item__meta"><span class="product-price__price"><span class="money"></span><%= priceHelper(item.sizes) %></span></div>
                                                 <div class="product-review">
                                                     <i class="font-13 fa fa-star"></i>
@@ -500,16 +500,25 @@
 
             console.log(data)
 
+            let savings = data.size.Actualprice - data.size.priceafteroffer;
+            console.log("savingamt ",savings)
+            let discountPercentage = ((savings / data.size.Actualprice) * 100);
+            console.log("percentAGE",discountPercentage)
+
+
           let price = 0 
           if(data.size.priceafteroffer !== undefined && data.size.priceafteroffer > 0){
             price = data.size.priceafteroffer
           }else{
-            price =  data.size.Salesprice
+            price =  data.size.Actualprice
           }  
             
             document.getElementById('product-price').textContent = Math.round(price);
             document.getElementById('product-stock').textContent = data.size.stock;
-            document.getElementById('salesprice').textContent = data.size.Salesprice;
+            document.getElementById('salesprice').textContent = data.size.Actualprice;
+            document.getElementById('SaveAmount').textContent = Math.round(savings);
+            document.getElementById('discount-percentage').textContent = discountPercentage;
+
   
             const stockStatusElement = document.getElementById('stock-status');
             const stock = data.size.stock;
@@ -546,12 +555,13 @@
     const productId = this.dataset.productId;
     const priceElement = document.getElementById("product-price");
     const Offerprice = priceElement.textContent;
+    console.log("offerprice",Offerprice)  
     const countDisplay = document.getElementById('countDisplay');
     const quantity = parseInt(countDisplay.textContent);
     const stockElement = document.getElementById("product-stock");
     const stock = parseInt(stockElement.textContent);
     const salespriceElement = document.getElementById('salesprice');
-    const Salesprice = salespriceElement.textContent;
+    const Actualprice = salespriceElement.textContent;
 
     const selectedSizeRadio = document.querySelector('input[name="size-option"]:checked');
     const Cartsize = selectedSizeRadio ? selectedSizeRadio.value : null;
@@ -590,7 +600,7 @@
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ productId, quantity, Salesprice, stock, Cartsize, Offerprice }),
+      body: JSON.stringify({ productId, quantity, Actualprice, stock, Cartsize, Offerprice }),
     })
     .then(response => response.json())
     .then(data => {

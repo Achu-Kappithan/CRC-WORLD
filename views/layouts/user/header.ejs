@@ -63,13 +63,12 @@
                         </div>
                         <p class="phone-no"><i class="anm anm-phone-s"></i> +91 70***********</p>
                     </div>
-                    <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">
+                    <div class="col-sm-4 col-md-4 col-lg-4 d-non  d-md-block d-lg-block">
                       <div class="text-center"><p class="top-header_middle-text"> Worldwide Express Shipping</p></div>
                     </div>
                     <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
                       <span class="user-menu d-block d-lg-none"><i class="anm anm-user-al" aria-hidden="true"></i></span>
                         <ul class="customer-links list-inline">
-                            <!-- <li><a href="/load_wishlist">Wishlist</a></li> -->
                             <% if (UserId) { %>
                               <li><a href="/logout_user">Logout</a></li>
                           <% } else { %>
@@ -108,10 +107,10 @@
                                 </li>
                                 <li class="lvl1 parent megamenu"><a href="/user_shop">Shop <i class="anm anm-angle-down-l"></i></a>
                                 </li>
-                                 <li class="lvl1 parent megamenu"><a href="#">Product <i class="anm anm-angle-down-l"></i></a>
-                                 </li>
-                                <li class="lvl1 parent dropdown"><a href="#">Blog<i class="anm anm-angle-down-l"></i></a>
-                                </li>
+                                 <!-- <li class="lvl1 parent megamenu"><a href="#">Product <i class="anm anm-angle-down-l"></i></a>
+                                 </li> -->
+                                <!-- <li class="lvl1 parent dropdown"><a href="#">Blog<i class="anm anm-angle-down-l"></i></a>
+                                </li> -->
                                 <li class="lvl1 parent dropdown"><a href="#">Pages <i class="anm anm-angle-down-l"></i></a>
                                   <ul class="dropdown">
                                     <li><a href="/load_usercart" class="site-nav">Cart Page</i></a>
@@ -119,7 +118,8 @@
                                     <li><a href="/user_checkout" class="site-nav">Checkout</a></li>
                                     <li><a href="/user_Profile" class="site-nav">Profile</a></li>
                                     <li><a href="/my_orders" class="site-nav">My Orders</a></li>
-                                    <li><a href="/load_wishlist" class="site-nav">Wishlist</a></li>
+                                    <li><a href="/load_wallet" class="site-nav">My wallet</a></li>
+
                                     <!-- <li><a href="" class="site-nav">About Us <span class="lbl nm_label1">New</span> </a></li>
                                     <li><a href="" class="site-nav">Contact Us</a></li> -->
                                     <!-- <li><a href="lookbook1.html" class="site-nav">Lookbook<i class="anm anm-angle-right-l"></i></a>
@@ -143,18 +143,16 @@
                             </a>
                         </div>
                     </div>
-                    <!--Mobile Logo-->
+                    
                     <div class="col-4 col-sm-3 col-md-3 col-lg-2">
                       <div class="site-cart">
                             <a href="#" class="site-header__cart" title="Cart">
                               <i class="icon anm anm-bag-l"></i>
                               <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">0</span>
                           </a>
-                            <!--Minicart Popup-->
                             <div id="header-cart" class="block block-cart">
                                 <div class="total">
                                   <div class="total-in">
-                                      <!-- <span class="label">Cart Subtotal:</span><span class="product-price"><span class="money">$748.00</span></span> -->
                                     </div>
                                      <div class="buttonSet text-center">
                                         <a href="/load_usercart" class="btn btn-secondary btn--small">View Cart</a>
@@ -170,6 +168,11 @@
                         <div class="site-header__search">
                           <a href="/load_wishlist" type="button" class="search-trigger"><i class="bi bi-heart"></i></a>
                         </div>
+                        <div class="site-header__search">
+                          <a href="/user_Profile" type="button" class="search-trigger"><i class="icon anm anm-user-l"></i></a>
+                        </div>
+
+
                     </div>
               </div>
             </div>
@@ -188,8 +191,8 @@
               <ul>
                 <li><a href="product-layout-1.html" class="site-nav">Product Page<i class="anm anm-plus-l"></i></a>
                 </li>
-                <li><a href="short-description.html" class="site-nav">Product Features<i class="anm anm-plus-l"></i></a>
-                </li>
+                <!-- <li><a href="short-description.html" class="site-nav">Product Features<i class="anm anm-plus-l"></i></a>
+                </li> -->
                 <li><a href="#" class="site-nav">Product Features<i class="anm anm-plus-l"></i></a>
                 </li>
                 <li><a href="#" class="site-nav">Product Features<i class="anm anm-plus-l"></i></a>

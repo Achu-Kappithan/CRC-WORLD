@@ -1,7 +1,7 @@
 const User = require("../models/user_models");
 const Address = require("../models/address");
 const Orders = require("../models/order")
-
+const Wallet = require("../models/wallet")
 
 // for loading  userprofile page
 
@@ -179,6 +179,66 @@ const cancell_order = async (req,res)=>{
         res.status(500).render("user404",{message:"Something went rong Tray again..!"})
         
     }
+} 
+
+// for loading wallet 
+
+const  load_wallet = async (req,res)=>{
+    try {
+        const userid = req.session.user_id;
+        const walletdata = await Wallet.findOne({userId:userid})
+        return res.status(200).render("wallet",{walletdata})
+    } catch (err) {
+        console.log("error for loading user wallset page",err)
+        return res.status(500).render("user404",{message: "Unable to complete the request try again..!"})
+        
+    }
+}
+
+// for  return a order 
+
+const return_order = async (req,res)=>{
+    try {
+        const id = req.body.id;
+        const userid = req.session.user_id
+        console.log("userid is ",userid)
+        console.log("id for return the order",id)
+
+        const orderdata = await Orders.findById({_id:id});
+        // console.log("order details for refund",orderdata)
+
+        let wallet = await Wallet.findOne({userId:userid});
+
+        if(!wallet){
+            wallet = new Wallet({
+                userId :userid,
+                balance : 0,
+                transactions : []
+            })
+        }
+
+        wallet.balance += orderdata.totalPrice;
+
+        wallet.transactions.push({
+            orderId : id,
+            amount : orderdata.totalPrice,
+            type : orderdata.paymentMethod,
+            walletTransactionStatus : "refunded"
+        })
+
+        await wallet.save();
+
+        orderdata.status = "Returned"
+
+        await orderdata.save();
+
+        return res.status(200).json({success : true , message: "Order returned successfully, refund credited to wallet"})
+
+    } catch (err) {
+        console.log("error for return the order",err)
+        return res.status(500).render("user404",{message : "Unable to complete the request try again..!"})
+        
+    }
 }
 
 
@@ -194,5 +254,7 @@ module.exports = {
     delete_address,
     load_ordersummary,
     load_myorder,
-    cancell_order
+    cancell_order,
+    load_wallet,
+    return_order
 }

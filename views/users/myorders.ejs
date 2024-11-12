@@ -106,7 +106,7 @@ p {
                                 <p>
                                     <img src="/assets/uploads/product/<%= item.productimage[0] %>" alt="<%= item.productname %>" style="width: 110px; margin-top: 5px;"><br>
                                     <strong>Product:</strong> <%= item.productname %><br>
-                                    <strong>Price:</strong> ₹<%= item.Salesprice.toFixed(2) %><br>
+                                    <strong>Price:</strong> ₹<%= item.finalprie ? item.finalprie.toFixed(2)*item.quantity : item.Salesprice.toFixed(2) %><br>
                                     <strong>Quantity:</strong> <%= item.quantity %><br>
                                     <strong>Size:</strong> <%= item.size %><br>
                                 </p>
@@ -116,8 +116,9 @@ p {
                             <div class="col-md-4">
                                 <h5 class="card-title">Order Summary</h5>
                                 <p>
-                                    <strong>Order ID:</strong> <%= order._id.toString() %><br>
+                                    <strong>Order ID:</strong> <%= order.Orderid.toString() %><br>
                                     <strong>Order Date:</strong> <%= new Date(order.orderDate).toLocaleDateString() %><br>
+                                    <strong>Coupon discount:</strong>  ₹<%= order.coupondiscout? order.coupondiscout.toFixed(2) : null %><br>
                                     <strong>Total Price:</strong> ₹<%= order.totalPrice.toFixed(2) %><br>
                                     <strong>Payment Method:</strong> <%= order.paymentMethod %><br><br>
                                     <strong>Payment Status:</strong>
@@ -149,7 +150,7 @@ p {
 
                             <div class="col-md-4">
                                 <p>
-                                    <% if(order.status !== "Cancelled" && order.status !== "Delivered") { %>
+                                    <% if(order.status !== "Cancelled" && order.status !== "Delivered" && order.status !== "Returned") { %>
                                         <button id="hidebtn-<%= order._id %>" data-id="<%= order._id %>" 
                                             type="button" 
                                             class="btn btn-primary btn-cancel me-2 ordercanellbtn">
@@ -159,7 +160,7 @@ p {
                                     <% } %>
                             
                                     <% if(order.status === "Delivered") { %>
-                                        <button type="button" 
+                                        <button id="return-<%= order._id %>" data-returnid="<%= order._id %>" type="button" 
                                             class="btn btn-warning btn-return me-2 orderReturnbtn">
                                             Return Order
                                         </button>
@@ -379,6 +380,84 @@ p {
         });
     }
 }
+</script>
+
+<!-- Script for return a order -->
+<script>
+
+document.querySelectorAll(".btn-return").forEach(function(button){
+    button.addEventListener("click",function(){
+        const id = button.getAttribute("data-returnid");
+        console.log("id for return a order",id)
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to return this this order.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Return !'
+            }).then((result)=>{
+                if(result.isConfirmed) {
+
+                    fetch("/return_order",{
+                        method: "POST",
+                        headers : {
+                            "Content-Type": "application/json"
+                        },
+                        body : JSON.stringify({id})
+                    })
+
+                    .then(responce => responce.json())
+                    .then(data=>{
+                        if(data.success){
+                            Swal.fire({
+                            icon: 'success',
+                            text: data.message,
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            timer: 3000,
+                            })
+                            console.log("Product returnd successfully")
+                            
+                            const returnbutton = document.getElementById(`return-${id}`)
+                            console.log(returnbutton)
+                            if(returnbutton){
+                                returnbutton.style.display='none';
+                            }
+                            const statusBadge = document.getElementById(`status-${id}`);
+                            if (statusBadge) {
+                                statusBadge.innerHTML = "Returned";
+                                statusBadge.className = "badge rounded-pill alert-danger";
+                            }
+
+
+                        }else{
+                            Swal.fire({
+                            icon: 'error',
+                            text: data.message,
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            timer: 3000,
+                            })
+                            console.log("can't complate the request")
+                        }
+                    })
+                    .catch(err=>{
+                        console.log("error for cancel the order",err)
+                    })
+                        
+
+                }
+            })
+                
+    })
+})
 </script>
 
 

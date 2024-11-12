@@ -1,0 +1,163 @@
+
+<%- include("../layouts/user/header.ejs") %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wallet</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .wallet-card {
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            color: white;
+        }
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .status-pending {
+            color: #ffc107;
+        }
+        .status-paid {
+            color: #28a745;
+        }
+        .status-refunded {
+            color: #dc3545;
+        }
+    </style>
+
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <!-- Wallet Balance Card -->
+        <div class="row mb-4">
+            <div class="col-md-6 mx-auto">
+                <div class="card wallet-card shadow">
+                    <div class="card-body text-center p-4">
+                        <h5 class="card-title mb-3">Wallet Balance</h5>
+                        <h2 class="display-4 mb-3">₹ <span id="balance"><%= walletdata.balance %></span></h2>
+                        <!-- <button class="btn btn-light">Add Money</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Transaction History</h5>
+                    </div>
+                    <div class="card-body">
+
+                        <!-- <div class="d-flex align-items-center justify-content-between border-bottom py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="transaction-icon bg-success-subtle me-3">
+                                    <i class="fas fa-arrow-down text-success"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Order : </h6>
+                                    <small class="text-muted"></small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h6 class="mb-1"></h6>
+                                <small class="status-paid">
+                                    <i class="fas fa-circle-check"></i> Paid
+                                </small>
+                            </div>
+                        </div> -->
+                       
+                         
+
+                        <!-- Transaction Item -->
+                        <!-- <div class="d-flex align-items-center justify-content-between border-bottom py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="transaction-icon bg-danger-subtle me-3">
+                                    <i class="fas fa-arrow-up text-danger"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Order : </h6>
+                                    <small class="text-muted"><%= %></small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h6 class="mb-1">-</h6>
+                                <small class="status-pending">
+                                    <i class="fas fa-clock"></i> Pending
+                                </small>
+                            </div>
+                        </div> -->
+
+                        <!-- Transaction Item -->
+                        <% walletdata.transactions.forEach((item)=>{ %>
+
+                        <div class="d-flex align-items-center justify-content-between py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="transaction-icon bg-info-subtle me-3">
+                                    <i class="fas fa-rotate-left text-info"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Order : <%= item.orderId %></h6>
+                                    <!-- <small class="text-muted"><%= new Date(walletdata.createdAt).toLocaleDateString() %></small> -->
+                                    <small class="text-muted"><%= new Date(walletdata.createdAt).toLocaleString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric', 
+                                        hour: '2-digit', 
+                                        minute: '2-digit', 
+                                        second: '2-digit' 
+                                    }) %></small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h6 class="mb-1">+ ₹ <%= item.amount %></h6>
+                                <small class="status-refunded">
+                                    <i class="fas fa-rotate-left"></i> Refunded
+                                </small>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <!-- <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav> -->
+            </div>
+        </div>
+    </div>
+<script src="assets/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="assets/js/vendor/modernizr-3.6.0.min.js"></script>
+<script src="assets/js/vendor/jquery.cookie.js"></script>
+<script src="assets/js/vendor/wow.min.js"></script>
+<!-- Including Javascript -->
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/plugins.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/lazysizes.js"></script>
+<script src="assets/js/main.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
