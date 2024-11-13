@@ -5,12 +5,15 @@ const Cart = require("../models/cart")
 const Order = require("../models/order")
 const Product = require("../models/product")
 const Coupons = require("../models/coupons")
+const Wallet = require("../models/wallet")
 
 //for loading  chekout page
 
 const  load_checkout = async (req,res)=>{
     try {
         const userId = req.session.user_id;
+        const wallet = await Wallet.findOne({userId:userId})
+        console.log("my wallet",wallet)
         const coupons = await Coupons.find({ couponStatus: true })
         const userdata =  await User.findById({_id:userId}).populate('addressId').exec()
         const cardata  = await Cart.findOne({user:userId})
@@ -19,7 +22,7 @@ const  load_checkout = async (req,res)=>{
         const type =  req.flash("type");
 
         // console.log("this is the data send to user profile",userdata)
-       return res.status(200).render("checkout",{userdata ,cardata ,message ,type ,coupons})
+       return res.status(200).render("checkout",{userdata ,cardata ,message ,type ,coupons , wallet})
     } catch (err) {
 
         console.log("error for loading checkout page ",err)

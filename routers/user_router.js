@@ -55,7 +55,7 @@ user_route.post("/product_filter", userproduct_controller.filterProducts);
 // load cart patge
 user_route.get("/load_usercart",auth,validateCartPrices,usercart_controller.load_cart);
 user_route.post("/addto_cart",auth,usercart_controller.addto_cart);
-user_route.post("/remove_cartitem",usercart_controller.remove_cartitem);
+user_route.post("/remove_cartitem",auth,usercart_controller.remove_cartitem);
 user_route.post("/update_quntity",usercart_controller.update_quentity);
 user_route.get("/getcart_count",usercart_controller.get_cartcount);
 
@@ -77,7 +77,7 @@ user_route.get("/my_orders",auth, userprofile_controller.load_myorder);
 user_route.post("/order_cancelled",userprofile_controller.cancell_order);
 user_route.post("/return_order",userprofile_controller.return_order);
 // user wallet
-user_route.get("/load_wallet",userprofile_controller.load_wallet);
+user_route.get("/load_wallet",auth,userprofile_controller.load_wallet);
 
 //user wishlist controller
 user_route.get("/load_wishlist",auth,userwishlist_controller.load_whishlist);
@@ -91,6 +91,7 @@ user_route.post("/Placeorder",auth,order_controller.place_order);
 user_route.post("/create-order",order_controller.razorpay_order);
 user_route.post("/verify-payment",order_controller.verify_payment);
 user_route.get("/load_paymentsuccess",order_controller.load_paymentsuccess);
+user_route.get("/payment_failed",order_controller.payment_faild);
 
 
 

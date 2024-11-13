@@ -622,3 +622,45 @@ document.querySelectorAll(".wishlist").forEach(function(button){
   }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const message = "<%= message %>";
+        const type = "<%= type %>"; 
+
+        if (type === "confirmation") {
+    Swal.fire({
+        title: "<h3 style='color:#FF5733; font-weight:bold;'>Login Required</h3>",
+        html: "<p style='color:#333; font-size:16px;'>You need to log in to access this page. Would you like to log in now?</p>",
+        icon: "warning",
+        iconHtml: '🔒', 
+        toast : true,
+        showCancelButton: true,
+        confirmButtonText: " Login",
+        cancelButtonText: "Stay on Page",
+        customClass: {
+            popup: 'swal-custom-popup', 
+            confirmButton: 'swal-confirm-button', 
+            cancelButton: 'swal-cancel-button'
+        },
+        reverseButtons: true,
+        buttonsStyling: false,
+        background: "white",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/login"; 
+        }
+    });
+
+
+        } else if (message) {
+            Swal.fire({
+                text: message,
+                icon: type,
+                timer: 3000,
+                showConfirmButton: false
+            });
+        }
+    });
+</script>
+

@@ -5,6 +5,7 @@ const Product = require("../models/product")
 const razorpay = require("../config/razorpayconfig")
 const Coupon = require("../models/coupons")
 const { findOneAndUpdate } = require("../models/user_models")
+const Wallet = require("../models/wallet")
 
 
 // for placeing a new order
@@ -29,9 +30,18 @@ const place_order = async (req, res) => {
         req.flash("type","warning")
         return res.status(400).redirect("/user_checkout");
       }
-  
+      const walletdata = await Wallet.findOne({userId:userId})
+
+      if (paymentMethod == "mywallet") {
+        if (!walletdata || walletdata.balance < grandtotal) {
+            req.flash("message", "Insufficient wallet balance to process the order.");
+            req.flash("type", "warning");
+            return res.status(403).redirect("/user_checkout");
+        }
+    }  
       const orderAddress = await Address.findById(addressId);
       const cartData = await Cart.findOne({ user: userId });
+      
   
       if (!cartData || cartData.items.length === 0) {
         req.flash("message","Your cart is empty plz add items");
@@ -108,6 +118,21 @@ const place_order = async (req, res) => {
 
       await Cart.findOneAndUpdate({ user: userId }, { items: [] });
 
+      if(paymentMethod == "mywallet"){
+        walletdata.balance = walletdata.balance-grandtotal;
+        walletdata.transactions.push({
+          orderId : orderdata._id,
+          amount : grandtotal,
+          type : "wallet payment",
+          walletTransactionStatus : "paid"
+        })
+        await walletdata.save()
+        await Order.findByIdAndUpdate(
+          {_id:orderdata._id},
+          {$set:{paymentStatus:"Success"}}
+        )
+       }
+       
       if(paymentMethod =="onlinepayment"){
         return res.status(200).render("online_paymentcnfm",{orderdata})
       }
@@ -133,7 +158,7 @@ const  razorpay_order = async (req,res)=>{
             receipt: `order_rcptid_${Math.random().toString(36).substring(7)}`
         };
         const order = await razorpay.orders.create(options);
-        res.status(200).json({
+        res.json({
             success: true,
             order,
             db_orderid
@@ -148,30 +173,61 @@ const  razorpay_order = async (req,res)=>{
 }
 
 
-// verifiying the payment 
-
 const verify_payment = async (req, res) => {
-    const crypto = require("crypto");
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, db_orderid } = req.body;
+  console.log("verifying is working");
+  const crypto = require("crypto");
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, db_orderid, amount } = req.body;
+
+  try {
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !db_orderid) {
+      console.log("Payment failed - Missing payment fields");
+      await Order.findByIdAndUpdate({ _id: db_orderid }, { paymentStatus: "Failed" });
+      return res.status(400).json({ 
+        success: false, 
+        message: "Payment failed", 
+        redirectUrl: "/payment_failed" 
+      });
+    }
 
     const generatedSignature = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-        .digest("hex");
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
 
     if (generatedSignature === razorpay_signature) {
+      await Order.findByIdAndUpdate({ _id: db_orderid }, { paymentStatus: "Success" });
+      console.log("Payment success");
 
-        await Order.findByIdAndUpdate({_id:db_orderid}, { paymentStatus: "Success" });
-
-        const totalamt = req.body.amount / 100;
-        return res.json({
-            success: true,
-            redirectUrl: "/load_paymentsuccess",
-            data: {  totalamt, razorpay_payment_id } 
-        });
+      const totalamt = amount / 100;
+      return res.json({
+        success: true,
+        redirectUrl: "/load_paymentsuccess",
+        data: { totalamt, razorpay_payment_id }
+      });
     } else {
-        return res.json({ success: false, message: "Payment verification failed" });
+      console.log("Payment verification failed - Signature mismatch");
+      await Order.findByIdAndUpdate({ _id: db_orderid }, { paymentStatus: "Failed" });
+      return res.json({
+        success: false,
+        message: "Payment verification failed",
+        redirectUrl: "/payment_failed"
+      });
     }
+  } catch (error) {
+    console.error("Error in payment verification:", error);
+    if (db_orderid) {
+      await Order.findByIdAndUpdate({ _id: db_orderid }, { paymentStatus: "Failed" });
+    }
+    return res.status(500).json({ 
+      success: false, 
+      message: "Payment verification error",
+      redirectUrl: "/payment_failed" 
+    });
+  }
 };
+
+
+
+
 
 // for loading payment success page
 
@@ -187,10 +243,26 @@ const load_paymentsuccess = async (req,res)=>{
     }
 }
 
+// for loading  payment faild page
+
+const payment_faild  = async ( req,res)=>{
+  try {
+    const orderid = req.query.id;
+    console.log("order id",orderid)
+    const orderdata = await Order.findById({_id:orderid})
+    return res.status(200).render("paymentfaild",{orderdata})
+    
+  } catch (err) {
+    console.log("error for loading payment faildpage",err)
+    
+  }
+}
+
 
   module.exports = {
     place_order,
     razorpay_order,
     verify_payment,
-    load_paymentsuccess
+    load_paymentsuccess,
+    payment_faild
   }

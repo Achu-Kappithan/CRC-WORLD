@@ -58,23 +58,6 @@
                     </div>
                     <div class="card-body">
 
-                        <!-- <div class="d-flex align-items-center justify-content-between border-bottom py-3">
-                            <div class="d-flex align-items-center">
-                                <div class="transaction-icon bg-success-subtle me-3">
-                                    <i class="fas fa-arrow-down text-success"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">Order : </h6>
-                                    <small class="text-muted"></small>
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <h6 class="mb-1"></h6>
-                                <small class="status-paid">
-                                    <i class="fas fa-circle-check"></i> Paid
-                                </small>
-                            </div>
-                        </div> -->
                        
                          
 
@@ -97,8 +80,37 @@
                             </div>
                         </div> -->
 
-                        <!-- Transaction Item -->
-                        <% walletdata.transactions.forEach((item)=>{ %>
+                         <% walletdata.transactions.forEach((item)=>{ %>
+
+                        <% if(item.walletTransactionStatus == "paid") { %>
+
+                            <div class="d-flex align-items-center justify-content-between border-bottom py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="transaction-icon bg-success-subtle me-3">
+                                    <!-- <i class="fas fa-arrow-down text-success"></i> -->
+                                    <i class="fas fa-arrow-up text-danger"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Order : <%= item.orderId %></h6>
+                                    <small class="text-muted"><%= new Date(item.createdAt).toLocaleString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric', 
+                                        hour: '2-digit', 
+                                        minute: '2-digit', 
+                                        second: '2-digit' 
+                                    }) %></small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h6 class="mb-1">- ₹ <%= item.amount %></h6>
+                                <small class="status-paid">
+                                    <i class="fas fa-circle-check"></i> Paid
+                                </small>
+                            </div>
+                        </div>
+
+                        <% }else if(item.walletTransactionStatus == "refunded") { %> 
 
                         <div class="d-flex align-items-center justify-content-between py-3">
                             <div class="d-flex align-items-center">
@@ -107,8 +119,7 @@
                                 </div>
                                 <div>
                                     <h6 class="mb-1">Order : <%= item.orderId %></h6>
-                                    <!-- <small class="text-muted"><%= new Date(walletdata.createdAt).toLocaleDateString() %></small> -->
-                                    <small class="text-muted"><%= new Date(walletdata.createdAt).toLocaleString('en-US', { 
+                                    <small class="text-muted"><%= new Date(item.createdAt).toLocaleString('en-US', { 
                                         year: 'numeric', 
                                         month: 'long', 
                                         day: 'numeric', 
@@ -125,6 +136,7 @@
                                 </small>
                             </div>
                         </div>
+                        <% } %>
                         <% }) %>
                     </div>
                 </div>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .payment-failed-container {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .payment-failed-box {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .circle-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #fee2e2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .x-mark {
+            color: #dc3545;
+            font-size: 40px;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <div class="payment-failed-container d-flex align-items-center justify-content-center py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="payment-failed-box p-4 p-md-5 text-center">
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="circle-icon">
+                                <span class="x-mark">×</span>
+                            </div>
+                        </div>
+                        
+                        <h2 class="mb-3">Payment Failed</h2>
+                        <p class="text-muted mb-4">
+                            We're sorry, but your payment could not be processed. Please try again or check your payment details.
+                        </p>
+
+                        <input id="ree-total_amt" type="text" value="<%= orderdata.totalPrice %>">
+                        <input id="ree-order_id" type="text" value ="<%= orderdata._id %>">
+
+                        
+                        <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                            <a href="/my_orders" class="btn btn-outline-secondary btn-lg px-4">
+                                Go to My Orders
+                            </a>
+                            <button onclick="startPayment()"  
+                            class="btn btn-primary btn-lg px-4">
+                            Retry Payment
+                            </button>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <small class="text-muted">
+                                Transaction ID: <span class="fw-bold">#TXN123456</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+<button onclick="startPayment()"  
+class="btn btn-danger btn-retry me-2 orderRetrybtn">
+Retry Payment
+</button>
+
+<script>
+    async function startPayment() {
+        try {
+            const totalamt = document.getElementById("ree-total_amt").value;
+            const order_id = document.getElementById("ree-order_id").value;
+    
+            const response = await fetch("/create-order", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ amount: totalamt, order_id }) 
+            });
+    
+            const data = await response.json();
+            console.log("Order creation response:", data);  
+    
+            if (data.success) {
+                const db_orderid = data.db_orderid;
+                const options = {
+                    key: "<%= process.env.RAZORPAY_KEY_ID %>", 
+                    amount: data.order.amount,
+                    currency: "INR",
+                    name: "CRC WORLD",
+                    description: "Thanks for your order",
+                    order_id: data.order.id,
+                    db_orderid: data.db_orderid,
+                    handler: function (response) {
+                        console.log("Payment succeeded:", response);  // Debugging
+                        response.db_orderid = db_orderid;
+                        verifyPayment(response);
+                    },
+                    theme: {
+                        color: "#3399cc"
+                    }
+                };
+    
+                const rzp = new Razorpay(options);
+    
+                
+                rzp.on("payment.failed", function (response) {
+                    console.log("Payment failed:", response.error);  
+                    window.location.href = '/payment_failed'; 
+                });
+    
+                console.log("Opening Razorpay interface"); 
+                rzp.open();
+            } else {
+                alert("Failed to create order. Try again.");
+            }
+        } catch (error) {
+            console.error("Error in startPayment function:", error);
+            alert("An error occurred. Please try again later.");
+        }
+    }
+    
+    async function verifyPayment(response) {
+        try {
+            const verifyResponse = await fetch("/verify-payment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    ...response,
+                    db_orderid: response.db_orderid 
+                })
+            });
+    
+            const data = await verifyResponse.json();
+            console.log("Verification response:", data);  
+    
+            if (data.success) {
+                window.location.href = data.redirectUrl; 
+            } else {
+                window.location.href = '/payment_failed'; 
+            }
+        } catch (error) {
+            console.error("Error in verifyPayment function:", error);
+            window.location.href = '/payment_failed';
+        }
+    }
+</script>
