@@ -1,4 +1,14 @@
 <%- include("../layouts/user/header.ejs") %>
+<style>
+.empty-cart-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 18px;
+    color: #333;
+}
+</style>
 
     <div id="page-content">
     	<!--Page Title-->
@@ -16,6 +26,7 @@
 						<i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong> You've got free shipping!
 					</div>
                 	<form action="#" method="post" class="cart style2">
+                        <% if (cartdata && cartdata.items.length > 0) { %>
                 		<table>
                             <thead class="cart__row cart__header">
                                 <tr>
@@ -28,7 +39,7 @@
                             </thead>
                     		<tbody>
 
-                                <% if (cartdata && cartdata.items.length > 0) { %>
+                                
 
                                     <% var totalPrice = 0; %>
                                     <% cartdata.items.forEach(item => { %>
@@ -84,27 +95,17 @@
                                 </tr>
 
                                 <% }); %>
-                                <% } else { %>
-                                <h2>Your cart is empty Add some products</h3>
-                              <% } %>
 
                             </tbody>
-                    		<tfoot>
-                                <tr>
-                                    <td colspan="3" class="text-left"><a href="/user_shop" class="btn btn-secondary btn--small cart-continue">Continue shopping</a></td>
-                                    <td colspan="3" class="text-right">
-	                                    <!-- <button type="submit" name="clear" class="btn btn-secondary btn--small  small--hide">Clear Cart</button>
-                                    	<button type="submit" name="update" class="btn btn-secondary btn--small cart-continue ml-2">Update Cart</button> -->
-                                    </td>
-                                </tr>
-                            </tfoot>
+                        
                     </table> 
                	</div>
                 
-                
+                  
                 <div class="container mt-4">
                     <div class="row">
                     	<div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
+                            <a href="/user_shop" class="btn btn-secondary btn--small cart-continue">Continue shopping</a><br><br>
                         	<h5>Discount Codes</h5>
                             <form action="#" method="post">
                             	<div class="form-group">
@@ -168,6 +169,11 @@
         
                         </div>
                     </div>
+                    <% } else { %>
+                                    
+                        <h2 class="empty-cart-message">Your cart is empty. Add some products.</h2>
+                  <% } %>
+
                 </div>
                 
             </div>
@@ -178,6 +184,7 @@
 
 
 <%- include("../layouts/user/footer.ejs") %>
+
 
 <script>
     const message = "<%= message %>";

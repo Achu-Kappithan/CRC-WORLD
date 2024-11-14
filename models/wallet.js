@@ -7,6 +7,9 @@ const walletTransactions = mongoose.Schema({
         ref: 'order', 
         required: true
     },
+    placedorderid :{
+        type : String
+    },
     amount: {
         type: Number,
         required: true

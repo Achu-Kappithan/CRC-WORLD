@@ -25,6 +25,7 @@
                                     	<th class="product-name text-center alt-font">Remove</th>
                                         <th class="product-price text-center alt-font">Images</th>
                                         <th class="product-name alt-font">Product</th>
+                                        <th class="product-price text-center alt-font">Select size</th>
                                         <th class="product-price text-center alt-font">Unit Price</th>
                                         <th class="stock-status text-center alt-font">Stock Status</th>
                                         <th class="product-subtotal text-center alt-font">View Details</th>
@@ -43,16 +44,29 @@
                                             <a href="#"><img src="/assets/uploads/product/<%= product.productimage[0] %>" alt="" title="" /></a>
                                         </td>
                                         <td class="product-name"><h4 class="no-margin"><a href="#"><%= product.productname %></a></h4></td>
-                                        <td class="product-price text-center"><span class="amount"><%= product.sizes[0].priceafteroffer  > 0 ? product.sizes[0].priceafteroffer   : (product.sizes[1].priceafteroffer   > 0 ? product.sizes[1].priceafteroffer    : (product.sizes[2].priceafteroffer    > 0 ? product.sizes[2].priceafteroffer     : "Not available")) %>
+                                        <td> <select name="size" required onchange="updatePriceAndStock('<%= product._id %>', this.value)">
+                                            <option value="">Select Size</option>
+                                            <% product.sizes.forEach((size, index) => { %>
+                                              <option value="<%= index %>"><%= size.size %></option>
+                                            <% }) %>
+                                          </select>
+                                        </td>
+                                        <td class="product-price text-center"><span id="price-<%= product._id %>" class="amount"><%= product.sizes[0].priceafteroffer  > 0 ? product.sizes[0].priceafteroffer   : (product.sizes[1].priceafteroffer   > 0 ? product.sizes[1].priceafteroffer    : (product.sizes[2].priceafteroffer    > 0 ? product.sizes[2].priceafteroffer     : "Not available")) %>
                                         </span></td>
+                                        <input type="text" id="stockk-<%= product._id %>" value="<%= product.sizes[0].stock %>">
+                                        <input type="text" id="Actualprice-<%= product._id %>" value="<%= product.sizes[0].Actualprice %>">
+                                        <input type="text" id="sizename-<%= product._id %>" value="<%= product.sizes[0].size %>">
+                                        
                                         <td class="stock text-center">
+                                            
                                             <% let availablestock = product.sizes[0].stock >0 ? product.sizes[0].stock : (product.sizes[1].stock >0 ? product.sizes[1].stock :  product.sizes[2].stock )%>
-                                            <span style="font-weight: bold;" class="<%= availablestock > 5 ? 'text-success' : (availablestock > 0 ? 'text-warning' : 'text-danger') %>"><%= availablestock > 5 ? "In Stock" : (availablestock > 0 ? "Limited Stock" : "Out of Stock") %></span>
+                                            <span id="stock-<%= product._id %>" style="font-weight: bold;" class="<%= availablestock > 5 ? 'text-success' : (availablestock > 0 ? 'text-warning' : 'text-danger') %>"><%= availablestock > 5 ? "In Stock" : (availablestock > 0 ? "Limited Stock" : "Out of Stock") %></span>
    
                                         </td>
-                                        <td class="product-subtotal text-center"><a class="btn btn-small hr" href="/load_productview?id=<%= product._id%>" >View Details</a></td>
+                                        <td class="product-subtotal text-center"><button type="button" class="btn btn-small hr" onclick="addToCart('<%= product._id %>')">Add to Cart</button></td>
                                     </tr>
                                     <% })%>
+                                    
                                 </tbody>
                                 <% } %>
                             </table>
@@ -152,11 +166,131 @@ document.querySelectorAll(".removeitem").forEach(function(button) {
         });
     });
 });
-</script>
-            
+
+
+// for  dynamicaly change the  price and  sock  when the user select the size
+function updatePriceAndStock(productId, sizeIndex) {
+    const product = <%- JSON.stringify(wishlist) %>.find(item => item._id === productId);
+    const selectedSize = product.sizes[sizeIndex];
+    document.getElementById(`stockk-${productId}`).value = selectedSize
     
+    const priceElement = document.getElementById(`price-${productId}`);
+    priceElement.textContent = selectedSize.priceafteroffer > 0 ? selectedSize.priceafteroffer : "Not available";
+    
+    const stockElement = document.getElementById(`stock-${productId}`);
+    const stockStatus = selectedSize.stock > 5 ? "In Stock" : (selectedSize.stock > 0 ? "Limited Stock" : "Out of Stock");
+    stockElement.textContent = stockStatus;
+    
+    stockElement.className = selectedSize.stock > 5 ? "text-success" : (selectedSize.stock > 0 ? "text-warning" : "text-danger");
+
+    document.getElementById(`stockk-${productId}`).value = selectedSize.stock;
+    document.getElementById(`Actualprice-${productId}`).value = selectedSize.Actualprice;
+    document.getElementById(`sizename-${productId}`).value = selectedSize.size;
+  }
+
+</script>
 
 
+<script>
+
+//  function for add prodiuct to cart
+
+function addToCart(productId) {
+    console.log("funcion staert")
+
+    const productElement = document.getElementById(`wishlistitem-${productId}`);
+    const Offerprice = document.getElementById(`price-${productId}`).textContent;
+    const stock = document.getElementById(`stockk-${productId}`).value;
+    const Actualprice = document.getElementById(`Actualprice-${productId}`).value;
+    const Cartsize = document.getElementById(`sizename-${productId}`).value;
+    const quantity = 1;
+    console.log("product ", productId,Offerprice,stock,Actualprice,Cartsize)
+
+    if (!Cartsize) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please select a size before adding to cart!',
+        toast: true,
+          background: "black",
+            color:"white",
+            position: "top-end",
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 3000,
+            customClass: {
+           popup: 'custom-toast'
+    },
+    didOpen: () => {
+        const swalPopup = document.querySelector('.custom-toast');
+        swalPopup.style.marginTop = '70px';  
+        swalPopup.style.marginRight = '15px'; 
+    }
+
+      });
+      return;  
+    }
+
+    fetch("/addto_cart", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ productId, quantity, Actualprice, stock, Cartsize, Offerprice }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      Swal.fire({
+        icon: data.alertType || 'success', 
+        title: data.alertTitle || 'Success',
+        text: data.alertText || data.message,
+        toast: true,
+          background: "black",
+            color:"white",
+            position: "top-end",
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 3000,
+            customClass: {
+           popup: 'custom-toast'
+    },
+    didOpen: () => {
+        const swalPopup = document.querySelector('.custom-toast');
+        swalPopup.style.marginTop = '70px';  
+        swalPopup.style.marginRight = '15px'; 
+    }
+
+      });
+    console.log("updated cartcount",data.count)
+    document.getElementById("CartCount").textContent = data.count
+
+    })
+    .catch(error => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+        toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timerProgressBar: true,
+            timer: 3000,
+            customClass: {
+           popup: 'custom-toast'
+    },
+    didOpen: () => {
+        const swalPopup = document.querySelector('.custom-toast');
+        swalPopup.style.marginTop = '70px';  
+        swalPopup.style.marginRight = '15px'; 
+    }
+
+      });
+      console.error("Error adding product to cart:", error);
+    });
+
+}
+
+</script>
 
 
 <%- include("../layouts/user/footer.ejs") %>
