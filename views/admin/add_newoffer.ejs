@@ -81,15 +81,17 @@
                               </div>
                           
                               <div class="mb-4">
-                                  <label class="form-label">Products</label>
-                                  <select id="categorySelect" name="offer_products" class="form-select">
-                                      <option value="">Select Product</option>
-                                      <% products.forEach((product)=>{ %>
-                                          <option value="<%= product._id %>"><%= product.productname %></option>
-                                      <% }) %>
-                                  </select>
-                                  <span id="errorCategory" class="text-danger"></span>
-                              </div>
+                                <label class="form-label">Products</label>
+                                <input type="text" id="productSearch" class="form-control mb-2" placeholder="Search for a product...">
+                                
+                                <select id="productSelect" name="offer_products" class="form-select">
+                                    <option value="">Select Product</option>
+                                    <% products.forEach((product) => { %>
+                                        <option value="<%= product._id %>"><%= product.productname %></option>
+                                    <% }) %>
+                                </select>
+                                <span id="errorCategory" class="text-danger"></span>
+                            </div>
                               <div class="mb-4">
                                   <label class="form-label">Discount Percentage</label>
                                   <input type="number" id="discountPercentage" name="pro_ofr_discount" class="form-control" placeholder="Enter discount percentage" min="0" max="100" />
@@ -279,7 +281,7 @@
           document.getElementById("errorDescription").textContent = "";
       }
   
-      const product = document.getElementById("categorySelect").value;
+      const product = document.getElementById("productSelect").value;
       if (product === "") {
           document.getElementById("errorCategory").textContent = "Please select a product";
           isValid = false;
@@ -367,3 +369,36 @@
       return isValid;
   }
   </script>
+
+  <!-- aditional script for serch the products -->
+
+  <script>
+    const productSearch = document.getElementById('productSearch');
+    const productSelect = document.getElementById('productSelect');
+    let debounceTimeout;
+
+    function searchProducts() {
+        const query = productSearch.value.toLowerCase();
+        const options = productSelect.options;
+        let firstMatchFound = false;
+
+        for (let i = 1; i < options.length; i++) {
+            const option = options[i];
+            const productName = option.text.toLowerCase();
+
+            option.hidden = !productName.includes(query);
+
+            if (!option.hidden && !firstMatchFound) {
+                option.selected = true;
+                firstMatchFound = true;
+            } else {
+                option.selected = false;
+            }
+        }
+    }
+
+    productSearch.addEventListener('input', function() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(searchProducts, 300); 
+    });
+</script>

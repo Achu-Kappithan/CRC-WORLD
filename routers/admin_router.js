@@ -15,6 +15,8 @@ const brand_controller = require("../controllers/brnd_controller");
 const product_controller = require("../controllers/product_controller");
 const order_controller  = require("../controllers/admin_order_controller");
 const offer_controller = require("../controllers/admin_offercontroller");
+const salereport_controller = require("../controllers/admin_salesreprort");
+
 
 const upload = require('../config/multer');
 const uploadProductImages = require('../config/productMulter'); 
@@ -81,6 +83,11 @@ admin_route.post("/add_coupon",offer_controller.add_coupon);
 admin_route.get("/load_editcoupon",offer_controller.load_editcoupon);
 admin_route.post("/update_coupon",offer_controller.update_coupons);
 admin_route.post("/remove_coupons",offer_controller.remove_coupons);
+
+//sales reprort controller
+
+admin_route.post("/get_customereport",salereport_controller.load_customreport);
+
 
 
 

@@ -11,6 +11,7 @@ const load_orderlist = async (req,res)=>{
 
         const orderdata = await Orders.find()
         .populate("userId")
+        .sort({ orderDate: -1 })
         .skip((page-1)*limit)
         .limit(limit)
 

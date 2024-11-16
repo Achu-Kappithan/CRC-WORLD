@@ -108,12 +108,31 @@
                     </div>
                     <hr class="clear">
                     <div class="pagination">
-                      <ul>
-                        <li class="active"><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li class="next"><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i></a></li>
-                      </ul>
+                        <ul>
+                            <% if (currentPage > 1) { %>
+                                <li class="previous">
+                                    <a href="?page=<%= currentPage - 1 %>">
+                                        <i class="fa fa-caret-left" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            <% } %>
+                    
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <li class="<%= parseInt(currentPage) === i ? 'active' : '' %>">
+                                    <a href="?page=<%= i %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                    
+                            <% if (currentPage < totalPages) { %>
+                                <li class="next">
+                                    <a href="?page=<%= currentPage + 1 %>">
+                                        <i class="fa fa-caret-right" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            <% } %>
+                        </ul>
                     </div>
+                                        
                 </div>
 
 

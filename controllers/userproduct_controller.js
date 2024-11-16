@@ -4,6 +4,7 @@ const category = require("../models/category");
 const { price: priceHelper } = require("../utils/pricehelper");
 const { applyofferprice } = require("../utils/offeruils")
 const Wishlist = require("../models/wishlist");
+const { countDocuments } = require("../models/user_models");
 
 // for loading product view page
 const load_productview = async (req, res) => {
@@ -50,6 +51,12 @@ const load_sizesort = async (req, res) => {
 
 const load_shop = async (req, res) => {
   try {
+    const currentPage  = req.query.page || 1
+    const limit = 8;
+    const totolpoducts = await product.countDocuments()
+    const totalPages =  Math.ceil(totolpoducts / limit);
+
+
     const message = req.flash("message");
     const type = req.flash("type");
     const userid = req.session.user_id;
@@ -57,7 +64,7 @@ const load_shop = async (req, res) => {
     const wishlistdata = await Wishlist.findOne({userId:userid})
     const branddata = await brand.find({ is_deleted: false });
     const catdata = await category.find({ is_deleted: false });
-    let productdata = await product.find({is_deleted: false})
+    let productdata = await product.find({is_deleted: false}).skip((currentPage - 1) * limit).limit(limit)
       .populate("brand")
       .populate("category");
       productdata = await applyofferprice(productdata)
@@ -70,7 +77,9 @@ const load_shop = async (req, res) => {
       priceHelper,
       message,
       type,
-      wishlist :wishlistdata
+      wishlist :wishlistdata,
+      currentPage,
+      totalPages
     });
   } catch (err) {
     console.log(err);

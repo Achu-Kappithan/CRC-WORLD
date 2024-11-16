@@ -126,6 +126,12 @@ const applycouppons = async (req, res) => {
             return res.json({ success: false, message: "Invalid or inactive coupon code" });
         }
 
+        if (coupons.userBy.length >= coupons.Userlimit) {
+            coupons.couponStatus = false;
+            await coupons.save();
+            return res.json({ success: false, message: "This coupon has expired" });
+        }
+
         if (coupons.userBy.includes(userId)) {
             return res.json({ success: false, message: "You have already used this coupon" });
         }

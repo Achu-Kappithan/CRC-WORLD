@@ -53,9 +53,9 @@
                                         </td>
                                         <td class="product-price text-center"><span id="price-<%= product._id %>" class="amount"><%= product.sizes[0].priceafteroffer  > 0 ? product.sizes[0].priceafteroffer   : (product.sizes[1].priceafteroffer   > 0 ? product.sizes[1].priceafteroffer    : (product.sizes[2].priceafteroffer    > 0 ? product.sizes[2].priceafteroffer     : "Not available")) %>
                                         </span></td>
-                                        <input type="text" id="stockk-<%= product._id %>" value="<%= product.sizes[0].stock %>">
-                                        <input type="text" id="Actualprice-<%= product._id %>" value="<%= product.sizes[0].Actualprice %>">
-                                        <input type="text" id="sizename-<%= product._id %>" value="<%= product.sizes[0].size %>">
+                                        <input type="hidden" id="stockk-<%= product._id %>" value="<%= product.sizes[0].stock %>">
+                                        <input type="hidden" id="Actualprice-<%= product._id %>" value="<%= product.sizes[0].Actualprice %>">
+                                        <input type="hidden" id="sizename-<%= product._id %>" value="<%= product.sizes[0].size %>">
                                         
                                         <td class="stock text-center">
                                             

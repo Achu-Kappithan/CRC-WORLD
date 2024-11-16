@@ -38,9 +38,6 @@
                                 </tr>
                             </thead>
                     		<tbody>
-
-                                
-
                                     <% var totalPrice = 0; %>
                                     <% cartdata.items.forEach(item => { %>
 
@@ -49,8 +46,6 @@
                                         const itemTotal = item.quantity * curprice;
                                          totalPrice += itemTotal;
                                     %>
-
-
                                 <tr id="cartitem-<%= item._id %>" class="cart__row border-bottom line1 cart-flex border-top">
                                     <td class="cart__image-wrapper cart-flex-item">
                                         <a href="#"><img class="cart__image" src="/assets/uploads/product/<%= item.productimage[0] %>" alt="Elastic Waist Dress - Navy / Small"></a>
@@ -80,7 +75,9 @@
                                         </div>
                                     </td>
                                     <td class="text-right small--hide cart-price">
-                                        <div><span class="money">₹<%= itemTotal %></span></div>
+                                        <div><span id="itemTotal-<%= item.productId %>" class="money">₹<%= itemTotal %></span></div>
+                                        <input type="hidden" id="itemPrice-<%= item.productId %>" value="<%= curprice%>">
+
                                     </td>
                                 </form>                   
 
@@ -144,7 +141,7 @@
                             <div class="solid-border">	
                               <div class="row border-bottom pb-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
-                                <span class="col-12 col-sm-6 text-right"><span class="money">₹<%= totalPrice %></span></span>
+                                <span class="col-12 col-sm-6 text-right"><span id="subtotal" class="money">₹<%= totalPrice %></span></span>
                               </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span  class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
@@ -152,7 +149,7 @@
                               </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
-                                <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span class="money">₹<%= totalPrice %></span></span>
+                                <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span id="grandTotal" class="money">₹<%= totalPrice %></span></span>
                               </div>
                               <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
                               <p class="cart_tearm">
@@ -217,6 +214,7 @@
         var qtyField = $(this).parent(".qtyField"),
             oldValue = $(qtyField).find(".qty").val(),
             itemId = $(qtyField).find(".qty").attr("id").split('-')[1],
+            itemPrice = parseFloat($(`#itemPrice-${itemId}`).val()), 
             newVal = 1;
 
         if ($(this).is(".plus")) {
@@ -225,31 +223,31 @@
             } else {
                 newVal = 5;
                 Swal.fire({
-                        icon: 'warning',
-                        title: 'Limit reached',
-                        text: 'You can only add up to 5 of this item.',
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        timer: 2000,
-                    });
-                    return ;
+                    icon: 'warning',
+                    title: 'Limit reached',
+                    text: 'You can only add up to 5 of this item.',
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 2000,
+                });
+                return;
             }
         } else if (oldValue > 1) {
             newVal = parseInt(oldValue) - 1;
-        }else{
+        } else {
             Swal.fire({
-                        icon: 'warning',
-                        title: 'Minimum quantity',
-                        text: 'You must have at least 1 item.',
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        timer: 2000,
-                    });
-                    return ;
+                icon: 'warning',
+                title: 'Minimum quantity',
+                text: 'You must have at least 1 item.',
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timerProgressBar: true,
+                timer: 2000,
+            });
+            return;
         }
 
         $(qtyField).find(".qty").val(newVal);
@@ -271,10 +269,16 @@
                         showConfirmButton: false,
                         timerProgressBar: true,
                         timer: 3000,
-
                     });
+                    
+                    // Update item total
+                    const newItemTotal = newVal * itemPrice;
+                    $(`#itemTotal-${itemId}`).text(`₹${newItemTotal.toFixed(2)}`);
+                    
+                    // Recalculate and update subtotal and grand total
+                    updateTotals();
                 } else if (response.stockError) {
-                    $(qtyField).find(".qty").val(oldValue); 
+                    $(qtyField).find(".qty").val(oldValue);
                     Swal.fire({
                         icon: 'error',
                         title: 'Stock error!',
@@ -284,7 +288,6 @@
                         showConfirmButton: false,
                         timerProgressBar: true,
                         timer: 2000,
-
                     });
                 }
             },
@@ -294,100 +297,35 @@
                     title: 'Error!',
                     text: 'There was an error updating the quantity. Please try again.',
                     toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        timer: 2000,
-
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 2000,
                 });
                 console.log('Error updating quantity:', error);
             }
         });
     });
 }
+
+function updateTotals() {
+    let subtotal = 0;
+    $(".cart-price .money").each(function() {
+        subtotal += parseFloat($(this).text().replace("₹", "")) || 0;
+    });
+    $("#subtotal").text(`₹${subtotal.toFixed()}`);
+    $("#grandTotal").text(`₹${subtotal.toFixed()}`);
+}
+
 qnt_incre();
 
-
-// function  remove the  cart item
-// document.querySelectorAll(".cart__remove").forEach(function(button) {
-//     button.addEventListener("click", function() {
-//         const id = document.getElementById("productid").value;
-//         console.log("this is cart remove id", id);
-
-//         Swal.fire({
-//             title: 'Are you sure?',
-//             text: "You are about to remove this item from the cart.",
-//             icon: 'warning',
-//             showCancelButton: true,
-//             confirmButtonColor: '#d33',
-//             cancelButtonColor: '#3085d6',
-//             confirmButtonText: 'Yes, remove it!'
-//         }).then((result) => {
-//             if (result.isConfirmed) {
-//                 fetch("/remove_cartitem", {
-//                     method: "POST",
-//                     headers: {
-//                         "Content-Type": "application/json"
-//                     },
-//                     body: JSON.stringify({ id })
-//                 })
-//                 .then(response => response.json())
-//                 .then(data => {
-//                     console.log(data);
-//                     if (data.success) {
-//                         Swal.fire({
-//                             icon: 'success',
-//                             text: data.message,
-//                             toast: true,
-//                             position: "top-end",
-//                             showConfirmButton: false,
-//                             timerProgressBar: true,
-//                             timer: 3000,
-//                         });
-
-//                         // Remove the cart item from the DOM
-//                         const cartitem = document.getElementById(`cartitem-${id}`);
-//                         if (cartitem) {
-//                             cartitem.remove();
-//                         }
-
-//                         // Recalculate the total price based on remaining items
-//                         let newTotalPrice = 0;
-//                         document.querySelectorAll(".cart__row").forEach(function(row) {
-//                             const price = parseFloat(row.querySelector(".cart__price-wrapper").getAttribute("data-price"));
-//                             const quantity = parseInt(row.querySelector(".qty").value);
-//                             newTotalPrice += price * quantity;
-//                         });
-
-//                         // Update the total price in the DOM
-//                         document.getElementById("total-price").textContent = `₹${newTotalPrice.toFixed(2)}`;
-                        
-//                     } else {
-//                         Swal.fire({
-//                             icon: 'error',
-//                             text: data.message,
-//                             toast: true,
-//                             position: "top-end",
-//                             showConfirmButton: false,
-//                             timerProgressBar: true,
-//                             timer: 3000,
-//                         });
-//                     }
-//                 })
-//                 .catch(error => {
-//                     console.error("error for remove cartitem", error);
-//                 });
-//             }
-//         });
-//     });
-// });
 
 
 document.querySelectorAll(".cart__remove").forEach(function(button) {
     button.addEventListener("click", function(event) {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault(); 
         
-        const form = button.closest("form"); // Get the form related to the button
+        const form = button.closest("form"); 
         
         Swal.fire({
             title: 'Are you sure?',
@@ -399,7 +337,7 @@ document.querySelectorAll(".cart__remove").forEach(function(button) {
             confirmButtonText: 'Yes, remove it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                form.submit(); // Submit the form if confirmed
+                form.submit(); 
             }
         });
     });
