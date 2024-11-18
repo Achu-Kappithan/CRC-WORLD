@@ -1,31 +1,4 @@
 
-// async function applyCategoryOffer(products) {
-//     const today = new Date();
-
-//     for (let product of products) {
-//         const offer = product.category.categoryoffer;
-
-//         if (offer && offer.offerStatus && today >= offer.offerStartDate && today <= offer.offerExpiryDate) {
-//             const discountMultiplier = (100 - offer.offerDiscountPercentage) / 100;
-
-//             product.sizes = product.sizes.map(size => ({
-//                 ...size.toObject(),
-//                 priceafteroffer: size.Salesprice * discountMultiplier
-//             }));
-//         } else {
-//             product.sizes = product.sizes.map(size => ({
-//                 ...size.toObject(),
-//                 priceafteroffer: 0
-//             }));
-//         }
-
-//         await product.save();
-//     }
-
-//     return products;
-// }
-
-// module.exports = { applyCategoryOffer };
 
 
 

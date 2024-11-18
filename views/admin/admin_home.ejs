@@ -17,6 +17,10 @@
 </style>
 
 
+<script>
+  const report = <%- JSON.stringify(report[0]) %>;
+</script>
+
 
   <body>
     <%- include("../layouts/admin/slidbar.ejs") %>
@@ -32,10 +36,10 @@
             <p>Overview of your business operations and insights</p>
           </div>
           <div>
-            <a href="/dashboard" class="btn btn-primary">
+            <!-- <a href="" class="btn btn-primary">
               <i class="text-muted material-icons md-post_add"></i>
-              User Details
-            </a>
+              Download Report
+            </a> -->
           </div>
         </div>
 
@@ -140,14 +144,11 @@
               <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title">Sales Report</h4>
                 <div class="d-flex gap-3">
-                  <select class="form-select w-auto">
-                    <option>Last 7 days</option>
-                    <option>Today</option>
-                    <option>Monthly</option>
-                    <option>Yearly</option>
-                  </select>
-                  <button class="btn btn-light">
-                    <i class="material-icons md-download"></i> Export
+                  <button onclick="generatePDF(report)" class="btn btn-light">
+                    <i class="material-icons md-download"></i> Pdf report
+                  </button>
+                  <button onclick="generateExcel(report)" class="btn btn-light">
+                    <i class="material-icons md-download"></i> Excel report
                   </button>
                 </div>
               </div>
@@ -223,7 +224,7 @@
                       <input type="date" name="enddate" class="form-control" id="endDate">
                     </div>
                     <div class="col-auto">
-                      <button type="submit" class="btn btn-primary">Generate Report</button>
+                      <button type="submit" class="btn btn-primary">Custom filter</button>
                     </div>
                   </form>
                 </div>
@@ -290,6 +291,89 @@
 
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
  
 </html>
+
+<script>
+  async function generatePDF(report) {
+    try {
+      // console.log("PDF script run");
+      const { jsPDF } = window.jspdf;
+
+      const doc = new jsPDF();
+
+      doc.setFontSize(18);
+      doc.text("Sales Report", 10, 10);
+      doc.setFontSize(12);
+
+      doc.text(`Total Sales: ₹${report.totalSales}`, 10, 30);
+      doc.text(`Total Quantity: ${report.totalQuantity}`, 10, 40);
+      doc.text(`Total Orders: ${report.totalOrders}`, 10, 50);
+      doc.text(`Total Coupon Discount: ₹${report.totalCouponDiscount}`, 10, 60);
+      doc.text(`Total Offer Discount: ₹${report.totalOfferDiscount}`, 10, 70);
+
+      let y = 90;
+      doc.text("Date", 10, y);
+      doc.text("Sales", 50, y);
+      doc.text("Quantity", 90, y);
+      doc.text("Orders", 130, y);
+      doc.text("Coupon Discount", 170, y);
+
+      y += 10;
+
+      report.dailyData.forEach((data) => {
+        if (y > 280) {
+          doc.addPage();
+          y = 10; 
+        }
+        doc.text(data.date, 10, y);
+        doc.text(`₹${data.sales}`, 50, y);
+        doc.text(`${data.quantity}`, 90, y);
+        doc.text(`${data.orders}`, 130, y);
+        doc.text(`₹${data.couponDiscount}`, 170, y);
+        y += 10;
+      });
+
+      doc.save("sales-report.pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Check the console for details.");
+    }
+  }
+</script>
+
+
+<script>
+  function generateExcel(report) {
+    const workbook = XLSX.utils.book_new();
+
+    const summary = [
+      ["Total Sales", report.totalSales],
+      ["Total Quantity", report.totalQuantity],
+      ["Total Orders", report.totalOrders],
+      ["Total Coupon Discount", report.totalCouponDiscount],
+      ["Total Offer Discount", report.totalOfferDiscount],
+    ];
+    const summarySheet = XLSX.utils.aoa_to_sheet(summary);
+    XLSX.utils.book_append_sheet(workbook, summarySheet, "Summary");
+
+    const dailyData = [
+      ["Date", "Sales", "Quantity", "Orders", "Coupon Discount", "Offer Discount"],
+      ...report.dailyData.map((data) => [
+        data.date,
+        data.sales,
+        data.quantity,
+        data.orders,
+        data.couponDiscount,
+        data.offerDiscount,
+      ]),
+    ];
+    const dataSheet = XLSX.utils.aoa_to_sheet(dailyData);
+    XLSX.utils.book_append_sheet(workbook, dataSheet, "Daily Data");
+
+    XLSX.writeFile(workbook, "sales-report.xlsx");
+  }
+</script>
 

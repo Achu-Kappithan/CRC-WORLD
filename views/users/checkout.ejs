@@ -23,6 +23,56 @@
   }
   
   </style>
+
+<!-- // for coupons add and remove buttons -->
+  <style>
+.apply-coupon, .remove-coupon {
+  border-radius: 50px; 
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px; 
+}
+
+.apply-coupon {
+  background-color: #28a745; 
+  color: white;
+  border: none;
+  transition: all 0.3s ease; 
+}
+
+.apply-coupon:hover {
+  background-color: #218838; 
+  transform: scale(1.05);
+}
+
+.remove-coupon {
+  background-color: #dc3545; 
+  color: white;
+  border: none;
+  transition: all 0.3s ease; 
+}
+
+.remove-coupon:hover {
+  background-color: #c82333; 
+  transform: scale(1.05);
+}
+
+
+.apply-coupon::before {
+  content: "✔"; 
+  font-size: 16px;
+}
+
+.remove-coupon::before {
+  content: "✖"; 
+  font-size: 16px;
+}
+
+  </style>
   
 
 </head>
@@ -307,28 +357,45 @@
                         <table
                         class="bg-white table table-bordered table-hover text-center"
                       >
-                        <thead>
+                      <thead>
+                        <tr>
+                          <th>Coupon Name</th>
+                          <th>Coupon Code</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% coupons.forEach((item) => { %>
                           <tr>
-                            <th>Coupon Name</th>
-                            <th>Coupon code</th>
+                            <td><%= item.couponName %></td>
+                            <td><%= item.couponCode %></td>
+                            <td>
+                              <button
+                              id="applycoupons-<%= item.couponCode %>"
+                              class="btn apply-coupon"
+                              data-coupon-id="<%= item.couponCode %>"
+                            >
+                            </button>
+
+                            <button
+                              style="display: none;"
+                              id="removecoupon-<%= item.couponCode %>"
+                              class="btn remove-coupon"
+                              data-coupon-code="<%= item.couponCode %>"
+                            >
+                            </button>
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          <% coupons.forEach((item)=>{ %>
-                          <tr>
-                            <td> <%= item.couponName %></td>
-                            <td> <%= item.couponCode %> </td>
-                          </tr>
-                          <% }) %>
-                        </tbody>
-                        </table>
+                        <% }) %>
+                      </tbody>
+                      </table>
                       </div>
                   </div>
               </div>
       
                 <div id="accordion" class="payment-section">
                   
-                  <div class="card mb-2">
+                  <!-- <div class="card mb-2">
                     <div class="card-header">
                       <a
                         class="collapsed card-link"
@@ -362,7 +429,7 @@
 
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                   <hr />
                   <br>
 
@@ -403,9 +470,6 @@
                       </div>
                     </div>
                   </div>
-
-
-
 
                 </div>
               </div>  
@@ -607,18 +671,21 @@ document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio)
 
   // for applaying cupons
 
-  document.getElementById("applaycoupons").addEventListener("click", function() {
-    const couponcode = document.getElementById("coupon-code").value;
-    const grandTotal = parseFloat(document.getElementById('totalamt').value); 
-    console.log("grandTotal:", grandTotal); 
+  document.querySelectorAll(".apply-coupon").forEach(function(button){
+    button.addEventListener("click",function(){
+      const couponcode = button.getAttribute("data-coupon-id")
+      console.log("copon code is ",couponcode)
+      const grandTotal = parseFloat(document.getElementById('totalamt').value); 
+      console.log("grandTotal:", grandTotal);
 
-    fetch("/apply_coupons", {
+      fetch("/apply_coupons", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ couponcode, grandTotal })  
+        body: JSON.stringify({ couponcode, grandTotal })       
     })
+
     .then(response => response.json())
     .then(data => {
         if (data.success) {
@@ -650,7 +717,8 @@ document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio)
             document.getElementById("applyiedcoupon").value = couponcode
             document.getElementById("couponamt").value = ` ${data.offerprice}`;
 
-            document.getElementById("removeCoupon").style.display = "block";
+            document.getElementById(`applycoupons-${couponcode}`).style.display = "none";
+            document.getElementById(`removecoupon-${couponcode}`).style.display = "block"
 
 
         } else {
@@ -675,22 +743,32 @@ document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio)
             });
         }
     });
-});
+
+
+
+    })
+  })
+
+    
 
 
 // for removing coupons
 
-document.getElementById("removeCoupon").addEventListener("click", function() {
-    const grandTotal = parseFloat(document.getElementById('totalamt').dataset.originalTotal);
-    const couponcode = document.getElementById("coupon-code").value
+document.querySelectorAll(".remove-coupon").forEach(function(button){
+  button.addEventListener("click",function(){
 
-    fetch("/remove_coupon", {
+  const couponcode = button.getAttribute("data-coupon-code")
+  const grandTotal = parseFloat(document.getElementById('totalamt').dataset.originalTotal);
+  console.log("reomvecoupons",couponcode,grandTotal)
+
+  fetch("/remove_coupon", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ grandTotal , couponcode })
     })
+
     .then(response => response.json())
     .then(data => {
         if (data.success) {
@@ -711,11 +789,15 @@ document.getElementById("removeCoupon").addEventListener("click", function() {
             document.getElementById('total-display').textContent = `₹ ${grandTotal.toFixed(2)}`;
             document.getElementById("orderfinalamt").value = grandTotal.toFixed(2);
 
-            // Hide the "Remove Coupon" button
-            document.getElementById("removeCoupon").style.display = "none";
+            document.getElementById(`applycoupons-${couponcode}`).style.display = "block";
+            document.getElementById(`removecoupon-${couponcode}`).style.display = "none"
         }
     });
-});
+
+
+  })
+})
+
 
 
 </script>

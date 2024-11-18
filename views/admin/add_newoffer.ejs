@@ -98,9 +98,9 @@
                                   <span id="errorDiscount" class="text-danger"></span>
                               </div>
                               <div class="mb-4">
-                                  <label class="form-label">Start Date</label>
-                                  <input type="date" id="startDate" name="Pro_ofr_strdate" class="form-control" />
-                                  <span id="errorStartDate" class="text-danger"></span>
+                                <label class="form-label">Start Date</label>
+                                <input type="date" id="startDate" name="Pro_ofr_strdate" class="form-control" min="" />
+                                <span id="errorStartDate" class="text-danger"></span>
                               </div>
                               <div class="mb-4">
                                   <label class="form-label">Expiry Date</label>
@@ -153,9 +153,15 @@
                                       <span id="errorCatDiscount" class="text-danger"></span>
                                   </div>
                                   <div class="mb-4">
-                                      <label class="form-label">Start Date</label>
-                                      <input name="catofrstartdate" type="date" class="form-control" id="catofrstartdate" />
-                                      <span id="errorCatStartDate" class="text-danger"></span>
+                                    <label class="form-label">Start Date</label>
+                                    <input 
+                                      name="catofrstartdate" 
+                                      type="date" 
+                                      class="form-control" 
+                                      id="catofrstartdate" 
+                                      min="" 
+                                    />
+                                    <span id="errorCatStartDate" class="text-danger"></span>
                                   </div>
                                   <div class="mb-4">
                                       <label class="form-label">Expiry Date</label>
@@ -260,6 +266,19 @@
   }
 </script>
 
+<script>
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("catofrstartdate").setAttribute("min", today);
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById("startDate").setAttribute("min", today);
+    });
+</script>
+
+
 
 <script>
   function validateProductOfferForm() {
@@ -355,6 +374,10 @@
   
       if (startDate.value === "") {
           document.getElementById("errorCatStartDate").textContent = "Start date is required.";
+          isValid = false;
+      }
+      if(new Date(startDate.value)>= new Date()){
+        document.getElementById("errorCatStartDate").textContent = "Enter a valid date.";
           isValid = false;
       }
   

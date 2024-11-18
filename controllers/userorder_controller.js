@@ -122,6 +122,7 @@ const place_order = async (req, res) => {
         walletdata.balance = walletdata.balance-grandtotal;
         walletdata.transactions.push({
           orderId : orderdata._id,
+          placedorderid : orderdata.Orderid,
           amount : grandtotal,
           type : "wallet payment",
           walletTransactionStatus : "paid"

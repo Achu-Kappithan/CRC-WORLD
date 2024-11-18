@@ -1,7 +1,7 @@
 const User = require("../models/user_models");
 const Address = require("../models/address");
 const Orders = require("../models/order")
-const Wallet = require("../models/wallet")
+const Wallet = require("../models/wallet");
 
 // for loading  userprofile page
 
@@ -161,19 +161,49 @@ const load_myorder = async (req,res)=>{
 
 const cancell_order = async (req,res)=>{
     try {
-        const id = req.body.id.trim()
-        console.log("this is the id for cancell a order",id)
-        const canlledorder = await Orders.findByIdAndUpdate(
-            id,
-            {$set:{status:"Cancelled"}},
-        )
-        console.log(canlledorder)
-        if(!canlledorder){
-       return res.json({success:false,message:"Can't cancelled order try again..!"})
-        }else{
-            return res.json({success:true, message:"Order Cancelled successfully"})
+        const id = req.body.id.trim();
+        const userid = req.session.user_id;
+        const cancelledorder = await Orders.findById(id)
+            
+            // {$set:{status:"Cancelled"}},
 
+
+        if(!cancelledorder){
+       return res.json({success:false,message:"Can't cancelled order try again..!"})
+
+        }else if(cancelledorder.paymentMethod == "onlinepayment" || cancelledorder.paymentMethod == "mywallet"){
+            const wallet = await Wallet.findOne({userId:userid})
+            if(!wallet){
+                wallet = new Wallet({
+                    userId :userid,
+                    balance : 0,
+                    transactions : []
+                })
+            } 
+            
+        wallet.balance += cancelledorder.totalPrice;
+
+        wallet.transactions.push({
+            orderId : id,
+            placedorderid : cancelledorder.Orderid,
+            amount : cancelledorder.totalPrice,
+            type : cancelledorder.paymentMethod,
+            walletTransactionStatus : "refunded"
+        })
+
+        await wallet.save();
+
+        cancelledorder.status = "Cancelled"
+        await cancelledorder.save();
+        return res.status(200).json({success:true, message:"Order Cancelled successfully and Payment credited to the wallet..!"})
+
+        }else {
+
+        cancelledorder.status = "Cancelled"
+        await cancelledorder.save();
+        return res.json({success:true, message:"Order Cancelled successfully"})
         }
+
     } catch (err) {
         console.log("error for cancelling a order",err)
         res.status(500).render("user404",{message:"Something went rong Tray again..!"})

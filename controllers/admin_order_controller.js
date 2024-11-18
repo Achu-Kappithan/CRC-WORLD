@@ -51,9 +51,13 @@ const Update_orderstatus = async (req,res)=>{
 
         const existingstatus = await Orders.findById({_id:orderid})
         console.log("esisting",existingstatus)
+        
+        if(existingstatus.paymentStatus != "Success" && existingstatus.paymentMethod == "onlinepayment"){
+            return res.json({success : false, message:"Cant change the order status ..! Order not confiremed"})
+        }
 
-        if(existingstatus.status =="Cancelled"){
-            return res.json({success:false, message:"Can't change the order status of Cancelled Orders.."})
+        if(existingstatus.status =="Cancelled" || existingstatus.status == "Delivered" || existingstatus.status =="Returned"){
+            return res.json({success:false, message:`Can't change the order status of ${existingstatus.status} Orders..`})
         }
 
         const udpatedata =  await Orders.findByIdAndUpdate(
