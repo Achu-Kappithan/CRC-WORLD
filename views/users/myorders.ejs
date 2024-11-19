@@ -118,7 +118,8 @@ p {
                                 <p>
                                     <strong>Order ID:</strong> <%= order.Orderid.toString() %><br>
                                     <strong>Order Date:</strong> <%= new Date(order.orderDate).toLocaleDateString() %><br>
-                                    <strong>Coupon discount:</strong>  ₹<%= order.coupondiscout? order.coupondiscout.toFixed(2) : null %><br>
+                                    <strong>Coupon discount:</strong>  ₹<%= order.coupondiscout? order.coupondiscout.toFixed(2) : 0.00 %><br>
+                                    <strong>Shipping Charge:</strong> ₹<%= order.shippingcharge  ? order.shippingcharge : 0.00 %><br>
                                     <strong>Total Price:</strong> ₹<%= order.totalPrice.toFixed(2) %><br>
                                     <strong>Payment Method:</strong> <%= order.paymentMethod %><br><br>
                                     <strong>Payment Status:</strong>

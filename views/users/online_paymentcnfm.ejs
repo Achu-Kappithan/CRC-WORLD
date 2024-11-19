@@ -144,12 +144,19 @@
                         <% }) %>
                         <div class="product-item d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-baseball product-icon"></i>
+                                <i class="fas fa-ticket-alt product-icon"></i>
                                 <span>Coupon discount:</span>
                             </div>
-                            <span>₹<%= orderdata.coupondiscout ? orderdata.coupondiscout :0 %></span>
+                            <span>₹<%= orderdata.coupondiscout ? orderdata.coupondiscout : 0.00 %></span>
                         </div>
-
+                        <div class="product-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-truck product-icon"></i>
+                                <span>Shipping Charge:</span>
+                            </div>
+                            <span>₹<%= orderdata.shippingcharge ? orderdata.shippingcharge : 0.00 %></span>
+                        </div>
+                        
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <h4 class="mb-0 fw-bold">Total:</h4>
                             <span class="total-price">₹<%= orderdata.totalPrice %></span>

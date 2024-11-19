@@ -24,7 +24,7 @@ const is_authaticated = async (req, res, next) => {
         if (user.is_active) {
             next();
         } else {
-            req.session.destroy();
+            // req.session.destroy();
             req.flash("message", "Your account is blocked. Please contact support.");
             req.flash("type", "warning");
             res.redirect("/load_home");

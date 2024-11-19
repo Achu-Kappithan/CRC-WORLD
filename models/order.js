@@ -50,6 +50,10 @@ const orderschema = mongoose.Schema({
   coupondiscout: {
     type: Number,
   },
+  shippingcharge : {
+    type : Number,
+    default : 0
+  },
   status: {
     type: String,
     enum: ["Pending", "Shipped", "Delivered", "Cancelled", "Returned"],

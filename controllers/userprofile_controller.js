@@ -185,6 +185,7 @@ const cancell_order = async (req,res)=>{
         const id = req.body.id.trim();
         const userid = req.session.user_id;
         const cancelledorder = await Orders.findById(id)
+        let return_amt =  cancelledorder.totalPrice -  cancelledorder.shippingcharge
             
 
         if(!cancelledorder){
@@ -200,12 +201,12 @@ const cancell_order = async (req,res)=>{
                 })
             } 
             
-        wallet.balance += cancelledorder.totalPrice;
+        wallet.balance += return_amt;
 
         wallet.transactions.push({
             orderId : id,
             placedorderid : cancelledorder.Orderid,
-            amount : cancelledorder.totalPrice,
+            amount : return_amt,
             type : cancelledorder.paymentMethod,
             walletTransactionStatus : "refunded"
         })
@@ -250,11 +251,12 @@ const return_order = async (req,res)=>{
     try {
         const id = req.body.id;
         const userid = req.session.user_id
-        console.log("userid is ",userid)
-        console.log("id for return the order",id)
+        // console.log("userid is ",userid)
+        // console.log("id for return the order",id)
 
         const orderdata = await Orders.findById({_id:id});
         // console.log("order details for refund",orderdata)
+        const return_amt = orderdata.totalPrice - orderdata.shippingcharge
 
         let wallet = await Wallet.findOne({userId:userid});
 
@@ -266,12 +268,12 @@ const return_order = async (req,res)=>{
             })
         }
 
-        wallet.balance += orderdata.totalPrice;
+        wallet.balance += return_amt;
 
         wallet.transactions.push({
             orderId : id,
             placedorderid : orderdata.Orderid,
-            amount : orderdata.totalPrice,
+            amount : return_amt,
             type : orderdata.paymentMethod,
             walletTransactionStatus : "refunded"
         })

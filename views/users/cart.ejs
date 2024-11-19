@@ -39,12 +39,15 @@
                             </thead>
                     		<tbody>
                                     <% var totalPrice = 0; %>
+                                    <% shippingcharge = 40 %>
                                     <% cartdata.items.forEach(item => { %>
 
                                         <%
                                         let curprice = item.priceafteroffer ? item.priceafteroffer : item.Salesprice
                                         const itemTotal = item.quantity * curprice;
                                          totalPrice += itemTotal;
+
+                                         totalPrice = totalPrice < 2000 ? totalPrice + 40 : totalPrice
                                     %>
                                 <tr id="cartitem-<%= item._id %>" class="cart__row border-bottom line1 cart-flex border-top">
                                     <td class="cart__image-wrapper cart-flex-item">
@@ -145,7 +148,11 @@
                               </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span  class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
-                                <span style="color: green; font-weight: bold; " class="col-12 col-sm-6 text-right">Free shipping</span>
+                                <% if( totalPrice < 2000) { %>
+                                    <span id="shippingcharge" class="col-12 col-sm-6 text-right">₹ <%= shippingcharge %></span>  
+                                <% }else { %>
+                                <span   class="col-12 col-sm-6 text-right">Free shipping</span>
+                                <% } %>
                               </div>
                               <div class="row border-bottom pb-2 pt-2">
                                 <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
@@ -271,11 +278,9 @@
                         timer: 3000,
                     });
                     
-                    // Update item total
                     const newItemTotal = newVal * itemPrice;
                     $(`#itemTotal-${itemId}`).text(`₹${newItemTotal.toFixed(2)}`);
                     
-                    // Recalculate and update subtotal and grand total
                     updateTotals();
                 } else if (response.stockError) {
                     $(qtyField).find(".qty").val(oldValue);
@@ -313,12 +318,14 @@ function updateTotals() {
     $(".cart-price .money").each(function() {
         subtotal += parseFloat($(this).text().replace("₹", "")) || 0;
     });
+    let shippingCharge = subtotal < 2000 ? 40 : "Free shipping";
+    let gtandtotal = subtotal < 2000  ? subtotal + 40  : subtotal
+    $("#shippingcharge").text(`₹${shippingCharge}`).css({ color: "black" });
     $("#subtotal").text(`₹${subtotal.toFixed()}`);
-    $("#grandTotal").text(`₹${subtotal.toFixed()}`);
+    $("#grandTotal").text(`₹${gtandtotal.toFixed()}`);
 }
 
-qnt_incre();
-
+qnt_incre();    
 
 
 document.querySelectorAll(".cart__remove").forEach(function(button) {

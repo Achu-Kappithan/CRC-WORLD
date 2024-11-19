@@ -15,9 +15,10 @@ const place_order = async (req, res) => {
       const addressId = req.body.selectedAddress; 
       const paymentMethod = req.body.paymentMethod; 
       const userId = req.session.user_id;
-      const grandtotal = req.body.grandtotal; 
+      let grandtotal = req.body.grandtotal; 
       const couponcode = req.body.couponcode?   req.body.couponcode : null
       const couponamt = req.body.couponamt;
+      grandtotal = Number(grandtotal);
 
       
       
@@ -78,6 +79,13 @@ const place_order = async (req, res) => {
         return orderId;
       }
 
+      let shippingcharge =  grandtotal < 2000  ? 40 : 0;
+      let finalprice =  grandtotal + 40.00
+      // console.log("finalprice is  ",finalprice)
+      // console.log("grandtotal is ",grandtotal)
+      // console.log(typeof(grandtotal))
+      
+
       const neworder = new Order({
         userId: userId,
         Orderid : generateOrderId(),
@@ -91,8 +99,9 @@ const place_order = async (req, res) => {
           productimage: item.productimage,
         })),
 
-        totalPrice: grandtotal,
+        totalPrice: finalprice,
         coupondiscout : couponamt,
+        shippingcharge : shippingcharge,
         status: "Pending",
 
         billingDetails: {
