@@ -49,8 +49,8 @@
                             We're sorry, but your payment could not be processed. Please try again or check your payment details.
                         </p>
 
-                        <input id="ree-total_amt" type="text" value="<%= orderdata.totalPrice %>">
-                        <input id="ree-order_id" type="text" value ="<%= orderdata._id %>">
+                        <input id="ree-total_amt" type="hidden" value="<%= orderdata.totalPrice %>">
+                        <input id="ree-order_id" type="hidden" value ="<%= orderdata._id %>">
 
                         
                         <div class="d-grid gap-3 d-md-flex justify-content-md-center">
@@ -62,10 +62,10 @@
                             Retry Payment
                             </button>
                         </div>
-                        
+                         
                         <div class="mt-4">
                             <small class="text-muted">
-                                Transaction ID: <span class="fw-bold">#TXN123456</span>
+                                <!-- Transaction ID: <span class="fw-bold">#TXN123456</span> -->
                             </small>
                         </div>
                     </div>

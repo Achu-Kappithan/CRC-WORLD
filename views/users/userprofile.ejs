@@ -83,7 +83,7 @@
                   <form
                     id="edit-profile-form"
                     method="post"
-                    action="{% url 'edit-profile' %}"
+                    action="/Update_userprofile"
                   >
                     <div class="mb-3 row">
                       <label class="col-sm-3 col-form-label">Full Name</label>
@@ -118,14 +118,6 @@
                         />
                       </div>
                     </div>
-                    <!-- <div class="mb-3 row">
-                                        <label class="col-sm-3 col-form-label">Mobile</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="form-control" name="phone_number"
-                                                value="<%= userdata.Phonenumber %>" required minlength="10" maxlength="10"
-                                                pattern="\d{10}" title="Please enter a 10-digit phone number">
-                                        </div>
-                                    </div> -->
                     <div class="text-end">
                       <button
                         type="submit"

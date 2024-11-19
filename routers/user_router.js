@@ -71,6 +71,7 @@ user_route.get("/user_Profile",auth,userprofile_controller.load_userprofile);
 user_route.post("/add_useraddress",auth,userprofile_controller.add_newaddress);
 user_route.post("/edit_address",userprofile_controller.update_address);
 user_route.post("/delete_address",userprofile_controller.delete_address);
+user_route.post("/Update_userprofile",userprofile_controller.update_userprofile)
 //Order summary and details
 user_route.get("/order_summary",auth,userprofile_controller.load_ordersummary);
 user_route.get("/my_orders",auth, userprofile_controller.load_myorder);

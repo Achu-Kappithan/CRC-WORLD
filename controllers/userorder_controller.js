@@ -18,6 +18,8 @@ const place_order = async (req, res) => {
       const grandtotal = req.body.grandtotal; 
       const couponcode = req.body.couponcode?   req.body.couponcode : null
       const couponamt = req.body.couponamt;
+
+      
       
       if(grandtotal>10000 && paymentMethod=="COD" ){
         req.flash("message","Cash on Delivery is only available for orders below ₹10,000. Please select another payment method to proceed")
@@ -47,6 +49,17 @@ const place_order = async (req, res) => {
         req.flash("message","Your cart is empty plz add items");
         req.flash("type","warning")
         return res.status(400).redirect("/user_checkout");
+      }
+
+      for (let value of cartData.items){
+        const productdata = await Product.findById({_id:value.productId});
+        for(let item of productdata.sizes){
+          if(item.stock < value.quantity && value.size == item.size){
+            req.flash("message","Sorry, Invalid stock  Item is not available ");
+            req.flash("type","warning")
+            return res.status(400).redirect("/user_checkout");
+          }
+        }
       }
   
       const totalPrice = cartData.items.reduce((acc, curr) => {

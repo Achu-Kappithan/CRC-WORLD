@@ -2,7 +2,7 @@ const Admin = require("../models/user_models");
 const category = require("../models/category");
 const bcrypt = require("bcrypt");
 require("dotenv").config;
-const {generate_salesreport,getdaterange}= require("../utils/generatereport")
+const {generate_salesreport,getdaterange ,top_sellingitems }= require("../utils/generatereport")
 
 // load admin login page
 
@@ -22,10 +22,12 @@ const load_home = async (req, res) => {
     const option = req.query.report ? req.query.report : "weekly"
     const { startdate, enddate } = getdaterange(option);
     const report = await generate_salesreport(startdate, enddate);
-    console.log("report is",report) 
-    console.log("dailyData",report.dailyData) 
+    const topSellings = await top_sellingitems()
+
+    console.log("top sellilngs",topSellings)
+
     const admin = await Admin.findById({ _id: req.session.admin_id });
-    return res.status(200).render("admin_home",{ report, period: option });
+    return res.status(200).render("admin_home",{ report, period: option,topSellings });
   } catch (err) {
     console.log("erro for loading admin home page", err);
     return res.status(500).render("404", { message: "unable to load home page" });

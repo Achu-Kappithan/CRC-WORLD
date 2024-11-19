@@ -122,6 +122,27 @@ const delete_address = async (req,res)=>{
     }
 }
 
+
+// for updating  uerprofile
+
+const update_userprofile = async(req,res)=>{
+    try {
+        const userid = req.session.user_id;
+        const { first_name, last_name} =req.body
+        await User.findByIdAndUpdate({_id : userid},
+            {$set: {firstname :first_name , lastname :last_name}},
+            {new : true}
+        )
+        req.flash("message","Profile updated Sucessfully")
+        req.flash("type","success")
+        res.status(200).redirect("/user_Profile")
+        
+    } catch (err) {
+        console.log("error for updating the userprofile",err)
+        res.status(500).render("user404",{message: "Unablelet to complate the request"})
+    }
+}
+
 //for loading order summaypage
 
 const load_ordersummary = async (req,res)=>{
@@ -165,8 +186,6 @@ const cancell_order = async (req,res)=>{
         const userid = req.session.user_id;
         const cancelledorder = await Orders.findById(id)
             
-            // {$set:{status:"Cancelled"}},
-
 
         if(!cancelledorder){
        return res.json({success:false,message:"Can't cancelled order try again..!"})
@@ -283,9 +302,12 @@ module.exports = {
     add_newaddress,
     update_address,
     delete_address,
+    update_userprofile,
+
+    //order related routes
     load_ordersummary,
     load_myorder,
     cancell_order,
     load_wallet,
-    return_order
+    return_order,
 }

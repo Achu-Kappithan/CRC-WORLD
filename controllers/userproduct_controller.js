@@ -11,7 +11,7 @@ const load_productview = async (req, res) => {
   try {
     const size = "size";
     const id = req.query.id;
-    let productdata = await product.findOne({ _id: id });
+    let productdata = await product.findOne({ _id: id }).populate("brand").populate("category")
     console.log("productdata",productdata)
 
 

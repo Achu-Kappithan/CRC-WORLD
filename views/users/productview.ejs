@@ -133,7 +133,7 @@
                                             <span id="stock-status"></span>
                                             <p>Stock : <span id="product-stock"><%= productdata.sizes[0].stock %></span></p>
                                           </div>
-                                          <div class="product-sku">SKU: <span class="variant-sku">19115-rdxs</span></div>
+                                          <!-- <div class="product-sku">SKU: <span class="variant-sku">19115-rdxs</span></div> -->
                                           <div class="product-review">
                                             <a class="reviewLink" href="#tab2">
                                               <i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i>
@@ -144,7 +144,11 @@
                                         </div>
                                          <p class="product-single__price product-single__price-product-template">
                                             <span class="visually-hidden">Regular price</span>
-                                            <s id="ComparePrice-product-template"><span id="salesprice" class="money"><%= productdata.sizes[0].Actualprice%></span></s>
+                                            <s style="display: none;" id="ComparePrice-product-template"><span id="salesprice" class="money"><%= productdata.sizes[0].Actualprice%></span></s>
+                                            <% if(productdata.sizes[0].Actualprice !== productdata.sizes[0].priceafteroffer){ %>
+                                            <s id="ComparePrice-product-template"><span id="salespriceview" class="money"><%= productdata.sizes[0].Actualprice%></span></s>
+                                            <% } %>
+
                                             <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
 
                                               <% let price = 0 
@@ -155,13 +159,15 @@
                                               }  %>
                                                 <span id="ProductPrice-product-template">₹<span class="money" id="product-price"><%= price %> </span></span>
                                             </span>
+                                            <% if( productdata.sizes[0].Actualprice !== productdata.sizes[0].priceafteroffer){ %>
                                             <span class="discount-badge"> <span class="devider">|</span>&nbsp;
                                                 <span>You Save</span> 
                                                 <span  class="product-single__save-amount">
                                                 <span id="SaveAmount" class="money"></span>
                                                 </span>
                                                 <span class="off">(<span id="discount-percentage" ></span>%)</span>
-                                            </span>  
+                                            </span> 
+                                            <% } %> 
                                         </p>
                                         <div  class="product-single__description rte">
                                         <ul>
@@ -177,7 +183,7 @@
                                             <% } %>
                                         </ul>
                                     </div>
-                                    <div id="quantity_message">Hurry! Only  <span class="items">4</span>  left in stock.</div>
+                                    <!-- <div id="quantity_message">Hurry! Only  <span class="items">4</span>  left in stock.</div> -->
                                     <form method="post" action="http://annimexweb.com/cart/add" id="product_form_10508262282" accept-charset="UTF-8" class="product-form product-form-product-template hidedropdown" enctype="multipart/form-data">
                                         <div class="swatch clearfix swatch-0 option1" data-option-index="0">
                                         </div>
@@ -226,7 +232,8 @@
 
                                             </div>
                                             <div class="shopify-payment-button" data-shopify="payment-button">
-                                                <button type="button" class="shopify-payment-button__button shopify-payment-button__button--unbranded">Buy it now</button>
+                                                <!-- <button type="button" class="shopify-payment-button__button shopify-payment-button__button--unbranded">Buy it now</button> -->
+                                            <hr>
                                             </div>
                                         </div>
                                         <!-- End Product Action -->
@@ -234,7 +241,8 @@
                                         <div class="display-table shareRow">
                                             <div class="display-table-cell medium-up--one-third">
                                                 <div class="wishlist-btn">
-                                                    <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist"><i class="icon anm anm-heart-l" aria-hidden="true"></i> <span>Add to Wishlist</span></a>
+                                                    <a class="wishlist add-to-wishlist"  id="wishlist" title="Add to Wishlist"><i class="icon anm anm-heart-l" aria-hidden="true"></i> <span>Add to Wishlist</span></a>
+                                                    <input type="hidden" id="itemid" value="<%= productdata._id%>">
                                                 </div>
                                             </div>
                                             <div class="display-table-cell text-right">
@@ -258,8 +266,8 @@
                                             </div>
                                         </div>
                                     <div class="product-info">
-                                      <p class="product-type"><span class="lbl">Product Type:</span> <a href="http://annimexweb.com/collections/types?q=Women%27s" title="Women's">Women's</a></p>
-                                      <p class="product-cat"> <span class="lbl">Collections: </span><a href="http://annimexweb.com/collections/notifications" title="">Product Notifications</a> <a href="http://annimexweb.com/collections/women" title="">Women</a> </p>
+                                      <p class="product-type"><span class="lbl">Product Brand:</span> <a href="" title="Women's"><%= productdata.brand.name %></a></p>
+                                      <p class="product-cat"> <span class="lbl">Product category: </span><a href="" title=""><%= productdata.category.name %></a> </p>
                                     </div>
                                 </div>
                                 </div>
@@ -389,7 +397,7 @@
                                         <div class="grid__item">
                                           <div class="mini-list-item">
                                             <div class="mini-view_image">
-                                                <a class="grid-view-item__link" href="#">
+                                                <a class="grid-view-item__link" href="/load_productview?id=<%= item._id %>">
                                                     <img class="grid-view-item__image" src="/assets/uploads/product/<%= item.productimage[0] %>" alt="">
                                                 </a>
                                             </div>
@@ -516,6 +524,7 @@
             document.getElementById('product-price').textContent = Math.round(price);
             document.getElementById('product-stock').textContent = data.size.stock;
             document.getElementById('salesprice').textContent = data.size.Actualprice;
+            document.getElementById("salespriceview").textContent = data.size.Actualprice;
             document.getElementById('SaveAmount').textContent = Math.round(savings);
             document.getElementById('discount-percentage').textContent = discountPercentage;
 
@@ -682,6 +691,94 @@ decrementBtn.addEventListener('click', () => {
         updateDisplay();
     }
 });
+
+
+
+// for adding wihlist
+
+document.getElementById("wishlist").addEventListener("click",function(){
+    const id = document.getElementById("itemid").value
+    fetch("/addto_wishlist",{
+      method : "POST",
+      headers : {
+        "Content-Type" : "application/json"
+      },
+      body : JSON.stringify({id})
+    })
+    .then(responce =>responce.json())
+    .then((data)=>{
+      if (data.success) {
+                this.classList.toggle('active');
+                this.querySelector('i').classList.replace('anm-heart-l', 'anm-heart');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist',
+                    text: 'Product added to your wishlist!',
+                    toast: true,
+                    background: "black",
+                    color: "white",
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 3000,
+                    customClass: {
+                        popup: "custom-toast",
+                    },
+                    didOpen: () => {
+                        const swalPopup = document.querySelector(".custom-toast");
+                        swalPopup.style.marginBottom = "70px";
+                        swalPopup.style.marginRight = "15px";
+                    },
+                });
+    }else if(data.error){
+      Swal.fire({
+                    icon: 'warning',
+                    title: 'warning',
+                    text: 'Item alredy in the wishlist!',
+                    toast: true,
+                    background: "black",
+                    color: "white",
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 3000,
+                    customClass: {
+                        popup: "custom-toast",
+                    },
+                    didOpen: () => {
+                        const swalPopup = document.querySelector(".custom-toast");
+                        swalPopup.style.marginBottom = "70px";
+                        swalPopup.style.marginRight = "15px";
+                    },
+                });
+    }
+    })
+    .catch((err) => {
+            console.log("Error adding item to wishlist: ", err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred. Please try again.',
+                toast: true,
+                background: "black",
+                color: "white",
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                timer: 3000,
+                customClass: {
+                    popup: "custom-toast",
+                },
+                didOpen: () => {
+                    const swalPopup = document.querySelector(".custom-toast");
+                    swalPopup.style.marginBottom = "70px";
+                    swalPopup.style.marginRight = "15px";
+                },
+            });
+        });
+  })
+
+
 
 
 
