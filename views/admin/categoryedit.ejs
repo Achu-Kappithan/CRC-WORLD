@@ -72,12 +72,13 @@
       <script>
         function validate() {
           let value = true;
+          let nameRegex = /^[a-zA-Z0-9\s]+$/;
+          let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/
 
-          
           let name = document.getElementById("catname").value.trim();
           console.log(name);
 
-          if (name.length < 3) {
+          if (name.length < 3 || !nameRegex.test(name)) {
             document.getElementById("errorname").textContent =
               "NAME MUST BE ATLEAST 3 CHARACTERS";
             value = false;
@@ -89,7 +90,7 @@
           let dis = document.getElementById("catdiscription").value.trim();
           console.log(dis);
 
-          if (dis.length < 10) {
+          if (dis.length < 10 || !disRegex.test(dis)) {
             document.getElementById("errordis").textContent =
               "PLZ ENTER VALID INPUT";
             value = false;

@@ -45,7 +45,7 @@
                               </div>
                               <div class="mb-4">
                                   <label class="form-label">Description</label>
-                                  <textarea id="catofrdescription" name="catofrdescription" class="form-control" required><%= catdata.categoryoffer.offerdiscription %></textarea>
+                                  <textarea id="catofrdescription" name="catofrdescription" class="form-control" ><%= catdata.categoryoffer.offerdiscription %></textarea>
                                   <span id="errorDescription" class="text-danger"></span>
                               </div>
                               <div class="mb-4">
@@ -64,7 +64,7 @@
                               </div>
                               <div class="mb-4">
                                   <label class="form-label">Expiry Date</label>
-                                  <input id="catofrenddate" name="catofrenddate" value="<%= new Date(catdata.categoryoffer.offerExpiryDate).toISOString().split('T')[0] %>" type="date" class="form-control" />
+                                  <input id="catofrenddate" name="catofrenddate" value="<%= new Date(catdata.categoryoffer.offerExpiryDate).toISOString().split('T')[0] %>" type="date" class="form-control"   min="<%= new Date().toISOString().split('T')[0] %>" />
                                   <span id="errorEndDate" class="text-danger"></span>
                               </div>
                               <div class="text-center">
@@ -87,8 +87,11 @@
     function validate() {
         let isValid = true;
 
+      let nameRegex = /^[a-zA-Z0-9\s]+$/;
+      let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/;
+
         let name = document.getElementById("catofrname").value.trim();
-        if (name.length < 3) {
+        if (name.length < 3 || !nameRegex.test(name)) {
             document.getElementById("errorName").textContent = "Name must be at least 3 characters";
             isValid = false;
         } else {
@@ -96,7 +99,7 @@
         }
 
         let description = document.getElementById("catofrdescription").value.trim();
-        if (description.length < 10) {
+        if (description.length < 10 || !disRegex.test(description)) {
             document.getElementById("errorDescription").textContent = "Please enter a valid description (at least 10 characters)";
             isValid = false;
         } else {
@@ -104,8 +107,8 @@
         }
 
         let discountPercentage = document.getElementById("catofrpercentage").value.trim();
-        if (discountPercentage === "" || isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 100) {
-            document.getElementById("errorPercentage").textContent = "Please enter a valid discount percentage (0-100)";
+        if (discountPercentage === "" || isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 90) {
+            document.getElementById("errorPercentage").textContent = "Please enter a valid discount percentage (0-90)";
             isValid = false;
         } else {
             document.getElementById("errorPercentage").textContent = "";

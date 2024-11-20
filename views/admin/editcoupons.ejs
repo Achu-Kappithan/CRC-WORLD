@@ -45,7 +45,7 @@
                               </div>
                               <div class="mb-4">
                                   <label class="form-label">Description</label>
-                                  <textarea id="catofrdescription" name="couponsdis" class="form-control" required><%= coupondata.couponDescription %></textarea>
+                                  <textarea id="catofrdescription" name="couponsdis" class="form-control" ><%= coupondata.couponDescription %></textarea>
                                   <span id="errorDescription" class="text-danger"></span>
                               </div>
                               <div class="mb-4">
@@ -89,47 +89,65 @@
       </section>
 
   
-<script>
-    function validate() {
-        let isValid = true;
-
-        let name = document.getElementById("catofrname").value.trim();
-        if (name.length < 3) {
-            document.getElementById("errorName").textContent = "Name must be at least 3 characters";
-            isValid = false;
-        } else {
-            document.getElementById("errorName").textContent = "";
+      <script>
+        function validate() {
+            let isValid = true;
+    
+            let nameRegex = /^[a-zA-Z0-9\s]+$/;
+            let descriptionRegex = /^[a-zA-Z0-9\s,.!?-]+$/;
+    
+            let name = document.getElementById("catofrname").value.trim();
+            if (name.length < 3 || !nameRegex.test(name)) {
+                document.getElementById("errorName").textContent = "Name must be at least 3 characters and valid.";
+                isValid = false;
+            } else {
+                document.getElementById("errorName").textContent = "";
+            }
+    
+            let description = document.getElementById("catofrdescription").value.trim();
+            if (description.length < 10 || !descriptionRegex.test(description)) {
+                document.getElementById("errorDescription").textContent = "Description must be at least 10 characters and valid.";
+                isValid = false;
+            } else {
+                document.getElementById("errorDescription").textContent = "";
+            }
+    
+            let discountPercentage = document.getElementById("catofrpercentage").value.trim();
+            if (discountPercentage === "" || isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 60) {
+                document.getElementById("errorPercentage").textContent = "Discount percentage must be between 0 and 60.";
+                isValid = false;
+            } else {
+                document.getElementById("errorPercentage").textContent = "";
+            }
+    
+            let maxAmount = document.getElementById("catofrstartdate").value.trim();
+            if (maxAmount === "" || isNaN(maxAmount) || maxAmount <= 0) {
+                document.getElementById("errorEndDate").textContent = "Enter a valid maximum amount greater than 0.";
+                isValid = false;
+            } else {
+                document.getElementById("errorEndDate").textContent = "";
+            }
+    
+            let minAmount = document.getElementById("catofrenddate").value.trim();
+            if (minAmount === "" || isNaN(minAmount) || minAmount <= 0) {
+                document.getElementById("errorEndDate").textContent = "Enter a valid minimum amount greater than 0.";
+                isValid = false;
+            } else {
+                document.getElementById("errorEndDate").textContent = "";
+            }
+    
+            let userLimit = document.getElementById("userlimint").value.trim();
+            if (userLimit === "" || isNaN(userLimit) || userLimit <= 0) {
+                document.getElementById("erroruserlimit").textContent = "Enter a valid user limit greater than 0.";
+                isValid = false;
+            } else {
+                document.getElementById("erroruserlimit").textContent = "";
+            }
+    
+            return isValid;
         }
-
-        let description = document.getElementById("catofrdescription").value.trim();
-        if (description.length < 10) {
-            document.getElementById("errorDescription").textContent = "Please enter a valid description (at least 10 characters)";
-            isValid = false;
-        } else {
-            document.getElementById("errorDescription").textContent = "";
-        }
-
-        let discountPercentage = document.getElementById("catofrpercentage").value.trim();
-        if (discountPercentage === "" || isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 100) {
-            document.getElementById("errorPercentage").textContent = "Please enter a valid discount percentage (0-100)";
-            isValid = false;
-        } else {
-            document.getElementById("errorPercentage").textContent = "";
-        }
-
-        let endDate = document.getElementById("catofrenddate").value;
-        let startDate = document.getElementById("catofrstartdate").value;
-        if (new Date(endDate) <= new Date(startDate)) {
-            document.getElementById("errorEndDate").textContent = "Expiry date must be after the start date";
-            isValid = false;
-        } else {
-            document.getElementById("errorEndDate").textContent = "";
-        }
-
-        return isValid;
-    }
-</script>
-
+    </script>
+    
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         
@@ -150,9 +168,6 @@
       });
   }
 </script>
-
-
-
 
 
     </main>

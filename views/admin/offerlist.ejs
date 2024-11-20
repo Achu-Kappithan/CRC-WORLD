@@ -93,7 +93,8 @@
                                               <thead>
                                                   <tr>
                                                       <!-- <th>#ID</th> -->
-                                                      <th scope="col">Name</th>
+                                                      <th scope="col">Offer Name</th>
+                                                      <th scope="col">Product Name</th>
                                                       <th scope="col">Offer (%)</th>
                                                       <th scope="col">Status</th>
                                                       <th scope="col">Start Date</th>
@@ -107,6 +108,7 @@
                                                           <tr>
                                                               <!-- <td><%= item.productOffer._id %></td> -->
                                                               <td><b><%= item.productOffer.offerName %></b></td>
+                                                              <td><b><%= item.productname %></b></td>
                                                               <td><%= item.productOffer.offerDiscountPercentage %></td>
                                                               <% if(item.productOffer.offerStatus == true){ %>
                                                               <td><span class="badge rounded-pill alert-success">Active</span></td>

@@ -127,19 +127,19 @@
         function validate() {
           let value = true;
 
-          // Validate name
           let name = document.getElementById("productname").value.trim();
-          if (name.length < 4) {
+          let nameRegex = /^[a-zA-Z0-9\s]+$/;
+          let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/
+          if (name.length < 4  || !nameRegex.test(name)) {
             document.getElementById("errorname").textContent =
-              "NAME MUST BE AT LEAST 4 CHARACTERS";
+              "NAME MUST BE AT LEAST 4 CHARACTERS OR ENTER A VALID NAME";
             value = false;
           } else {
             document.getElementById("errorname").textContent = "";
           }
 
-          // Validate description
           let dis = document.getElementById("discription").value.trim();
-          if (dis.length < 10) {
+          if (dis.length < 10|| !disRegex.test(dis) ) {
             document.getElementById("errordis").textContent =
               "DESCRIPTION MUST BE AT LEAST 10 CHARACTERS";
             value = false;

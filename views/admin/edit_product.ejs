@@ -160,7 +160,7 @@
                         </div>
                     <% } %> 
     
-                    <form action="/update_product?pid=<%= productdata._id %>" method="post" onsubmit="return validate()" enctype="multipart/form-data" >
+                    <form action="/update_product?pid=<%= productdata._id %>" method="post" onsubmit="return Editformvalidate()" enctype="multipart/form-data" >
 
                     <div>
                         <button type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
@@ -211,65 +211,51 @@
                                     <h5>Small Size</h5>
                                     <div class="form-group">
                                         <label for="stockSM">Stock:</label>
-                                        <input type="number" id="stockSM" name="size[SM][stock]" class="form-control" min="0" placeholder="Enter stock count"
+                                        <input type="number" id="stockSM" name="size[SM][stock]" class="form-control" placeholder="Enter stock count"
                                             value="<%= (productdata.sizes.find(size => size.size === 'small') || {}).stock || '' %>">
+                                            <span class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label for="actualPriceSM">Actual Price:</label>
-                                        <input type="number" id="actualPriceSM" name="size[SM][actualPrice]" class="form-control" step="0.01" placeholder="Enter actual price"
+                                        <input type="number" id="actualPriceSM" name="size[SM][actualPrice]" class="form-control"  placeholder="Enter actual price"
                                             value="<%= (productdata.sizes.find(size => size.size === 'small') || {}).Actualprice || '' %>">
+                                            <span class="text-danger"></span>
                                     </div>
-                                    <!-- <div class="form-group">
-                                        <label for="salesPriceSM">Sales Price:</label>
-                                        <input type="number" id="salesPriceSM" name="size[SM][salesPrice]" class="form-control" step="0.01" placeholder="Enter sales price"
-                                            value="<%= (productdata.sizes.find(size => size.size === 'small') || {}).Salesprice || '' %>">
-                                    </div> -->
                                 </div>
             
                                 <div id="additionalFieldsMedium" class="additional-fields">
                                     <h5>Medium Size</h5>
                                     <div class="form-group">
                                         <label for="stockMedium">Stock:</label>
-                                        <input type="number" id="stockMedium" name="size[Medium][x]" class="form-control" min="0" placeholder="Enter stock count"
+                                        <input type="number" id="stockMedium" name="size[Medium][x]" class="form-control"  placeholder="Enter stock count"
                                             value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).stock || '' %>">
+                                            <span class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label for="actualPriceMedium">Actual Price:</label>
-                                        <input type="number" id="actualPriceMedium" name="size[Medium][actualPrice]" class="form-control" step="0.01" placeholder="Enter actual price"
+                                        <input type="number" id="actualPriceMedium" name="size[Medium][actualPrice]" class="form-control"  placeholder="Enter actual price"
                                             value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).Actualprice || ''%>">
+                                            <span class="text-danger"></span>
                                     </div>
-                                    <!-- <div class="form-group">
-                                        <label for="salesPriceMedium">Sales Price:</label>
-                                        <input type="number" id="salesPriceMedium" name="size[Medium][salesPrice]" class="form-control" step="0.01" placeholder="Enter sales price"
-                                            value="<%= (productdata.sizes.find(size => size.size === 'Medium') || {}).Salesprice|| '' %>">
-                                    </div> -->
                                 </div>
             
                                 <div id="additionalFieldsL" class="additional-fields">
                                     <h5>Large Size</h5>
                                     <div class="form-group">
                                         <label for="stockL">Stock:</label>
-                                        <input type="number" id="stockL" name="size[L][stock]" class="form-control" min="0" placeholder="Enter stock count"
+                                        <input type="number" id="stockL" name="size[L][stock]" class="form-control"  placeholder="Enter stock count"
                                             value="<%= (productdata.sizes.find(size => size.size === 'Large') || {}).stock || '' %>">
+                                            <span class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label for="actualPriceL">Actual Price:</label>
-                                        <input type="number" id="actualPriceL" name="size[L][actualPrice]" class="form-control" step="0.01" placeholder="Enter actual price"
+                                        <input type="number" id="actualPriceL" name="size[L][actualPrice]" class="form-control"  placeholder="Enter actual price"
                                             value="<%= (productdata.sizes.find(size => size.size === 'Large') || {}).Actualprice || '' %>">
+                                            <span class="text-danger"></span>
                                     </div>
-                                    <!-- <div class="form-group">
-                                        <label for="salesPriceL">Sales Price:</label>
-                                        <input type="number" id="salesPriceL" name="size[L][salesPrice]" class="form-control" step="0.01" placeholder="Enter sales price"
-                                            value="<%= (productdata.sizes.find(size => size.size === 'Large') || {}).Salesprice || '' %>">
-                                    </div> -->
                                 </div>
                             </div>
             
-                            <!-- <div class="mb-4">
-                                <label class="form-label">Tax rate</label>
-                                <input name="taxrate" id="taxrate" type="text" value="<%= productdata.Taxrate %>" class="form-control">
-                                <span id="errortaxrate" class="text-danger"></span>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -369,6 +355,113 @@
         </div>
     </section> 
 
+    <script>
+        function Editformvalidate() {
+          let isValid = true;
+      
+          const productName = document.getElementById("productname").value.trim();
+          const nameRegex = /^[a-zA-Z0-9\s]+$/;
+          if (productName === "" || !nameRegex.test(productName)) {
+            document.getElementById("errorname").innerText = "Please enter a valid product name (alphanumeric characters only).";
+            isValid = false;
+          } else {
+            document.getElementById("errorname").innerText = "";
+          }
+      
+          // Validate product description
+          const productDescription = document.getElementById("productdis").value.trim();
+          if (productDescription === "") {
+            document.getElementById("errordis").innerText = "Description cannot be empty.";
+            isValid = false;
+          } else {
+            document.getElementById("errordis").innerText = "";
+          }
+      
+          // Validate stock and price
+          const stockSM = document.getElementById("stockSM").value;
+          const actualPriceSM = document.getElementById("actualPriceSM").value;
+          const stockMedium = document.getElementById("stockMedium").value;
+          const actualPriceMedium = document.getElementById("actualPriceMedium").value;
+          const stockL = document.getElementById("stockL").value;
+          const actualPriceL = document.getElementById("actualPriceL").value;
+      
+          if (stockSM < 0 || isNaN(stockSM)) {
+            document.getElementById("stockSM").nextElementSibling.innerText = "Stock must be a positive number.";
+            isValid = false;
+          } else {
+            document.getElementById("stockSM").nextElementSibling.innerText = "";
+          }
+      
+          if (actualPriceSM < 0 || isNaN(actualPriceSM)) {
+            document.getElementById("actualPriceSM").nextElementSibling.innerText = "Price must be a positive number.";
+            isValid = false;
+          } else {
+            document.getElementById("actualPriceSM").nextElementSibling.innerText = "";
+          }
+      
+          if (stockMedium < 0 || isNaN(stockMedium)) {
+            document.getElementById("stockMedium").nextElementSibling.innerText = "Stock must be a positive number.";
+            isValid = false;
+          } else {
+            document.getElementById("stockMedium").nextElementSibling.innerText = "";
+          }
+      
+          if (actualPriceMedium < 0 || isNaN(actualPriceMedium)) {
+            document.getElementById("actualPriceMedium").nextElementSibling.innerText = "Price must be a positive number.";
+            isValid = false;
+          } else {
+            document.getElementById("actualPriceMedium").nextElementSibling.innerText = "";
+          }
+      
+          if (stockL < 0 || isNaN(stockL)) {
+            document.getElementById("stockL").nextElementSibling.innerText = "Stock must be a positive number.";
+            isValid = false;
+          } else {
+            document.getElementById("stockL").nextElementSibling.innerText = "";
+          }
+      
+          if (actualPriceL < 0 || isNaN(actualPriceL)) {
+            document.getElementById("actualPriceL").nextElementSibling.innerText = "Price must be a positive number.";
+            isValid = false;
+          } else {
+            document.getElementById("actualPriceL").nextElementSibling.innerText = "";
+          }
+      
+          // Validate category and brand
+          const category = document.querySelector('select[name="productcategory"]').value;
+          const brand = document.querySelector('select[name="productbrand"]').value;
+      
+          if (category === "") {
+            alert("Please select a category.");
+            isValid = false;
+          }
+      
+          if (brand === "") {
+            alert("Please select a brand.");
+            isValid = false;
+          }
+      
+          // Validate image type
+          const imageInput = document.getElementById("image");
+          const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
+          if (imageInput.files.length > 0) {
+            for (let i = 0; i < imageInput.files.length; i++) {
+              const file = imageInput.files[i];
+              if (!allowedExtensions.test(file.name)) {
+                document.getElementById("errorimage").innerText = "Only JPG, PNG, and WEBP files are allowed.";
+                isValid = false;
+                break;
+              } else {
+                document.getElementById("errorimage").innerText = "";
+              }
+            }
+          }
+      
+          return isValid;
+        }
+      </script>
+      
+
     <!-- //aditional script for senditg sweet alert' -->
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -414,53 +507,7 @@
             });
         });
   
-      function validate() {
-        let isValid = true;
 
-        const name = document.getElementById("productname").value.trim();
-        if (name.length < 4) {
-          document.getElementById("errorname").innerText =
-            "Name must be at least 4 characters long";
-          isValid = false;
-        } else {
-          document.getElementById("errorname").innerText = "";
-        }
-
-        const description = document.getElementById("productdis").value.trim();
-        if (description.length < 10) {
-          document.getElementById("errordis").innerText =
-            "Description is required";
-          isValid = false;
-        } else {
-          document.getElementById("errordis").innerText = "";
-        }
-
-        const taxRate = document.getElementById("taxrate").value.trim();
-        if (isNaN(taxRate) || taxRate === "") {
-          document.getElementById("errortaxrate").innerText =
-            "Enter a valid tax rate";
-          isValid = false;
-        } else {
-          document.getElementById("errortaxrate").innerText = "";
-        }
-
-        const images = document.getElementById("image").files;
-        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.WEBP)$/i;
-
-          for (let i = 0; i < images.length; i++) {
-            if (!allowedExtensions.exec(images[i].name)) {
-              document.getElementById("errorimage").innerText =
-                "Only .jpg, .jpeg, .png ,WEBP files are allowed";
-              isValid = false;
-              break;
-            } else {
-              document.getElementById("errorimage").innerText = "";
-            }
-          }
-        
-
-        return isValid;
-      }
 
 
 
@@ -567,7 +614,11 @@ document.getElementById('replaceImageInput').addEventListener('change', function
 });
 
 document.querySelector('form').addEventListener('submit', function(e) {
-    e.preventDefault();
+    if (!Editformvalidate()) {
+        e.preventDefault(); // Stop form submission if validation fails
+        return;
+    }
+    
     
     const formData = new FormData(this);
     

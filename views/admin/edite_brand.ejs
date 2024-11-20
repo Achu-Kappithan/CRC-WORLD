@@ -52,19 +52,21 @@
                     value="<%= data.name%>"
                     type="text"
                     class="form-control"
-                    id="product_name"
-                    required
+                    id="brandname"
+                  
                   />
+                  <span id="errorname" class="text-danger"></span>
                 </div>
                 <div class="mb-4">
                   <label class="form-label">Description</label>
                   <textarea
                     name="branddescription"
                     class="form-control"
-                    required
+                    id="branddescription"
                   >
                   <%= data.description%></textarea
                   >
+                  <span id="errordiscription" class="text-danger"></span>
                 </div>
                 <div class="mb-4">
                   <label for="image" class="form-label">Upload Image</label>
@@ -73,12 +75,14 @@
                     value="difid"
                     class="form-control"
                     name="image"
+                    id="image"
                   />
                   <img
                     src="/assets/uploads/brands/<%= data.image %>"
                     alt="Current Image"
                     width="100px"
                   />
+                  <span id="errorimage" class="text-danger"></span>
                 </div>
                 <div class="d-grid">
                   <button type="submit" class="btn btn-primary">update</button>
@@ -101,3 +105,71 @@
     <script src="assets/js/custom-chart.js" type="text/javascript"></script>
   </body>
 </html>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      
+      form.addEventListener('submit', function(event) {
+          // Prevent form from submitting by default
+          event.preventDefault();
+          
+          // Run validation
+          if (validate()) {
+              // If validation passes, submit the form
+              this.submit();
+          }
+      });
+  
+      function validate() {
+          let value = true;
+  
+          let nameRegex = /^[a-zA-Z0-9\s]+$/;
+          let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/;
+  
+          let name = document.getElementById("brandname").value.trim();
+          let errorName = document.getElementById("errorname");
+  
+          if (name.length < 4 || !nameRegex.test(name)) {
+              errorName.textContent = "NAME MUST BE AT LEAST 4 CHARACTERS OR ENTER A VALID INPUT";
+              value = false;
+          } else {
+              errorName.textContent = "";
+          }
+  
+          let description = document.getElementById("branddescription").value.trim();
+          let errorDescription = document.getElementById("errordiscription");
+  
+          if (description.length < 10 || !disRegex.test(description)) {
+              errorDescription.textContent = "DESCRIPTION MUST BE AT LEAST 10 CHARACTERS OR A VALID INPUT";
+              value = false;
+          } else {
+              errorDescription.textContent = "";
+          }
+  
+          let imageInput = document.getElementById("image");
+          let errorImage = document.getElementById("errorimage");
+  
+          // Only validate image if a file is selected
+          if (imageInput.files.length > 0) {
+              const validImageTypes = [
+                  "image/jpeg",
+                  "image/png",
+                  "image/gif",
+                  "image/jpg",
+                  "image/webp",
+              ];
+              let image = imageInput.files[0];
+              if (!validImageTypes.includes(image.type)) {
+                  errorImage.textContent = "ONLY IMAGE FILES (JPG, PNG, GIF) ARE ALLOWED";
+                  value = false;
+              } else {
+                  errorImage.textContent = "";
+              }
+          }
+  
+          return value;
+      }
+  });
+  </script>

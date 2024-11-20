@@ -98,15 +98,29 @@
                                   <span id="errorDiscount" class="text-danger"></span>
                               </div>
                               <div class="mb-4">
-                                <label class="form-label">Start Date</label>
-                                <input type="date" id="startDate" name="Pro_ofr_strdate" class="form-control" min="" />
+                                <label class="form-label">Product Offer Start Date</label>
+                                <input 
+                                  type="date" 
+                                  id="startDate" 
+                                  name="Pro_ofr_strdate" 
+                                  class="form-control" 
+                                  min="" 
+                                />
                                 <span id="errorStartDate" class="text-danger"></span>
                               </div>
+                              
                               <div class="mb-4">
-                                  <label class="form-label">Expiry Date</label>
-                                  <input type="date" name="Pro_ofr_expdate" id="expiryDate" class="form-control" />
-                                  <span id="errorExpiryDate" class="text-danger"></span>
+                                <label class="form-label">Product Offer Expiry Date</label>
+                                <input 
+                                  type="date" 
+                                  name="Pro_ofr_expdate" 
+                                  id="expiryDate" 
+                                  class="form-control" 
+                                  min="" 
+                                />
+                                <span id="errorExpiryDate" class="text-danger"></span>
                               </div>
+                              
                               <div class="text-center">
                                   <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Offer</button>
                               </div>
@@ -152,8 +166,10 @@
                                       <input name="catofrpercentage" type="number" class="form-control" placeholder="Enter discount percentage" id="catofrpercentage" />
                                       <span id="errorCatDiscount" class="text-danger"></span>
                                   </div>
+
+
                                   <div class="mb-4">
-                                    <label class="form-label">Start Date</label>
+                                    <label class="form-label">Category Offer Start Date</label>
                                     <input 
                                       name="catofrstartdate" 
                                       type="date" 
@@ -163,11 +179,19 @@
                                     />
                                     <span id="errorCatStartDate" class="text-danger"></span>
                                   </div>
+                                  
                                   <div class="mb-4">
-                                      <label class="form-label">Expiry Date</label>
-                                      <input name="catofrenddate" type="date" class="form-control" id="catofrenddate" />
-                                      <span id="errorCatExpiryDate" class="text-danger"></span>
+                                    <label class="form-label">Category Offer Expiry Date</label>
+                                    <input 
+                                      name="catofrenddate" 
+                                      type="date" 
+                                      class="form-control" 
+                                      id="catofrenddate" 
+                                      min="" 
+                                    />
+                                    <span id="errorCatExpiryDate" class="text-danger"></span>
                                   </div>
+
                                   <div class="text-center">
                                       <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Offer</button>
                                   </div>
@@ -267,25 +291,64 @@
 </script>
 
 <script>
-    const today = new Date().toISOString().split("T")[0];
-    document.getElementById("catofrstartdate").setAttribute("min", today);
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  const formattedToday = today.toISOString().split("T")[0];
+  const formattedTomorrow = tomorrow.toISOString().split("T")[0];
+
+  const catStartDateInput = document.getElementById("catofrstartdate");
+  const catExpiryDateInput = document.getElementById("catofrenddate");
+
+  const productStartDateInput = document.getElementById("startDate");
+  const productExpiryDateInput = document.getElementById("expiryDate");
+
+  catStartDateInput.setAttribute("min", formattedToday);
+  catExpiryDateInput.setAttribute("min", formattedTomorrow);
+
+  productStartDateInput.setAttribute("min", formattedToday);
+  productExpiryDateInput.setAttribute("min", formattedTomorrow);
+
+  function updateCatExpiryDateMin() {
+    const selectedCatStartDate = catStartDateInput.value;
+    if (selectedCatStartDate) {
+      const catNextDay = new Date(selectedCatStartDate);
+      catNextDay.setDate(catNextDay.getDate() + 1); 
+      const formattedCatNextDay = catNextDay.toISOString().split("T")[0];
+      catExpiryDateInput.setAttribute("min", formattedCatNextDay);
+    } else {
+      catExpiryDateInput.setAttribute("min", formattedTomorrow); 
+    }
+  }
+
+  function updateProductExpiryDateMin() {
+    const selectedProductStartDate = productStartDateInput.value;
+    if (selectedProductStartDate) {
+      const productNextDay = new Date(selectedProductStartDate);
+      productNextDay.setDate(productNextDay.getDate() + 1); 
+      const formattedProductNextDay = productNextDay.toISOString().split("T")[0];
+      productExpiryDateInput.setAttribute("min", formattedProductNextDay);
+    } else {
+      productExpiryDateInput.setAttribute("min", formattedTomorrow); 
+    }
+  }
+
+  catStartDateInput.addEventListener("change", updateCatExpiryDateMin);
+  productStartDateInput.addEventListener("change", updateProductExpiryDateMin);
 </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const today = new Date().toISOString().split("T")[0];
-      document.getElementById("startDate").setAttribute("min", today);
-    });
-</script>
 
-
+<!-- for validating the form -->
 
 <script>
   function validateProductOfferForm() {
       let isValid = true;
+      let nameRegex = /^[a-zA-Z0-9\s]+$/;
+      let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/;
   
       const offerName = document.getElementById("offerName").value.trim();
-      if (offerName.length < 3) {
+      if (offerName.length < 3 || !nameRegex.test(offerName)) {
           document.getElementById("errorOfferName").textContent = "Offer name must be at least 3 characters";
           isValid = false;
       } else {
@@ -293,7 +356,7 @@
       }
   
       const description = document.getElementById("branddescription").value.trim();
-      if (description.length < 10) {
+      if (description.length < 10 || !disRegex.test(description)) {
           document.getElementById("errorDescription").textContent = "Description must be at least 10 characters";
           isValid = false;
       } else {
@@ -309,8 +372,8 @@
       }
   
       const discount = document.getElementById("discountPercentage").value;
-      if (discount < 1 || discount > 100) {
-          document.getElementById("errorDiscount").textContent = "Enter a valid discount percentage (1-100)";
+      if (discount < 1 || discount > 90) {
+          document.getElementById("errorDiscount").textContent = "Enter a valid discount percentage (1-90)";
           isValid = false;
       } else {
           document.getElementById("errorDiscount").textContent = "";
@@ -338,6 +401,8 @@
 <script>
   function validateCategoryOfferForm() {
       let isValid = true;
+      let nameRegex = /^[a-zA-Z0-9\s]+$/;
+      let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/;
       const offerName = document.getElementById("catofrname");
       const description = document.getElementById("catofrdescription");
       const category = document.getElementById("catofrid");
@@ -352,12 +417,12 @@
       document.getElementById("errorCatStartDate").textContent = "";
       document.getElementById("errorCatExpiryDate").textContent = "";
   
-      if (offerName.value.trim() === "") {
+      if (offerName.value.trim() === "" || !nameRegex.test(offerName.value)) {
           document.getElementById("errorCatOfferName").textContent = "Offer name is required.";
           isValid = false;
       }
   
-      if (description.value.trim() === "") {
+      if (description.value.trim() === ""  || !disRegex.test(description.value)) {
           document.getElementById("errorCatDescription").textContent = "Description is required.";
           isValid = false;
       }
@@ -367,8 +432,8 @@
           isValid = false;
       }
   
-      if (discountPercentage.value === "" || discountPercentage.value < 0 || discountPercentage.value > 100) {
-          document.getElementById("errorCatDiscount").textContent = "Enter a discount between 0 and 100.";
+      if (discountPercentage.value === "" || discountPercentage.value < 0 || discountPercentage.value > 90) {
+          document.getElementById("errorCatDiscount").textContent = "Enter a discount between 0 and 90.";
           isValid = false;
       }
   

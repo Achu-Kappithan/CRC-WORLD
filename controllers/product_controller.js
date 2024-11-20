@@ -22,7 +22,7 @@ const add_product = async (req, res) => {
   try {
     const { productname, productdis, productcategory, productbrand } =
       req.body;
-    const exsitingproduct = await product.findOne({ productname: productname });
+    const exsitingproduct = await product.findOne({ productname: { $regex: `^${productname.trim()}$`, $options: "i" } });
     // console.log("this is the data for check product is exist",product)
 
     if (exsitingproduct) {

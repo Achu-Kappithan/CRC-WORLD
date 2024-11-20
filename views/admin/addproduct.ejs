@@ -106,6 +106,7 @@
                           id="medium"
                           value="Medium"
                         />
+                        
                         <label for="medium">Medium</label>
                       </div>
                     </div>
@@ -124,9 +125,9 @@
                         id="stockSM"
                         name="size[SM][stock]"
                         class="form-control"
-                        min="0"
                         placeholder="Enter stock count"
                       />
+                      <span class="text-danger"></span>
                     </div>
                     <div class="form-group">
                       <label for="actualPriceSM">Actual Price:</label>
@@ -135,9 +136,9 @@
                         id="actualPriceSM"
                         name="size[SM][actualPrice]"
                         class="form-control"
-                        step="0.01"
                         placeholder="Enter actual price"
                       />
+                      <span class="text-danger"></span>
                     </div>
                   </div>
 
@@ -150,9 +151,9 @@
                         id="stockMedium"
                         name="size[Medium][stock]"
                         class="form-control"
-                        min="0"
                         placeholder="Enter stock count"
                       />
+                      <span class="text-danger"></span>
                     </div>
                     <div class="form-group">
                       <label for="actualPriceMedium">Actual Price:</label>
@@ -161,9 +162,9 @@
                         id="actualPriceMedium"
                         name="size[Medium][actualPrice]"
                         class="form-control"
-                        step="0.01"
                         placeholder="Enter actual price"
                       />
+                      <span class="text-danger"></span>
                     </div>
                   </div>
 
@@ -176,9 +177,9 @@
                         id="stockL"
                         name="size[L][stock]"
                         class="form-control"
-                        min="0"
                         placeholder="Enter stock count"
                       />
+                      <span class="text-danger"></span>
                     </div>
                     <div class="form-group">
                       <label for="actualPriceL">Actual Price:</label>
@@ -187,9 +188,9 @@
                         id="actualPriceL"
                         name="size[L][actualPrice]"
                         class="form-control"
-                        step="0.01"
                         placeholder="Enter actual price"
                       />
+                      <span class="text-danger"></span>
                     </div>
                   </div>
                 </div>
@@ -252,6 +253,7 @@
                         </option>
                         <% }) %>
                       </select>
+                      <span class="text-danger"></span>
                     </div>
 
                     <div class="col-sm-6 mb-3">
@@ -264,6 +266,7 @@
                         </option>
                         <% }) %>
                       </select>
+                      <span class="text-danger"></span>
                     </div>
                   </div>
                 </div>
@@ -301,49 +304,99 @@
         });
       });
 
-      function validate() {
-        let isValid = true;
-
-        const name = document.getElementById("productname").value.trim();
-        if (name.length < 4) {
-          document.getElementById("errorname").innerText =
-            "Name must be at least 4 characters long";
-          isValid = false;
-        } else {
-          document.getElementById("errorname").innerText = "";
-        }
-
-        const descriptons = document.getElementById("productdiscription").value.trim()
-        if (descriptons.length < 10) {
-          document.getElementById("errdiscription").innerText="Description is required";
-            
-          isValid = false;
-        } else {
-          document.getElementById("errdiscription").innerText = "";
-        }
 
 
-        const images = document.getElementById("image").files;
-        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.WEBP)$/i;
-        if (images.length === 0) {
-          document.getElementById("errorimage").innerText =
-            "At least one image must be uploaded";
-          isValid = false;
-        } else {
-          for (let i = 0; i < images.length; i++) {
-            if (!allowedExtensions.exec(images[i].name)) {
-              document.getElementById("errorimage").innerText =
-                "Only .jpg, .jpeg, .png ,.WEBP files are allowed";
-              isValid = false;
-              break;
-            } else {
-              document.getElementById("errorimage").innerText = "";
-            }
-          }     
-        }
 
-        return isValid;
+  function validate() {
+  let isValid = true;
+
+
+  let nameRegex = /^[a-zA-Z0-9\s]+$/;
+  let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/;
+
+  const name = document.getElementById("productname").value.trim();
+  if (name.length < 4 || !nameRegex.test(name)) {
+    document.getElementById("errorname").innerText =
+      "Name must be at least 4 characters long";
+    isValid = false;
+  } else {
+    document.getElementById("errorname").innerText = "";
+  }
+
+  const descriptons = document.getElementById("productdiscription").value.trim();
+  if (descriptons.length < 10 || !disRegex.test(descriptons)) {
+    document.getElementById("errdiscription").innerText =
+      "Description is required";
+    isValid = false;
+  } else {
+    document.getElementById("errdiscription").innerText = "";
+  }
+
+  const images = document.getElementById("image").files;
+  const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.WEBP)$/i;
+  if (images.length === 0) {
+    document.getElementById("errorimage").innerText =
+      "At least one image must be uploaded";
+    isValid = false;
+  } else {
+    for (let i = 0; i < images.length; i++) {
+      if (!allowedExtensions.exec(images[i].name)) {
+        document.getElementById("errorimage").innerText =
+          "Only .jpg, .jpeg, .png ,.WEBP files are allowed";
+        isValid = false;
+        break;
+      } else {
+        document.getElementById("errorimage").innerText = "";
       }
+    }
+  }
+
+  const stockInputs = document.querySelectorAll('[name$="[stock]"]');
+  const priceInputs = document.querySelectorAll('[name$="[actualPrice]"]');
+
+  stockInputs.forEach((input) => {
+    const value = parseInt(input.value, 10);
+    if (value < 0 || isNaN(value)) {
+      document.getElementById(input.id).nextElementSibling.innerText =
+        "Stock cannot be negative";
+      isValid = false;
+    } else {
+      document.getElementById(input.id).nextElementSibling.innerText = "";
+    }
+  });
+
+  priceInputs.forEach((input) => {
+    const value = parseFloat(input.value);
+    if (value < 0 || isNaN(value)) {
+      document.getElementById(input.id).nextElementSibling.innerText =
+        "Price cannot be negative";
+      isValid = false;
+    } else {
+      document.getElementById(input.id).nextElementSibling.innerText = "";
+    }
+  });
+
+  const categorySelect = document.querySelector('[name="productcategory"]');
+  const brandSelect = document.querySelector('[name="productbrand"]');
+
+  if (!categorySelect.value) {
+    categorySelect.nextElementSibling.innerText =
+      "Please select a valid category";
+    isValid = false;
+  } else {
+    categorySelect.nextElementSibling.innerText = "";
+  }
+
+  if (!brandSelect.value) {
+    brandSelect.nextElementSibling.innerText = "Please select a valid brand";
+    isValid = false;
+  } else {
+    brandSelect.nextElementSibling.innerText = "";
+  }
+
+  return isValid;
+}
+
 
 
 

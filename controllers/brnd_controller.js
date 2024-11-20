@@ -42,7 +42,9 @@ const add_newbrand = async (req, res) => {
   try {
     const { brandname, branddescription } = req.body;
     const imageFile = req.file;
-    const existingdata = await brand.findOne({name:brandname})
+    const existingdata = await brand.findOne({
+      name: { $regex: `^${brandname.trim()}$`, $options: "i" },
+    })
 
     if (!brandname || !branddescription || !imageFile) {
       req.flash('error', 'all fields including image are required');
@@ -109,7 +111,7 @@ const update_brand = async (req, res) => {
     const { brandname, branddescription } = req.body
     const id = req.body.id;
     const existingdata = await brand.findById(id);
-    const matchname = await brand.findOne({name:brandname})
+    const matchname = await brand.findOne({name:{ $regex: `^${brandname.trim()}$`, $options: "i" }})
 
     const updateData = {
       name: req.body.brandname.trim(),

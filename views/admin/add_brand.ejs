@@ -91,11 +91,14 @@
       function validate() {
         let value = true;
 
+          let nameRegex = /^[a-zA-Z0-9\s]+$/;
+          let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/
+
         let name = document.getElementById("brandname").value.trim();
         let errorName = document.getElementById("errorname");
 
-        if (name.length < 4) {
-          errorName.textContent = "NAME MUST BE AT LEAST 4 CHARACTERS";
+        if (name.length < 4 || !nameRegex.test(name)) {
+          errorName.textContent = "NAME MUST BE AT LEAST 4 CHARACTERS OR ENTER A VALID INPUT";
           value = false;
         } else {
           errorName.textContent = "";
@@ -106,9 +109,9 @@
           .value.trim();
         let errorDescription = document.getElementById("errordis");
 
-        if (description.length < 10) {
+        if (description.length < 10 || !disRegex.test(dis)) {
           errorDescription.textContent =
-            "DESCRIPTION MUST BE AT LEAST 10 CHARACTERS";
+            "DESCRIPTION MUST BE AT LEAST 10 CHARACTERS OR A VALID INPUT";
           value = false;
         } else {
           errorDescription.textContent = "";
@@ -136,6 +139,7 @@
             errorImage.textContent = "";
           }
         }
+
 
         return value;
       }

@@ -16,9 +16,6 @@
             </div>
             <div>
                 <div>
-                    <a href="/loadcreateoffer" class="btn btn-primary"
-                      ><i class="text-muted material-icons md-post_add"></i>Create New offer</a
-                    >
                   </div>
             </div>
         </div>
@@ -137,56 +134,54 @@
                                 <div class="card-body">
                                   <h6 class="card-subtitle mb-2 text-muted text-center"></h6>
                                   <p class="card-text text-center"></p>
-                                  <form method="post" action="/add_coupon"  onsubmit="return ">
+                                  <form method="post" action="/add_coupon" onsubmit="return validateCategoryOfferForm()">
                                     <div class="mb-4">
-                                      <label class="form-label">Coupon Name</label>
-                                      <input name="couponName" type="text" class="form-control" placeholder="Enter offer name" id="couponName" required />
-                                      <span id="errorCouponName" class="text-danger"></span>
+                                        <label class="form-label">Coupon Name</label>
+                                        <input name="couponName" type="text" class="form-control" placeholder="Enter offer name" id="couponName" />
+                                        <span id="errorCouponName" class="text-danger"></span>
                                     </div>
-                                  
+                                
                                     <div class="mb-4">
-                                      <label class="form-label">Description</label>
-                                      <textarea name="couponDescription" class="form-control" id="couponDescription" placeholder="Enter description"></textarea>
-                                      <span id="errorCouponDescription" class="text-danger"></span>
+                                        <label class="form-label">Description</label>
+                                        <textarea name="couponDescription" class="form-control" id="couponDescription" placeholder="Enter description"></textarea>
+                                        <span id="errorCouponDescription" class="text-danger"></span>
                                     </div>
-                                  
+                                
                                     <div class="mb-4">
-                                      <label class="form-label">Coupon Code</label>
-                                      <input name="couponCode" type="text" class="form-control" placeholder="Enter coupon code" id="couponCode" required />
-                                      <span id="errorCouponCode" class="text-danger"></span>
+                                        <label class="form-label">Coupon Code</label>
+                                        <input name="couponCode" type="text" class="form-control" placeholder="Enter coupon code" id="couponCode" />
+                                        <span id="errorCouponCode" class="text-danger"></span>
                                     </div>
-                                  
+                                
                                     <div class="mb-4">
-                                      <label class="form-label">Discount Percentage</label>
-                                      <input name="couponDiscount" type="number" class="form-control" placeholder="Enter discount percentage" id="couponDiscount"  />
-                                      <span id="errorCouponDiscount" class="text-danger"></span>
+                                        <label class="form-label">Discount Percentage</label>
+                                        <input name="couponDiscount" type="number" class="form-control" placeholder="Enter discount percentage" id="couponDiscount" />
+                                        <span id="errorCouponDiscount" class="text-danger"></span>
                                     </div>
-                                  
+                                
                                     <div class="mb-4">
-                                      <label class="form-label">Max Amount</label>
-                                      <input name="maxAmount" type="number" class="form-control" placeholder="Enter maximum discount amount" id="maxAmount"  />
-                                      <span id="errorMaxAmount" class="text-danger"></span>
+                                        <label class="form-label">Max Amount</label>
+                                        <input name="maxAmount" type="number" class="form-control" placeholder="Enter maximum discount amount" id="maxAmount" />
+                                        <span id="errorMaxAmount" class="text-danger"></span>
                                     </div>
-                                  
+                                
                                     <div class="mb-4">
-                                      <label class="form-label">Min Amount</label>
-                                      <input name="minAmount" type="number" class="form-control" placeholder="Enter minimum purchase amount" id="minAmount"  />
-                                      <span id="errorMinAmount" class="text-danger"></span>
+                                        <label class="form-label">Min Amount</label>
+                                        <input name="minAmount" type="number" class="form-control" placeholder="Enter minimum purchase amount" id="minAmount" />
+                                        <span id="errorMinAmount" class="text-danger"></span>
                                     </div>
-                                  
-                                  
+                                
                                     <div class="mb-4">
-                                      <label class="form-label">Users Limit</label>
-                                      <input name="userlimint" type="text" class="form-control" id="catofrstartdate" placeholder="Enter Users limint" />
-                                      <span id="erroruserlimit" class="text-danger"></span>
+                                        <label class="form-label">Users Limit</label>
+                                        <input name="userLimit" type="number" class="form-control" id="catofrstartdate" placeholder="Enter user limit" />
+                                        <span id="erroruserlimit" class="text-danger"></span>
                                     </div>
-                                  
-                                  
+                                
                                     <div class="text-center">
-                                      <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Coupon</button>
+                                        <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Coupon</button>
                                     </div>
-                                  </form>
-                                </div>
+                                </form>
+                              </div>
                               </div>
                             </div>
                           </div>
@@ -234,59 +229,73 @@
       }
   </script>
 
-  <script>
-    function validateCategoryOfferForm() {
-        let isValid = true;
-        const offerName = document.getElementById("catofrname");
-        const description = document.getElementById("catofrdescription");
-        const category = document.getElementById("catofrid");
-        const discountPercentage = document.getElementById("catofrpercentage");
-        const startDate = document.getElementById("catofrstartdate");
-        const expiryDate = document.getElementById("catofrenddate");
-    
-        document.getElementById("errorCatOfferName").textContent = "";
-        document.getElementById("errorCatDescription").textContent = "";
-        document.getElementById("errorCatCategory").textContent = "";
-        document.getElementById("errorCatDiscount").textContent = "";
-        document.getElementById("errorCatStartDate").textContent = "";
-        document.getElementById("errorCatExpiryDate").textContent = "";
-    
-        if (offerName.value.trim() === "") {
-            document.getElementById("errorCatOfferName").textContent = "Offer name is required.";
-            isValid = false;
-        }
-    
-        if (description.value.trim() === "") {
-            document.getElementById("errorCatDescription").textContent = "Description is required.";
-            isValid = false;
-        }
-    
-        if (category.value === "") {
-            document.getElementById("errorCatCategory").textContent = "Please select a category.";
-            isValid = false;
-        }
-    
-        if (discountPercentage.value === "" || discountPercentage.value < 0 || discountPercentage.value > 100) {
-            document.getElementById("errorCatDiscount").textContent = "Enter a discount between 0 and 100.";
-            isValid = false;
-        }
-    
-        if (startDate.value === "") {
-            document.getElementById("errorCatStartDate").textContent = "Start date is required.";
-            isValid = false;
-        }
-    
-        if (expiryDate.value === "") {
-            document.getElementById("errorCatExpiryDate").textContent = "Expiry date is required.";
-            isValid = false;
-        } else if (startDate.value && expiryDate.value && new Date(startDate.value) > new Date(expiryDate.value)) {
-            document.getElementById("errorCatExpiryDate").textContent = "Expiry date cannot be earlier than start date.";
-            isValid = false;
-        }
-    
-        return isValid;
-    }
-    </script>
+<script>
+  function validateCategoryOfferForm() {
+      let isValid = true;
+      let nameRegex = /^[a-zA-Z0-9\s]+$/;
+      let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/;
+
+      const couponName = document.getElementById("couponName");
+      const description = document.getElementById("couponDescription");
+      const couponCode = document.getElementById("couponCode");
+      const discountPercentage = document.getElementById("couponDiscount");
+      const maxAmount = document.getElementById("maxAmount");
+      const minAmount = document.getElementById("minAmount");
+      const userLimit = document.getElementById("catofrstartdate"); 
+      const errorMessages = {
+          couponName: "Offer name is required.",
+          description: "Description is required.",
+          couponCode: "Coupon code is required.",
+          discountPercentage: "Enter a discount between 0 and 60.",
+          maxAmount: "Maximum discount amount is required.",
+          minAmount: "Minimum purchase amount is required.",
+          userLimit: "User limit is required."
+      };
+
+      document.querySelectorAll("span.text-danger").forEach(span => span.textContent = "");
+
+      if (couponName.value.trim() === "" || !nameRegex.test(couponName.value)) {
+          document.getElementById("errorCouponName").textContent = errorMessages.couponName;
+          isValid = false;
+      }
+
+      if (description.value.trim() === ""  || !disRegex.test(description.value) ) {
+          document.getElementById("errorCouponDescription").textContent = errorMessages.description;
+          isValid = false;
+      }
+
+      if (couponCode.value.trim() === "") {
+          document.getElementById("errorCouponCode").textContent = errorMessages.couponCode;
+          isValid = false;
+      }
+
+      if (
+          discountPercentage.value === "" || 
+          discountPercentage.value < 0 || 
+          discountPercentage.value > 60
+      ) {
+          document.getElementById("errorCouponDiscount").textContent = errorMessages.discountPercentage;
+          isValid = false;
+      }
+
+      if (maxAmount.value.trim() === "" || maxAmount.value <= 0) {
+          document.getElementById("errorMaxAmount").textContent = errorMessages.maxAmount;
+          isValid = false;
+      }
+
+      if (minAmount.value.trim() === "" || minAmount.value <= 0) {
+          document.getElementById("errorMinAmount").textContent = errorMessages.minAmount;
+          isValid = false;
+      }
+
+      if (userLimit.value.trim() === "" || isNaN(userLimit.value) || userLimit.value <= 0) {
+          document.getElementById("erroruserlimit").textContent = errorMessages.userLimit;
+          isValid = false;
+      }
+
+      return isValid;
+  }
+</script>
 
 
 

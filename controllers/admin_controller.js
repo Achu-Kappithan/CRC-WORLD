@@ -141,7 +141,6 @@ const unblockuser = async (req, res) => {
 const load_category = async (req, res) => {
   try {
     const category_list = await category.find({ is_deleted: false });
-    // console.log(category_list);
     if (!category_list) {
       return res.status(200).render("addcategory", { cat: category_list });
     } else {
@@ -160,13 +159,14 @@ const load_category = async (req, res) => {
 const add_category = async (req, res) => {
   try {
     const { name, discription } = req.body;
+    const normalized_name = name.trim().toLowerCase()
 
     if (!name || !discription) {
       req.flash("error", "ALL FIELD ARE REQUIRED");
       return res.status(400).redirect("/Addcategory");
     }
 
-    existingdata = await category.findOne({name: name});
+    existingdata = await category.findOne({name: normalized_name});
 
     if(existingdata){
       req.flash("error","Category alredy exist")
@@ -175,7 +175,7 @@ const add_category = async (req, res) => {
 
 
     const newcategory = new category({
-      name: req.body.name,
+      name: normalized_name,
       discription: req.body.discription,
     });
     await newcategory.save();
@@ -225,16 +225,17 @@ const load_editcategory = async (req, res) => {
 const edit_category = async (req, res) => {
   try {
     const {name , discription } = req.body
+    const normalized_name = name.trim().toLowerCase()
     const id = req.body.id;
     console.log("name ffomr body ",name)
 
     const existingdata = await category.findById({_id:id})
     console.log("existing data by id",existingdata)
-    const matchname = await category.findOne({name:name})
-    if(existingdata.name==name){
+    const matchname = await category.findOne({name:normalized_name})
+    if(existingdata.name==normalized_name){
       await category.findByIdAndUpdate(id, {
         $set: {
-          name: name ,
+          name: normalized_name ,
           discription: discription,
         },
       });
@@ -244,7 +245,7 @@ const edit_category = async (req, res) => {
     }else if(!matchname){
     const data = await category.findByIdAndUpdate(id, {
       $set: {
-        name: req.body.name,
+        name: normalized_name,
         discription: req.body.discription,
       },
     });

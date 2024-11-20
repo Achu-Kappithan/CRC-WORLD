@@ -156,7 +156,9 @@ const load_editcatoffer = async (req,res)=>{
 const update_catoffer = async (req,res)=>{
     try {
         const id = req.query.id
+        console.log("id for update category offer",id)
         const {catofrname, catofrdescription, catofrpercentage, catofrenddate} = req.body 
+        console.log("form data here",req.body)
 
         const updateddata = await Category.findByIdAndUpdate(
             {_id:id},
@@ -167,19 +169,8 @@ const update_catoffer = async (req,res)=>{
             {new:true})
 
             let productdata = await product.findOne({category:id })
+            await findbestoffer(productdata)
 
-            for (let item of productdata.sizes){
-                offerprice = (item.Salesprice*catofrpercentage)/100
-                item.priceafteroffer =  item.Salesprice - offerprice
-            }
-             const updateddatat= await productdata.save()
-             console.log("updateddata",updateddata)
-
-            if(!updateddatat){
-                req.flash("message","Can't update the offer..")
-                req.flash("type","error")
-                return res.status(200).redirect("/load_offerlist")
-            }
             req.flash("message","Offer successfully Updated..")
             req.flash("type","success")
             return res.status(200).redirect("/load_offerlist")
@@ -323,7 +314,9 @@ const load_couponlist = async(req,res)=>{
 
 const add_coupon = async (req,res)=>{
     try {
-        const {couponName, couponDescription, couponCode, couponDiscount, maxAmount, minAmount, userlimint, }= req.body
+        const {couponName, couponDescription, couponCode, couponDiscount, maxAmount, minAmount, userLimit, }= req.body
+        
+        console.log("addcoupon body ",req.body)
 
         const coupondata = new Coupon({
             couponName : couponName, 
@@ -332,7 +325,7 @@ const add_coupon = async (req,res)=>{
             couponDiscount : couponDiscount, 
             maxAmount : maxAmount, 
             minAmount : minAmount, 
-            Userlimit : userlimint,
+            Userlimit : userLimit,
             couponStatus : true 
         })
 
