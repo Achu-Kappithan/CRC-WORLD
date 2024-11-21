@@ -86,6 +86,89 @@
 
   </style>
 
+<style>
+  /* Table styling */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: 'Arial', sans-serif;
+    margin: 20px 0;
+    border: 1px solid #ddd;
+  }
+
+  thead {
+    background-color: #f8f9fa;
+  }
+
+  thead th {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    padding: 12px 8px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  tbody tr {
+    transition: all 0.3s ease-in-out;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  tbody td {
+    padding: 12px 8px;
+    font-size: 14px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  tbody td.text-left {
+    text-align: left;
+  }
+
+  tfoot tr {
+    background-color: #f8f9fa;
+    font-size: 15px;
+  }
+
+  tfoot td {
+    padding: 12px 8px;
+  }
+
+  tfoot td.text-right {
+    text-align: right;
+  }
+
+  tfoot td:nth-child(2) {
+    font-weight: bold;
+  }
+
+  /* Highlight Total row */
+  tfoot tr:last-child td {
+    font-size: 18px;
+    color: #212529;
+    background-color: #e9ecef;
+    font-weight: bold;
+    border-top: 2px solid #dee2e6;
+  }
+
+  /* Price display styling */
+  tfoot #total-display {
+    color: #28a745;
+  }
+
+  tfoot #offerprice {
+    color: #dc3545;
+    font-weight: bold;
+  }
+
+  /* Subtotal and Shipping */
+  tfoot tr td:nth-child(1) {
+    font-weight: 600;
+  }
+</style>
+
   
 
 </head>
@@ -122,65 +205,55 @@
   
               <!-- New address form -->
               <div id="edit-form-55555" class="collapse mt-3">
-                <form method="POST" action="/checkout_addaddress">
-                    <div class="row g-3">
-                        <div style="padding-bottom: 10px;" class="col-md-6">
-                            <input type="text" id="name" name="name" value="<%= userdata.firstname + userdata.lastname %>" class="form-control" placeholder="Full Name">
-                            <span id="errname" style="color: red;"></span>
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-md-6">
-                            <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="<%= userdata.email %>">
-                            <span id="erremail" style="color: red;"></span>
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-md-6">
-                            <input type="text" id="housename" name="housename" class="form-control" placeholder="House Name">
-                            <span id="errhousename" style="color: red;"></span>
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-md-6">
-                            <input type="text" id="locality" name="locality" class="form-control" placeholder="Locality">
-                            <span id="errlocality" style="color: red;"></span>
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-md-6">
-                            <input type="text" id="district" name="district" class="form-control" placeholder="District">
-                            <span id="errdistrict" style="color: red;"></span>
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-md-6">
-                            <input type="text" id="state" name="state" class="form-control" placeholder="State">
-                            <span id="errstate" style="color: red;"></span>
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-md-12">
-                            <input type="text" id="landmark" name="landmark" class="form-control" placeholder="Landmark">
-                            <span id="errlandmark" style="color: red;"></span>
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-md-4">
-                            <input type="text" id="pincode" name="pincode" class="form-control" placeholder="Zip/Postal Code">
-                            <span id="errpincode" style="color: red;"></span>
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-md-4">
-                            <input type="text" id="phonenumber" name="phonenumber" class="form-control" placeholder="Contact Number">
-                            <span id="errphonenumber" style="color: red;"></span>
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-md-4">
-                            <input type="text" name="altnumber" class="form-control" placeholder="Alternate Number">
-                        </div>
-                        
-                        <div style="padding-bottom: 10px;" class="col-12">
+                <form method="POST" action="/checkout_addaddress" onsubmit="return validateAddressForm()">
+                  <div class="row g-3">
+                      <div style="padding-bottom: 10px;" class="col-md-6">
+                          <input type="text" id="name" name="name" value="<%= userdata.firstname + ' ' + userdata.lastname %>" class="form-control" placeholder="Full Name">
+                          <span id="errname" style="color: red;"></span>
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-md-6">
+                          <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="<%= userdata.email %>">
+                          <span id="erremail" style="color: red;"></span>
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-md-6">
+                          <input type="text" id="housename" name="housename" class="form-control" placeholder="House Name">
+                          <span id="errhousename" style="color: red;"></span>
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-md-6">
+                          <input type="text" id="locality" name="locality" class="form-control" placeholder="Locality">
+                          <span id="errlocality" style="color: red;"></span>
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-md-6">
+                          <input type="text" id="district" name="district" class="form-control" placeholder="District">
+                          <span id="errdistrict" style="color: red;"></span>
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-md-6">
+                          <input type="text" id="state" name="state" class="form-control" placeholder="State">
+                          <span id="errstate" style="color: red;"></span>
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-md-12">
+                          <input type="text" id="landmark" name="landmark" class="form-control" placeholder="Landmark">
+                          <span id="errlandmark" style="color: red;"></span>
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-md-4">
+                          <input type="text" id="pincode" name="pincode" class="form-control" placeholder="Zip/Postal Code">
+                          <span id="errpincode" style="color: red;"></span>
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-md-4">
+                          <input type="text" id="phonenumber" name="phonenumber" class="form-control" placeholder="Contact Number">
+                          <span id="errphonenumber" style="color: red;"></span>
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-md-4">
+                          <input type="text" name="altnumber" class="form-control" placeholder="Alternate Number">
+                      </div>
+                      <div style="padding-bottom: 10px;" class="col-12">
                           <br>
-                            <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
-                                Add Address
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                          <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
+                              Add Address
+                          </button>
+                      </div>
+                  </div>
+              </form>
             </div>
 
 
@@ -212,44 +285,53 @@
   
  
                           <div id="edit-form-<%= a._id %>" class="collapse mt-3">
-                              <form method="POST" action="/checkoutedit_address?id=<%= a._id %>">
-                                  <div class="row g-3">
-                                      <div style="padding-bottom: 10px;" class="col-md-6">
-                                          <input type="text" name="name" class="form-control" value="<%= a.name %>" placeholder="Full Name">
-                                      </div>
-                                      <div style="padding-bottom: 10px;" class="col-md-6">
-                                          <input type="text" name="housename" class="form-control" value="<%= a.housename %>" placeholder="House Name">
-                                      </div>
-                                      <div style="padding-bottom: 10px;" class="col-md-6">
-                                          <input type="text" name="locality" class="form-control" value="<%= a.locality %>" placeholder="Locality">
-                                      </div>
-                                      <div style="padding-bottom: 10px;" class="col-md-6">
-                                          <input type="text" name="district" class="form-control" value="<%= a.district %>" placeholder="District">
-                                      </div>
-                                      <div style="padding-bottom: 10px;" class="col-md-6">
-                                          <input type="text" name="landmark" class="form-control" value="<%= a.landMark %>" placeholder="Landmark">
-                                      </div>
-                                      <div style="padding-bottom: 10px;" class="col-md-6">
-                                          <input type="text" name="phone" class="form-control" value="<%= a.phone %>" placeholder="Phone Number">
-                                      </div>
-                                      <div style="padding-bottom: 10px;" class="col-md-4">
-                                          <input type="text" name="state" class="form-control" value="<%= a.state %>" placeholder="State/Province">
-                                      </div>
-                                      <div style="padding-bottom: 10px;" class="col-md-4">
-                                          <input type="text" name="pincode" class="form-control" value="<%= a.pincode %>" placeholder="Zip/Postal Code">
-                                      </div>
-                                      <div style="padding-bottom: 10px;" class="col-md-4">
-                                          <input type="text" name="altphone" class="form-control" value="<%= a.altPhone0 %>" placeholder="Phone Number">
-                                      </div>
-                                      <div class="col-12">
-                                        <br>  
-                                          <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
-                                              Update Address
-                                          </button>
-                                      </div>
+                            <form method="POST" action="/checkoutedit_address?id=<%= a._id %>" id="addressForm">
+                              <div class="row g-3">
+                                  <div style="padding-bottom: 10px;" class="col-md-6">
+                                      <input type="text" name="name" id="name" class="form-control" value="<%= a.name %>" placeholder="Full Name">
+                                      <small id="nameError" style="color: red;"></small>
                                   </div>
-                              </form>
-                          </div>
+                                  <div style="padding-bottom: 10px;" class="col-md-6">
+                                      <input type="text" name="housename" id="housename" class="form-control" value="<%= a.housename %>" placeholder="House Name">
+                                      <small id="housenameError" style="color: red;"></small>
+                                  </div>
+                                  <div style="padding-bottom: 10px;" class="col-md-6">
+                                      <input type="text" name="locality" id="locality" class="form-control" value="<%= a.locality %>" placeholder="Locality">
+                                      <small id="localityError" style="color: red;"></small>
+                                  </div>
+                                  <div style="padding-bottom: 10px;" class="col-md-6">
+                                      <input type="text" name="district" id="district" class="form-control" value="<%= a.district %>" placeholder="District">
+                                      <small id="districtError" style="color: red;"></small>
+                                  </div>
+                                  <div style="padding-bottom: 10px;" class="col-md-6">
+                                      <input type="text" name="landmark" id="landmark" class="form-control" value="<%= a.landMark %>" placeholder="Landmark">
+                                      <small id="landmarkError" style="color: red;"></small>
+                                  </div>
+                                  <div style="padding-bottom: 10px;" class="col-md-6">
+                                      <input type="text" name="phone" id="phone" class="form-control" value="<%= a.phone %>" placeholder="Phone Number">
+                                      <small id="phoneError" style="color: red;"></small>
+                                  </div>
+                                  <div style="padding-bottom: 10px;" class="col-md-4">
+                                      <input type="text" name="state" id="state" class="form-control" value="<%= a.state %>" placeholder="State/Province">
+                                      <small id="stateError" style="color: red;"></small>
+                                  </div>
+                                  <div style="padding-bottom: 10px;" class="col-md-4">
+                                      <input type="text" name="pincode" id="pincode" class="form-control" value="<%= a.pincode %>" placeholder="Zip/Postal Code">
+                                      <small id="pincodeError" style="color: red;"></small>
+                                  </div>
+                                  <div style="padding-bottom: 10px;" class="col-md-4">
+                                      <input type="text" name="altphone" id="altphone" class="form-control" value="<%= a.altPhone0 %>" placeholder="Phone Number">
+                                      <small id="altphoneError" style="color: red;"></small>
+                                  </div>
+                                  <div class="col-12">
+                                      <br>
+                                      <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
+                                          Update Address
+                                      </button>
+                                  </div>
+                              </div>
+                          </form>
+                                                  </div>
                       </div>
                     </div>
                   </div>
@@ -285,9 +367,7 @@
             <h2 class="order-title mb-4">Your Orders</h2>
 
             <div class="table-responsive-sm order-table">
-              <table
-                class="bg-white table table-bordered table-hover text-center"
-              >
+              <table class="bg-white table table-bordered table-hover text-center">
                 <thead>
                   <tr>
                     <th class="text-left">Product Name</th>
@@ -298,41 +378,38 @@
                   </tr>
                 </thead>
                 <tbody>
-
                   <% var grandTotal = 0 %>
-                  
-                  <% cardata.items.forEach((item)=>{  %> 
+                  <% cardata.items.forEach((item) => { %>
                   <tr>
                     <td class="text-left"><%= item.name %></td>
-                    <% const price = item.priceafteroffer ? item.priceafteroffer : item.Salesprice  %>
+                    <% const price = item.priceafteroffer ? item.priceafteroffer : item.Salesprice %>
                     <td>₹ <%= price %></td>
-                    
                     <td><%= item.size %></td>
                     <td><%= item.quantity %></td>
                     <td>₹ <%= item.quantity * price %></td>
                   </tr>
-                  <!-- // find the grand total of all products -->
-
-                  
-                  <%  grandTotal = grandTotal + (item.quantity * price); %>
-
-                 <!-- // find the grand total of all products -->
-                <% }); %>
+                  <% grandTotal = grandTotal + item.quantity * price; %>
+                  <% }); %>
                 </tbody>
                 <tfoot class="font-weight-600">
                   <tr>
+                    <td colspan="4" class="text-right">Subtotal</td>
+                    <td>₹ <%= grandTotal %></td>
+                  </tr>
+                  <tr>
                     <td colspan="4" class="text-right">Shipping</td>
-                    <td><%= grandTotal < 2000 ?  40 : 0.00 %></td>
+                    <td><%= grandTotal < 2000 ? "₹ 40.00" : "₹ 0.00" %></td>
                   </tr>
                   <tr>
                     <td colspan="4" class="text-right">Coupons</td>
                     <td id="offerprice">₹ 0.00</td>
                   </tr>
                   <tr>
-                    <td colspan="4" class="text-right">Total</td>
-                    <td id="total-display">₹ <%= grandTotal < 2000 ? grandTotal + 40 : grandTotal %></td>
+                    <td colspan="4" class="text-right" style="font-size: 20px;">Total</td>
+                    <td id="total-display" style="font-size: 20px;">
+                      ₹ <%= grandTotal < 2000 ? grandTotal + 40 : grandTotal %>
+                    </td>
                     <input id="totalamt" type="hidden" value="<%= grandTotal.toFixed(2) %>" data-original-total="<%= grandTotal.toFixed(2) %>">
- 
                   </tr>
                 </tfoot>
               </table>
@@ -375,6 +452,8 @@
                       <thead>
                         <tr>
                           <th>Coupon Name</th>
+                          <th>Discount %</th>
+                          <th>Min Amt</th>
                           <th>Coupon Code</th>
                           <th>Action</th>
                         </tr>
@@ -383,6 +462,8 @@
                         <% coupons.forEach((item) => { %>
                           <tr>
                             <td><%= item.couponName %></td>
+                            <td><%= item.couponDiscount %> %</td>
+                            <td><%= item.minAmount %></td>
                             <td><%= item.couponCode %></td>
                             <td>
                               <button
@@ -821,9 +902,141 @@ document.querySelectorAll(".remove-coupon").forEach(function(button){
   })
 })
 
+    function validateAddressForm() {
+        let isValid = true;
+
+        const nameRegex = /^[a-zA-Z\s]+$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const textRegex = /^[a-zA-Z0-9\s]+$/;
+        const pincodeRegex = /^\d{6}$/;
+        const phoneRegex = /^\d{10}$/;
+
+        const name = document.getElementById("name").value.trim();
+        if (!nameRegex.test(name) || name.length < 3) {
+            document.getElementById("errname").textContent = "Please enter a valid full name (at least 3 characters).";
+            isValid = false;
+        } else {
+            document.getElementById("errname").textContent = "";
+        }
+
+        const email = document.getElementById("email").value.trim();
+        if (!emailRegex.test(email)) {
+            document.getElementById("erremail").textContent = "Please enter a valid email address.";
+            isValid = false;
+        } else {
+            document.getElementById("erremail").textContent = "";
+        }
+
+        const houseName = document.getElementById("housename").value.trim();
+        if (!textRegex.test(houseName) || houseName.length < 3) {
+            document.getElementById("errhousename").textContent = "Please enter a valid house name (at least 3 characters).";
+            isValid = false;
+        } else {
+            document.getElementById("errhousename").textContent = "";
+        }
+
+        const locality = document.getElementById("locality").value.trim();
+        if (!textRegex.test(locality) || locality.length < 3) {
+            document.getElementById("errlocality").textContent = "Please enter a valid locality (at least 3 characters).";
+            isValid = false;
+        } else {
+            document.getElementById("errlocality").textContent = "";
+        }
+
+        const district = document.getElementById("district").value.trim();
+        if (!textRegex.test(district) || district.length < 3) {
+            document.getElementById("errdistrict").textContent = "Please enter a valid district (at least 3 characters).";
+            isValid = false;
+        } else {
+            document.getElementById("errdistrict").textContent = "";
+        }
+
+        const state = document.getElementById("state").value.trim();
+        if (!textRegex.test(state) || state.length < 3) {
+            document.getElementById("errstate").textContent = "Please enter a valid state (at least 3 characters).";
+            isValid = false;
+        } else {
+            document.getElementById("errstate").textContent = "";
+        }
+
+        const landmark = document.getElementById("landmark").value.trim();
+        if (!textRegex.test(landmark)) {
+            document.getElementById("errlandmark").textContent = "Please enter a valid landmark.";
+            isValid = false;
+        } else {
+            document.getElementById("errlandmark").textContent = "";
+        }
+
+        const pincode = document.getElementById("pincode").value.trim();
+        if (!pincodeRegex.test(pincode)) {
+            document.getElementById("errpincode").textContent = "Please enter a valid 6-digit postal code.";
+            isValid = false;
+        } else {
+            document.getElementById("errpincode").textContent = "";
+        }
+
+        const phoneNumber = document.getElementById("phonenumber").value.trim();
+        if (!phoneRegex.test(phoneNumber)) {
+            document.getElementById("errphonenumber").textContent = "Please enter a valid 10-digit contact number.";
+            isValid = false;
+        } else {
+            document.getElementById("errphonenumber").textContent = "";
+        }
+
+        return isValid;
+    }
+
+
 
 
 </script>
+
+
+<script>
+  document.getElementById("addressForm").addEventListener("submit", function (e) {
+      let isValid = true;
+
+      const validateField = (fieldId, errorId, errorMessage) => {
+          const fieldValue = document.getElementById(fieldId).value.trim();
+          if (!fieldValue) {
+              document.getElementById(errorId).innerText = errorMessage;
+              isValid = false;
+          } else {
+              document.getElementById(errorId).innerText = "";
+          }
+      };
+
+      validateField("name", "nameError", "Full Name is required.");
+      validateField("housename", "housenameError", "House Name is required.");
+      validateField("locality", "localityError", "Locality is required.");
+      validateField("district", "districtError", "District is required.");
+      validateField("landmark", "landmarkError", "Landmark is required.");
+
+      const phone = document.getElementById("phone").value.trim();
+      if (!/^\d{10}$/.test(phone)) {
+          document.getElementById("phoneError").innerText = "Phone number must be 10 digits.";
+          isValid = false;
+      } else {
+          document.getElementById("phoneError").innerText = "";
+      }
+
+      validateField("state", "stateError", "State is required.");
+
+      const pincode = document.getElementById("pincode").value.trim();
+      if (!/^\d{5,6}$/.test(pincode)) {
+          document.getElementById("pincodeError").innerText = "Pincode must be 5 or 6 digits.";
+          isValid = false;
+      } else {
+          document.getElementById("pincodeError").innerText = "";
+      }
+
+
+      if (!isValid) {
+          e.preventDefault();
+      }
+  });
+</script>
+
 
 <style>
   .swal-popup-custom {

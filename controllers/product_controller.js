@@ -145,7 +145,7 @@ const unlist_product = async (req, res) => {
   try {
     const id = req.query.id;
     const data = await product.findOne({ _id: id });
-    console.log("this is the data for unlist product", data);
+    // console.log("this is the data for unlist product", data);
 
     if (data.is_deleted == false) {
       await product.findByIdAndUpdate(id, { is_deleted: true });

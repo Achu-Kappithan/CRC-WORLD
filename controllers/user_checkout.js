@@ -13,7 +13,7 @@ const  load_checkout = async (req,res)=>{
     try {
         const userId = req.session.user_id;
         const wallet = await Wallet.findOne({userId:userId})
-        console.log("my wallet",wallet)
+        // console.log("my wallet",wallet)
         const coupons = await Coupons.find({ couponStatus: true })
         const userdata =  await User.findById({_id:userId}).populate('addressId').exec()
         const cardata  = await Cart.findOne({user:userId})
@@ -37,8 +37,8 @@ const checkoutupdate_address = async (req,res)=>{
     try {
         const id = req.query.id;
         const {name, housename, locality, district, state, pincode, phone, landmark, altphone}= req.body
-        console.log("this is the data for the new updateion",req.body)
-        console.log('this is the id for update address',id)
+        // console.log("this is the data for the new updateion",req.body)
+        // console.log('this is the id for update address',id)
 
 
         await Address.findByIdAndUpdate(id,{
@@ -76,7 +76,7 @@ const checkout_newaddress = async (req,res)=>{
             req.flash("message","User is Not valid");
             req.flash("type","error")
             return res.statun(4001).redirect("/user_checkout")
-            console.log("userId is not valid",userid)
+            // console.log("userId is not valid",userid)
         }
 
 
@@ -118,8 +118,8 @@ const applycouppons = async (req, res) => {
         const grandtotal = Number(grandTotal);
 
 
-        console.log("typeof:", typeof(grandtotal));
-        console.log("grandtotal:", grandtotal); 
+        // console.log("typeof:", typeof(grandtotal));
+        // console.log("grandtotal:", grandtotal); 
 
         const coupons = await Coupons.findOne({ couponCode: couponcode, couponStatus: true });
         if (!coupons) {
@@ -141,7 +141,7 @@ const applycouppons = async (req, res) => {
         }
 
         const offerprice = Math.min((grandtotal * coupons.couponDiscount) / 100, coupons.maxAmount);
-        console.log("offerprice:", offerprice); 
+        // console.log("offerprice:", offerprice); 
 
 
         res.status(200).json({ offerprice, success: true, message: "Coupon added successfully" });

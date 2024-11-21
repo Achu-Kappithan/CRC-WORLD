@@ -54,7 +54,7 @@ user_route.post("/product_filter", userproduct_controller.filterProducts);
 
 // load cart patge
 user_route.get("/load_usercart",auth,validateCartPrices,usercart_controller.load_cart);
-user_route.post("/addto_cart",auth,usercart_controller.addto_cart);
+user_route.post("/addto_cart",auth,validateCartPrices,usercart_controller.addto_cart);
 user_route.post("/remove_cartitem",auth,usercart_controller.remove_cartitem);
 user_route.post("/update_quntity",usercart_controller.update_quentity);
 user_route.get("/getcart_count",usercart_controller.get_cartcount);

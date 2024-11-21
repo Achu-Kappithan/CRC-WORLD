@@ -72,7 +72,8 @@ const add_categoryoffer = async (req,res)=>{
                 offerdiscription : catofrdescription,
                 offerDiscountPercentage : catofrpercentage,
                 offerStartDate : catofrstartdate,
-                offerExpiryDate : catofrenddate
+                offerExpiryDate : catofrenddate,
+                offerStatus : true
             }},
             {new: true}
         );
@@ -83,15 +84,8 @@ const add_categoryoffer = async (req,res)=>{
            return  res.redirect("/loadcreateoffer")
         }else{
             // const productdata = await product.find({category : catofrid})
+            // await findbestoffer(productdata);
 
-            // for (let item of productdata){
-            //     for(let size of item.sizes){
-            //         const oferprice = (size.Salesprice*catofrpercentage)/100
-            //         size.priceafteroffer = size.Salesprice -oferprice
-            //     }
-            //     await item.save()
-            // }
-            // console.log("this data after offer calculation",productdata)
 
 
             req.flash("message","Offer successfully added..")
@@ -105,6 +99,8 @@ const add_categoryoffer = async (req,res)=>{
         
     }
 }
+
+
 
 // for remve category offers
 

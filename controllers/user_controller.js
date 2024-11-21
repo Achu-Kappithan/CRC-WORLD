@@ -63,7 +63,7 @@ const signup_user = async (req, res) => {
   try {
     const { firstname, lastname, email, password, confirm } = req.body;
 
-    console.log(`PASSWORD IS ${req.body.password}`);
+    // console.log(`PASSWORD IS ${req.body.password}`);
     const userexist = await User.findOne({ email: email });
     if (userexist) {
       req.flash("message", "User Alredy exist plz Login");
@@ -359,7 +359,7 @@ const loadhome = async (req, res) => {
       .populate("brand");
     productlist = await applyofferprice(productlist);
 
-      console.log("product in the home",productlist)
+      // console.log("product in the home",productlist)
 
     return res.render("user_home", {
       productlist,
@@ -399,7 +399,7 @@ const resetpass_mail = async (req, res) => {
     const email = req.body.user_email;
 
     const userdata = await User.findOne({ email });
-    console.log(userdata);
+    // console.log(userdata);
 
     if (!userdata) {
       req.flash("message", "NO user found with the email");

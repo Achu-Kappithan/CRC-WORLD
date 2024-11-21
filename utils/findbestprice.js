@@ -35,4 +35,51 @@ const findbestoffer = async (product) => {
     await product.save(); 
 };
 
+
+
+
+// const findbestoffer = async (products) => {
+//     const today = new Date();
+
+//     for (let product of products) {
+//         const category = await Category.findById(product.category);
+
+//         for (let size of product.sizes || []) {
+//             const productOffer = product.productOffer;
+//             const categoryOffer = category?.categoryoffer;
+
+//             let discountMultiplier = 1;
+
+//             if (
+//                 productOffer &&
+//                 productOffer.offerStatus &&
+//                 today >= new Date(productOffer.offerStartDate) &&
+//                 today <= new Date(productOffer.offerExpiryDate)
+//             ) {
+//                 discountMultiplier = Math.min(
+//                     discountMultiplier,
+//                     (100 - productOffer.offerDiscountPercentage) / 100
+//                 );
+//             }
+
+//             if (
+//                 categoryOffer &&
+//                 categoryOffer.offerStatus &&
+//                 today >= new Date(categoryOffer.offerStartDate) &&
+//                 today <= new Date(categoryOffer.offerExpiryDate)
+//             ) {
+//                 discountMultiplier = Math.min(
+//                     discountMultiplier,
+//                     (100 - categoryOffer.offerDiscountPercentage) / 100
+//                 );
+//             }
+
+//             size.priceafteroffer = size.Actualprice * discountMultiplier;
+//         }
+
+//         await product.save();
+//     }
+// };
+
 module.exports = { findbestoffer };
+
