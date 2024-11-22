@@ -260,83 +260,78 @@
             <div class="card-body">
                   <h5 class="card-title mb-4">Your Addresses</h5>
                   <% userdata.addressId.forEach(function(a, index) { %>
-                  <div class="card mb-3">
-                      <div class="card-body">
-                        <div style="padding: 5px;margin-right: 10px;">
-                          <input type="radio" id="address-<%= a._id %>" name="selectedAddress" value="<%= a._id %>" class="form-check-input" <% if(index ==0) {%> checked <% } %> required>
-                          <label class="form-check-label" for="address-<%= a._id %>"><%= a.addressLine %></label>
-
-
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div style="padding: 5px; margin-right: 10px;">
+                                <input type="radio" id="address-<%= a._id %>" name="selectedAddress" value="<%= a._id %>" class="form-check-input" <% if(index == 0) { %> checked <% } %> required>
+                                <label class="form-check-label" for="address-<%= a._id %>"><%= a.addressLine %></label>
+                            </div>
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted"><%= a.name %></h6>
+                                <p class="card-text">
+                                    House Name: <%= a.housename %><br>
+                                    Location: <%= a.locality %>, <%= a.district %>, <%= a.state %><br>
+                                    PIN: <%= a.pincode %><br>
+                                    Phone: <%= a.phone %>
+                                </p>
+                    
+                                <button class="btn btn-sm btn-outline-primary me-2" type="button" data-bs-toggle="collapse" data-bs-target="#edit-form-<%= a._id %>" aria-expanded="false" aria-controls="edit-form-<%= a._id %>">
+                                    Edit
+                                </button>
+                    
+                                <div id="edit-form-<%= a._id %>" class="collapse mt-3">
+                                    <form method="POST" action="/checkoutedit_address?id=<%= a._id %>" id="addressForm-<%= a._id %>">
+                                        <div class="row g-3">
+                                            <div style="padding-bottom: 10px;" class="col-md-6">
+                                                <input type="text" name="name" id="name-<%= a._id %>" class="form-control" value="<%= a.name %>" placeholder="Full Name">
+                                                <small id="nameError-<%= a._id %>" style="color: red;"></small>
+                                            </div>
+                                            <div style="padding-bottom: 10px;" class="col-md-6">
+                                                <input type="text" name="housename" id="housename-<%= a._id %>" class="form-control" value="<%= a.housename %>" placeholder="House Name">
+                                                <small id="housenameError-<%= a._id %>" style="color: red;"></small>
+                                            </div>
+                                            <div style="padding-bottom: 10px;" class="col-md-6">
+                                                <input type="text" name="locality" id="locality-<%= a._id %>" class="form-control" value="<%= a.locality %>" placeholder="Locality">
+                                                <small id="localityError-<%= a._id %>" style="color: red;"></small>
+                                            </div>
+                                            <div style="padding-bottom: 10px;" class="col-md-6">
+                                                <input type="text" name="district" id="district-<%= a._id %>" class="form-control" value="<%= a.district %>" placeholder="District">
+                                                <small id="districtError-<%= a._id %>" style="color: red;"></small>
+                                            </div>
+                                            <div style="padding-bottom: 10px;" class="col-md-6">
+                                                <input type="text" name="landmark" id="landmark-<%= a._id %>" class="form-control" value="<%= a.landMark %>" placeholder="Landmark">
+                                                <small id="landmarkError-<%= a._id %>" style="color: red;"></small>
+                                            </div>
+                                            <div style="padding-bottom: 10px;" class="col-md-6">
+                                                <input type="text" name="phone" id="phone-<%= a._id %>" class="form-control" value="<%= a.phone %>" placeholder="Phone Number">
+                                                <small id="phoneError-<%= a._id %>" style="color: red;"></small>
+                                            </div>
+                                            <div style="padding-bottom: 10px;" class="col-md-4">
+                                                <input type="text" name="state" id="state-<%= a._id %>" class="form-control" value="<%= a.state %>" placeholder="State/Province">
+                                                <small id="stateError-<%= a._id %>" style="color: red;"></small>
+                                            </div>
+                                            <div style="padding-bottom: 10px;" class="col-md-4">
+                                                <input type="text" name="pincode" id="pincode-<%= a._id %>" class="form-control" value="<%= a.pincode %>" placeholder="Zip/Postal Code">
+                                                <small id="pincodeError-<%= a._id %>" style="color: red;"></small>
+                                            </div>
+                                            <div style="padding-bottom: 10px;" class="col-md-4">
+                                                <input type="text" name="altphone" id="altphone-<%= a._id %>" class="form-control" value="<%= a.altPhone0 %>" placeholder="Phone Number">
+                                                <small id="altphoneError-<%= a._id %>" style="color: red;"></small>
+                                            </div>
+                                            <div class="col-12">
+                                                <br>
+                                                <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
+                                                    Update Address
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                          <h6 class="card-subtitle mb-2 text-muted"><%= a.name %></h6>
-                          <p class="card-text">
-                              House Name: <%= a.housename %><br>
-                              Location: <%= a.locality %>, <%= a.district %>, <%= a.state %><br>
-                              PIN: <%= a.pincode %><br>
-                              Phone: <%= a.phone %>
-                          </p>
-  
-                          <button class="btn btn-sm btn-outline-primary me-2" type="button"
-                              data-bs-toggle="collapse" data-bs-target="#edit-form-<%= a._id %>"
-                              aria-expanded="false" aria-controls="edit-form-<%= a._id %>">
-                              Edit
-                          </button>
-  
- 
-                          <div id="edit-form-<%= a._id %>" class="collapse mt-3">
-                            <form method="POST" action="/checkoutedit_address?id=<%= a._id %>" id="addressForm">
-                              <div class="row g-3">
-                                  <div style="padding-bottom: 10px;" class="col-md-6">
-                                      <input type="text" name="name" id="name" class="form-control" value="<%= a.name %>" placeholder="Full Name">
-                                      <small id="nameError" style="color: red;"></small>
-                                  </div>
-                                  <div style="padding-bottom: 10px;" class="col-md-6">
-                                      <input type="text" name="housename" id="housename" class="form-control" value="<%= a.housename %>" placeholder="House Name">
-                                      <small id="housenameError" style="color: red;"></small>
-                                  </div>
-                                  <div style="padding-bottom: 10px;" class="col-md-6">
-                                      <input type="text" name="locality" id="locality" class="form-control" value="<%= a.locality %>" placeholder="Locality">
-                                      <small id="localityError" style="color: red;"></small>
-                                  </div>
-                                  <div style="padding-bottom: 10px;" class="col-md-6">
-                                      <input type="text" name="district" id="district" class="form-control" value="<%= a.district %>" placeholder="District">
-                                      <small id="districtError" style="color: red;"></small>
-                                  </div>
-                                  <div style="padding-bottom: 10px;" class="col-md-6">
-                                      <input type="text" name="landmark" id="landmark" class="form-control" value="<%= a.landMark %>" placeholder="Landmark">
-                                      <small id="landmarkError" style="color: red;"></small>
-                                  </div>
-                                  <div style="padding-bottom: 10px;" class="col-md-6">
-                                      <input type="text" name="phone" id="phone" class="form-control" value="<%= a.phone %>" placeholder="Phone Number">
-                                      <small id="phoneError" style="color: red;"></small>
-                                  </div>
-                                  <div style="padding-bottom: 10px;" class="col-md-4">
-                                      <input type="text" name="state" id="state" class="form-control" value="<%= a.state %>" placeholder="State/Province">
-                                      <small id="stateError" style="color: red;"></small>
-                                  </div>
-                                  <div style="padding-bottom: 10px;" class="col-md-4">
-                                      <input type="text" name="pincode" id="pincode" class="form-control" value="<%= a.pincode %>" placeholder="Zip/Postal Code">
-                                      <small id="pincodeError" style="color: red;"></small>
-                                  </div>
-                                  <div style="padding-bottom: 10px;" class="col-md-4">
-                                      <input type="text" name="altphone" id="altphone" class="form-control" value="<%= a.altPhone0 %>" placeholder="Phone Number">
-                                      <small id="altphoneError" style="color: red;"></small>
-                                  </div>
-                                  <div class="col-12">
-                                      <br>
-                                      <button type="submit" style="background-color: black; color: white; padding: 10px 20px; font-size: 12px; border: none; text-transform: uppercase; cursor: pointer;">
-                                          Update Address
-                                      </button>
-                                  </div>
-                              </div>
-                          </form>
-                                                  </div>
-                      </div>
                     </div>
+                    <% }) %>
                   </div>
-                  <% }) %>
-              </div>
           </div>
       </div>
     </div>
@@ -985,57 +980,70 @@ document.querySelectorAll(".remove-coupon").forEach(function(button){
 
         return isValid;
     }
-
-
-
-
 </script>
-
 
 <script>
-  document.getElementById("addressForm").addEventListener("submit", function (e) {
-      let isValid = true;
+  function validateForm(addressId) {
+    const name = $(`#name-${addressId}`);
+    const housename = $(`#housename-${addressId}`);
+    const locality = $(`#locality-${addressId}`);
+    const district = $(`#district-${addressId}`);
+    const state = $(`#state-${addressId}`);
+    const pincode = $(`#pincode-${addressId}`);
+    const phone = $(`#phone-${addressId}`);
 
-      const validateField = (fieldId, errorId, errorMessage) => {
-          const fieldValue = document.getElementById(fieldId).value.trim();
-          if (!fieldValue) {
-              document.getElementById(errorId).innerText = errorMessage;
-              isValid = false;
-          } else {
-              document.getElementById(errorId).innerText = "";
-          }
-      };
+    let isValid = true;
 
-      validateField("name", "nameError", "Full Name is required.");
-      validateField("housename", "housenameError", "House Name is required.");
-      validateField("locality", "localityError", "Locality is required.");
-      validateField("district", "districtError", "District is required.");
-      validateField("landmark", "landmarkError", "Landmark is required.");
+    $(`#nameError-${addressId}`).text("");
+    $(`#housenameError-${addressId}`).text("");
+    $(`#localityError-${addressId}`).text("");
+    $(`#districtError-${addressId}`).text("");
+    $(`#stateError-${addressId}`).text("");
+    $(`#pincodeError-${addressId}`).text("");
+    $(`#phoneError-${addressId}`).text("");
 
-      const phone = document.getElementById("phone").value.trim();
-      if (!/^\d{10}$/.test(phone)) {
-          document.getElementById("phoneError").innerText = "Phone number must be 10 digits.";
-          isValid = false;
-      } else {
-          document.getElementById("phoneError").innerText = "";
-      }
+    if (!name.val().trim()) {
+        $(`#nameError-${addressId}`).text("Name is required.");
+        isValid = false;
+    }
+    if (!housename.val().trim()) {
+        $(`#housenameError-${addressId}`).text("House name is required.");
+        isValid = false;
+    }
+    if (!locality.val().trim()) {
+        $(`#localityError-${addressId}`).text("Locality is required.");
+        isValid = false;
+    }
+    if (!district.val().trim()) {
+        $(`#districtError-${addressId}`).text("District is required.");
+        isValid = false;
+    }
+    if (!state.val().trim()) {
+        $(`#stateError-${addressId}`).text("State is required.");
+        isValid = false;
+    }
+    if (!/^\d{6}$/.test(pincode.val().trim())) {
+        $(`#pincodeError-${addressId}`).text("Invalid PIN code.");
+        isValid = false;
+    }
+    if (!/^\d{10}$/.test(phone.val().trim())) {
+        $(`#phoneError-${addressId}`).text("Invalid phone number.");
+        isValid = false;
+    }
 
-      validateField("state", "stateError", "State is required.");
+    return isValid;
+}
 
-      const pincode = document.getElementById("pincode").value.trim();
-      if (!/^\d{5,6}$/.test(pincode)) {
-          document.getElementById("pincodeError").innerText = "Pincode must be 5 or 6 digits.";
-          isValid = false;
-      } else {
-          document.getElementById("pincodeError").innerText = "";
-      }
+$("[id^='addressForm-']").on("submit", function (e) {
+    const addressId = $(this).attr("id").split('-')[1];
+    if (!validateForm(addressId)) {
+        e.preventDefault();
+    }
+});
 
-
-      if (!isValid) {
-          e.preventDefault();
-      }
-  });
 </script>
+
+
 
 
 <style>

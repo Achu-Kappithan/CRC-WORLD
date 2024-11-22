@@ -17,6 +17,23 @@
     background-color: #e4e2e2; 
     
 }
+
+.custom-toast {
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #e65c00;
+}
+
+.custom-html {
+  font-size: 14px;
+  color: #333;
+}
+
 </style>
 
     <div id="page-content">
@@ -152,11 +169,12 @@
                         <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
                         <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span id="grandTotal" class="money">₹<%= totalPrice %></span></span>
                       </div>
-                     
+                      <div id="checkoutWrapper">
                       <a href="/user_checkout" name="checkout" id="cartCheckout" 
                       class="btn btn--small-wide checkout <%= cartdata.items.some(item => item.productId.is_deleted) ? 'disabled' : '' %>">
                       Proceed To Checkout
                        </a>
+                     </div>
                        <!-- <a href="/user_checkout" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout" > Proceed To Checkout </a> -->
                       <div class="paymnet-img"><img src="assets/images/payment-img.jpg" alt="Payment"></div>
                     </div>
@@ -352,5 +370,37 @@ document.querySelectorAll(".cart__remove").forEach(function(button) {
         });
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const checkoutWrapper = document.getElementById('checkoutWrapper');
+  const checkoutButton = document.getElementById('cartCheckout');
+
+  checkoutWrapper.addEventListener('click', (event) => {
+    if (checkoutButton.classList.contains('disabled')) {
+      event.preventDefault();
+
+      Swal.fire({
+  toast: true,
+  icon: 'warning',
+  title: 'Unavailable Items in Cart',
+  html: '<b>Please remove unavailable items to proceed to checkout.</b>',
+//   position: 'top-end',
+  showCloseButton: true,
+  showConfirmButton: false,
+  timer: 8000,
+  timerProgressBar: true,
+  background: '#fff5e6',
+  customClass: {
+    popup: 'custom-toast',
+    title: 'custom-title',
+    htmlContainer: 'custom-html',
+  },
+});
+
+    }
+  });
+});
+
 
 </script>
