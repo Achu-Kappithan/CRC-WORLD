@@ -156,31 +156,36 @@
                                 <h2>Sort Option</h2>
                             </div>
                             <div class="widget-content">
-                                <ul >
-                                    <li >
-                                        <input type="checkbox" id="" class="sort-filter" value="price-asc">
-                                        <label >
-                                        <span><span></span></span>Price: Low to High
+                                <ul>
+                                    <!-- Price Filter Group -->
+                                    <li>
+                                        <input type="radio" name="price" id="price-asc" class="sort-filter" value="price-asc">
+                                        <label for="price-asc">
+                                            <span><span></span></span>Price: Low to High
                                         </label>
                                     </li>
-                                    <li >
-                                        <input type="checkbox" id="" class="sort-filter" value="price-desc">
-                                        <label >
-                                        <span><span></span></span>Price: High to Low
+                                    <li>
+                                        <input type="radio" name="price" id="price-desc" class="sort-filter" value="price-desc">
+                                        <label for="price-desc">
+                                            <span><span></span></span>Price: High to Low
                                         </label>
                                     </li>
-                                    <li >
-                                        <input type="checkbox" id="" class="sort-filter" value="alpha-asc">
-                                        <label >
-                                        <span><span></span></span>Name: A to Z
+                                
+                                    <!-- Alphabetical Filter Group -->
+                                    <li>
+                                        <input type="radio" name="alpha" id="alpha-asc" class="sort-filter" value="alpha-asc">
+                                        <label for="alpha-asc">
+                                            <span><span></span></span>Name: A to Z
                                         </label>
-                                        <li >
-                                            <input type="checkbox" id="" class="sort-filter" value="alpha-desc">
-                                            <label >
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="alpha" id="alpha-desc" class="sort-filter" value="alpha-desc">
+                                        <label for="alpha-desc">
                                             <span><span></span></span>Name: Z to A
-                                            </label>
-                                        </li>
+                                        </label>
+                                    </li>
                                 </ul>
+                                
                             </div>
                         </div>
 
@@ -532,6 +537,21 @@ function updateProductList(products) {
     });
 }
 
+// script for preventin multiple sellecti  of price and  alpha filter
+
+const checkboxes = document.querySelectorAll('.sort-filter');
+
+checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', () => {
+        const group = checkbox.value.includes('price') ? 'price' : 'alpha';
+
+        checkboxes.forEach((cb) => {
+            if (cb !== checkbox && cb.value.includes(group)) {
+                cb.checked = false;
+            }
+        });
+    });
+});
 
 </script>
     

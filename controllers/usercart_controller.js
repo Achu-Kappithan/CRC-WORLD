@@ -8,13 +8,17 @@ const load_cart = async (req, res) => {
     const userId = req.session.user_id;
     const message = req.flash("message");
     const type = req.flash("type");
-    let cartdata = await Cart.findOne({ user: userId });
+    let cartdata = await Cart.findOne({ user: userId }).populate({
+      path: "items.productId",
+      model: "Product", 
+    });
+
     if (!userId) {
       return res.status(401).render("user404",{
         message: "User not authenticated plz login with your Creditials",
       });
     }
-    // console.log("this is the user cartpage data", cartdata);
+    console.log("this is the user cartpage data", cartdata);
     res.status(200).render("cart", { cartdata ,message, type });
   } catch (err) {
     console.log("error for loading cart page".err);
@@ -144,8 +148,8 @@ const remove_cartitem = async (req,res)=>{
   try {
     const id = req.query.id
     const userId = req.session.user_id;
-    // console.log("id from the form",id)
-    // console.log("id form session",userId )
+    console.log("id from the form",id)
+    console.log("id form session",userId )
 
     if(!userId){
       req.flash("message","Unauthorized user")

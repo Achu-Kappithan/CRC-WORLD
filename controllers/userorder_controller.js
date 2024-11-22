@@ -80,7 +80,7 @@ const place_order = async (req, res) => {
       }
 
       let shippingcharge =  grandtotal < 2000  ? 40 : 0;
-      let finalprice =  grandtotal + 40.00
+      let finalprice =  grandtotal + shippingcharge
       // console.log("finalprice is  ",finalprice)
       // console.log("grandtotal is ",grandtotal)
       // console.log(typeof(grandtotal))

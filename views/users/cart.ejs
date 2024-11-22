@@ -8,6 +8,15 @@
     font-size: 18px;
     color: #333;
 }
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+.inactive {
+    background-color: #e4e2e2; 
+    
+}
 </style>
 
     <div id="page-content">
@@ -22,12 +31,19 @@
         <div class="container">
         	<div class="row">
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
-                	<div class="alert alert-success text-uppercase" role="alert">
-						<i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong> You've got free shipping!
-					</div>
+                    <div id="freeShippingMessage" class="alert alert-success text-uppercase d-none" role="alert">
+                        <i class="icon anm anm-truck-l icon-large"></i>
+                        &nbsp;<strong>Congratulations!</strong> You've got free shipping!
+                    </div>
+                    
+                    <!-- Warning Message -->
+                    <div id="warningMessage" class="alert alert-warning text-uppercase d-none" role="alert">
+                        <i class="icon anm anm-warning-l icon-large"></i>
+                        &nbsp;<strong>Note:</strong> Add items worth ₹2000 or more for free shipping!
+                    </div>
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-8 main-col">
-                	<form action="#" method="post" class="cart style2">
+                	<div  class="cart style2"> 
                         <% if (cartdata && cartdata.items.length > 0) { %>
                 		<table>
                             <thead class="cart__row cart__header">
@@ -42,65 +58,81 @@
                     		<tbody>
                                     <% var totalPrice = 0; %>
                                     <% shippingcharge = 40 %>
+
+
                                     <% cartdata.items.forEach(item => { %>
 
                                         <%
-                                        let curprice = item.priceafteroffer ? item.priceafteroffer : item.Salesprice
+                                        let curprice = item.priceafteroffer ? item.priceafteroffer : item.Salesprice;
                                         const itemTotal = item.quantity * curprice;
-                                         totalPrice += itemTotal;
-
-                                         totalPrice = totalPrice < 2000 ? totalPrice + 40 : totalPrice
-                                    %>
-                                <tr id="cartitem-<%= item._id %>" class="cart__row border-bottom line1 cart-flex border-top">
-                                    <td class="cart__image-wrapper cart-flex-item">
-                                        <a href="#"><img class="cart__image" src="/assets/uploads/product/<%= item.productimage[0] %>" alt="Elastic Waist Dress - Navy / Small"></a>
-                                    </td>
-                                    <td class="cart__meta small--text-left cart-flex-item">
-                                        <div class="list-view-item__title">
-                                            <a style="font-weight: bold;" href="#"><%= item.name %></a>
-                                        </div>
+                                        totalPrice += itemTotal;
                                         
-                                        <div class="cart__meta-tex">    
-                                        Size:<% "  " %><%= item.size %>
-                                        </div>
-                                    </td>
-                                    <% const price = item.priceafteroffer ? item.priceafteroffer : item.Salesprice  %>
-                                    <td class="cart__price-wrapper cart-flex-item" data-price="<%= curprice %>">
-                                        <span class="money">₹<%= price %></span>
-                                    </td>
-                                    <td class="cart__update-wrapper cart-flex-item text-right">
-                                        <div class="cart__qty text-center">
-                                            <div class="qtyField">
-                                                <div class="qtyField">
-                                                    <a class="qtyBtn minus" href="javascript:void(0);"><i class="icon icon-minus"></i></a>
-                                                    <input class="cart__qty-input qty" type="text" name="updates[]" id="qty-<%= item.productId %>" value="<%= item.quantity %>" pattern="[0-9]*" readonly>
-                                                    <a class="qtyBtn plus" href="javascript:void(0);"><i class="icon icon-plus"></i></a>
+                                        totalPrice = totalPrice < 2000 ? totalPrice + 40 : totalPrice;
+                                        %>
+                                        
+                                        <tr id="cartitem-<%= item._id %>" 
+                                            class="cart__row border-bottom line1 cart-flex border-top <%= item.productId.is_deleted ? 'inactive' : '' %>">
+                                            <td class="cart__image-wrapper cart-flex-item">
+                                                <a href="#">
+                                                    <img class="cart__image" src="/assets/uploads/product/<%= item.productimage[0] %>" 
+                                                        alt="<%= item.name %>">
+                                                </a>
+                                            </td>
+                                            <td class="cart__meta small--text-left cart-flex-item">
+                                                <div class="list-view-item__title">
+                                                    <a style="font-weight: bold;" href="#"><%= item.name %></a>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-right small--hide cart-price">
-                                        <div><span id="itemTotal-<%= item.productId %>" class="money">₹<%= itemTotal %></span></div>
-                                        <input type="hidden" id="itemPrice-<%= item.productId %>" value="<%= curprice%>">
-
-                                    </td>
-                                </form>                   
-
-                                    <td class="text-center small--hide">
-                                            <input id="productid" type="hidden" name="itemId" value="<%= item._id %>">
-                                            <form id="removeItemForm-<%= item._id %>" method="post" action="/remove_cartitem?id=<%= item._id %>">
-                                                <button type="submit" class="btn btn--secondary cart__remove" title="Remove Item">
-                                                    <i class="icon icon anm anm-times-l"></i>
-                                                </button>
-                                            </form>
-                                    </td>
-                                </tr>
-
-                                <% }); %>
+                                                <div class="cart__meta-tex">
+                                                    Size:<% "  " %><%= item.size %>
+                                                </div>
+                                                <% if (item.productId.is_deleted) { %>
+                                                <div class="text-danger">
+                                                    <strong>Item is unavailable</strong>
+                                                </div>
+                                                <% } %>
+                                            </td>
+                                            <% const price = item.priceafteroffer ? item.priceafteroffer : item.Salesprice; %>
+                                            <td class="cart__price-wrapper cart-flex-item" data-price="<%= curprice %>">
+                                                <span class="money">₹<%= price %></span>
+                                            </td>
+                                            <td class="cart__update-wrapper cart-flex-item text-right">
+                                                <div class="cart__qty text-center">
+                                                    <div class="qtyField">
+                                                        <a class="qtyBtn minus <%= item.productId.is_deleted ? 'disabled' : '' %>" href="javascript:void(0);">
+                                                            <i class="icon icon-minus"></i>
+                                                        </a>
+                                                        <input class="cart__qty-input qty" type="text" name="updates[]" id="qty-<%= item.productId._id %>" 
+                                                            value="<%= item.quantity %>" pattern="[0-9]*" readonly>
+                                                        <a class="qtyBtn plus <%= item.productId.is_deleted ? 'disabled' : '' %>" href="javascript:void(0);">
+                                                            <i class="icon icon-plus"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-right small--hide cart-price">
+                                                <div>
+                                                    <span id="itemTotal-<%= item.productId._id %>" class="money">₹<%= itemTotal %></span>
+                                                </div>
+                                                <input type="hidden" id="itemPrice-<%= item.productId._id %>" value="<%= curprice %>">
+                                            </td>
+                                            <td class="text-center small--hide">
+                                                <input id="productid" type="hidden" name="itemId" value="<%= item._id %>">
+                                                <form id="removeItemForm-<%= item._id %>" method="post" action="/remove_cartitem?id=<%= item._id %>">
+                                                    <button type="submit" 
+                                                        class="btn btn--secondary cart__remove <%= item.productId.is_deleted ? '' : 'active-remove' %>" 
+                                                        title="Remove Item">
+                                                        <i class="icon icon anm anm-times-l"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        
+                                        <% }); %>
 
                             </tbody>
                         
                     </table> 
+                </div>
                	</div>
                 <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
                     <div class="solid-border">	
@@ -120,7 +152,12 @@
                         <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand Total</strong></span>
                         <span class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span id="grandTotal" class="money">₹<%= totalPrice %></span></span>
                       </div>
-                       <a href="/user_checkout" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout" > Proceed To Checkout </a>
+                     
+                      <a href="/user_checkout" name="checkout" id="cartCheckout" 
+                      class="btn btn--small-wide checkout <%= cartdata.items.some(item => item.productId.is_deleted) ? 'disabled' : '' %>">
+                      Proceed To Checkout
+                       </a>
+                       <!-- <a href="/user_checkout" name="checkout" id="cartCheckout" class="btn btn--small-wide checkout" > Proceed To Checkout </a> -->
                       <div class="paymnet-img"><img src="assets/images/payment-img.jpg" alt="Payment"></div>
                     </div>
 
@@ -170,19 +207,20 @@
 
 
 
-    function qnt_incre() {
-    $(".qtyBtn").on("click", function() {
+function qnt_incre() {
+    $(document).on("click", ".qtyBtn", function() {
+    console.log("function is working")
         var qtyField = $(this).parent(".qtyField"),
             oldValue = $(qtyField).find(".qty").val(),
             itemId = $(qtyField).find(".qty").attr("id").split('-')[1],
-            itemPrice = parseFloat($(`#itemPrice-${itemId}`).val()), 
+            itemPrice = parseFloat($(`#itemPrice-${itemId}`).val()) || 0, 
             newVal = 1;
+            console.log("itemid is",itemId)
 
         if ($(this).is(".plus")) {
             if (parseInt(oldValue) < 5) {
                 newVal = parseInt(oldValue) + 1;
             } else {
-                newVal = 5;
                 Swal.fire({
                     icon: 'warning',
                     title: 'Limit reached',
@@ -213,6 +251,7 @@
 
         $(qtyField).find(".qty").val(newVal);
 
+        // AJAX call to update quantity in the backend
         $.ajax({
             url: '/update_quntity',
             method: 'POST',
@@ -221,6 +260,7 @@
                 quantity: newVal
             },
             success: function(response) {
+                console.log("API response:", response);
                 if (response.success) {
                     Swal.fire({
                         icon: 'success',
@@ -251,6 +291,7 @@
                 }
             },
             error: function(error) {
+                console.error("Error updating quantity:", error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
@@ -261,7 +302,6 @@
                     timerProgressBar: true,
                     timer: 2000,
                 });
-                console.log('Error updating quantity:', error);
             }
         });
     });
@@ -272,13 +312,22 @@ function updateTotals() {
     $(".cart-price .money").each(function() {
         subtotal += parseFloat($(this).text().replace("₹", "")) || 0;
     });
-    let shippingCharge = subtotal < 2000 ? 40 : "Free shipping";
-    let gtandtotal = subtotal < 2000  ? subtotal + 40  : subtotal
-    $("#shippingcharge").text(`₹${shippingCharge}`).css({ color: "black" });
-    $("#subtotal").text(`₹${subtotal.toFixed()}`);
-    $("#grandTotal").text(`₹${gtandtotal.toFixed()}`);
-}
 
+    let shippingCharge = subtotal < 2000 ? 40 : 0; 
+    let grandTotal = subtotal < 2000 ? subtotal + 40 : subtotal; 
+
+    $("#shippingcharge").text(shippingCharge === 0 ? "Free shipping" : `₹${shippingCharge}`).css({ color: shippingCharge === 0 ? "green" : "black" });
+    $("#subtotal").text(`₹${subtotal.toFixed(2)}`);
+    $("#grandTotal").text(`₹${grandTotal.toFixed(2)}`);
+
+    if (shippingCharge === 0) {
+        $("#freeShippingMessage").removeClass("d-none");
+        $("#warningMessage").addClass("d-none");
+    } else {
+        $("#freeShippingMessage").addClass("d-none");
+        $("#warningMessage").removeClass("d-none");
+    }
+}
 qnt_incre();    
 
 
