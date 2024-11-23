@@ -2,6 +2,8 @@ const User = require("../models/user_models");
 const Address = require("../models/address");
 const Orders = require("../models/order")
 const Wallet = require("../models/wallet");
+const Product = require("../models/product")
+const {Prepotional_couponamt}  = require("../utils/coupon_util")
 
 // for loading  userprofile page
 
@@ -214,12 +216,18 @@ const cancell_order = async (req,res)=>{
         await wallet.save();
 
         cancelledorder.status = "Cancelled"
+        cancelledorder.items.forEach(value => {
+            value.itemStatus = "Cancelled"
+        });
         await cancelledorder.save();
         return res.status(200).json({success:true, message:"Order Cancelled successfully and Payment credited to the wallet..!"})
 
         }else {
 
         cancelledorder.status = "Cancelled"
+        cancelledorder.items.forEach(value => {
+            value.itemStatus = "Cancelled"
+        });
         await cancelledorder.save();
         return res.json({success:true, message:"Order Cancelled successfully"})
         }
@@ -294,6 +302,83 @@ const return_order = async (req,res)=>{
 }
 
 
+// for indivudualy cancell a item
+
+const individual_cancell = async (req,res)=>{
+    try {
+        const productid = req.query.id;
+        const{ order_id,itemsize } = req.body
+        const userid = req.session.user_id
+
+        const orderdetails = await Orders.findById({_id: order_id})
+
+        if(orderdetails.status !== "Pending" && orderdetails.status !== "Shipped"  ){
+            return res.status(400).json({ success:false, message: `Can't change the status of ${orderdetails.status} item`});
+        }
+
+        let itemtotalprice = 0;
+        let cancelledquentity = 0;
+
+        for (let item of orderdetails.items){
+            if(item.productId == productid && item.size == itemsize){
+                item.itemStatus = "Cancelled";
+                itemtotalprice = item.finalprie* item.quantity; 
+                cancelledquentity = item.quantity
+            }
+        }
+        let couponamt = orderdetails.coupondiscout ?? 0;
+        let totalpricebefore = orderdetails.items.reduce((acc, curr) => {
+                                    acc += curr.finalprie * curr.quantity; 
+                                return acc;
+                                 }, 0)
+        let totalprice =orderdetails.cancelleditemAmt ? totalpricebefore - orderdetails.cancelleditemAmt : totalpricebefore
+        let coupondiscout =  Prepotional_couponamt(itemtotalprice ,totalprice ,couponamt) ;
+        console.log("coupon disamt",coupondiscout)
+
+       orderdetails.coupondiscout -= coupondiscout
+       orderdetails.cancelleditemAmt += itemtotalprice 
+       orderdetails.returnDate = new Date()
+
+       let orderdata = await orderdetails.save()
+       let amt_return = itemtotalprice  - coupondiscout
+
+    const updateResult = await Product.updateOne(
+        {
+            _id: productid, 
+            "sizes.size": itemsize 
+        },
+        {
+            $inc: { "sizes.$.stock": cancelledquentity } 
+        }
+    );
+
+    // console.log("updated stock result ",updateResult)
+
+       if(orderdetails.paymentMethod == "onlinepayment" || orderdetails.paymentMethod == "mywallet"){
+        const  walletdata = await Wallet.findOne({userId :userid})
+        console.log("user wallet",walletdata)
+
+        walletdata.balance += amt_return
+        walletdata.transactions.push({
+          orderId : orderdata._id,
+          placedorderid : orderdata.Orderid,
+          amount : amt_return,
+          type : "Indivudal Cancell",
+          walletTransactionStatus : "refunded"
+        })
+        await walletdata.save()
+       }
+
+      return res.status(200).send({ success:true, orderdata, message: "Item cancelled and coupon adjusted successfully." });
+
+    } catch (err) {
+       console.log("error for individual item cancell ",err)
+       return res.status(500).render("user404",{message:"Unable to  complete the request try again..!"})
+        
+    }
+}
+
+
 
 
 
@@ -312,4 +397,9 @@ module.exports = {
     cancell_order,
     load_wallet,
     return_order,
+
+    // item individual  handling
+
+    individual_cancell
+
 }

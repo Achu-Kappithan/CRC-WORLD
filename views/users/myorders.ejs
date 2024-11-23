@@ -71,6 +71,13 @@ p {
     margin-bottom: 1rem;
 }
 
+/* // item stats disply */
+strong, span h2 {
+  display: inline-block;
+  margin: 0 5px;
+  vertical-align: middle;
+}
+
 </style>
 
     <!-- //my orders page -->
@@ -89,8 +96,8 @@ p {
                         <div class="row text-left">
                             
                             <div class="col-md-4">
-                                <h5 class="card-title">Ordered Items</h5>
-                                <h5 class="card-title" style="display: inline;">Status:</h5>
+                               
+                                <h5 class="card-title" style="display: inline;"> Order Status:</h5>
                                 <h6 style="display: inline;">   <h2  class="badge rounded-pill 
                                     <% if (order.status === 'Pending' || order.status === 'Shipped') { %>
                                         alert-warning
@@ -102,6 +109,7 @@ p {
                                 " id="status-<%= order._id %>" >
                                     <%= order.status %>
                                     </h2>   </h6>
+                                <h5 class="card-title">Ordered Items</h5>
                                 <% order.items.forEach(item => { %> 
                                 <p>
                                     <img src="/assets/uploads/product/<%= item.productimage[0] %>" alt="<%= item.productname %>" style="width: 110px; margin-top: 5px;"><br>
@@ -110,6 +118,21 @@ p {
                                     <strong>Quantity:</strong> <%= item.quantity %><br>
                                     <strong>Size:</strong> <%= item.size %><br>
                                 </p>
+                                    <strong>Item Status:</strong>
+                                <span>
+                                <h2 class="badge rounded-pill 
+                                    <% if (item.itemStatus === 'Pending' || item.itemStatus === 'Shipped') { %>
+                                        alert-warning
+                                    <% } else if (item.itemStatus === 'Delivered') { %>
+                                        alert-success
+                                    <% } else if (item.itemStatus === 'Cancelled' || item.itemStatus === 'Returned') { %>
+                                        alert-danger
+                                    <% } %>
+                                " id="itemstatus-<%= order._id %>">
+                                    <%= item.itemStatus %>
+                                </h2>
+                                </span>
+                                
                                 <% }) %>
                             </div>
     
@@ -282,7 +305,13 @@ p {
                             if (statusElement) {
                             statusElement.innerText = 'Cancelled';
                             statusElement.className = 'badge rounded-pill alert-danger';
-                        }
+                             }
+
+                             const itemstatusElement = document.getElementById(`itemstatus-${id}`);
+                            if (itemstatusElement) {
+                            itemstatusElement.innerText = 'Cancelled';
+                            itemstatusElement.className = 'badge rounded-pill alert-danger';
+                             }
                         }
                         else{
                             Swal.fire({

@@ -95,6 +95,7 @@ const place_order = async (req, res) => {
           Salesprice: item.Salesprice,
           finalprie : item.priceafteroffer,
           quantity: item.quantity,
+          itemStatus : "Pending",
           size: item.size,
           productimage: item.productimage,
         })),

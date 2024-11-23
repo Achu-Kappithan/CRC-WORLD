@@ -35,6 +35,11 @@ const orderschema = mongoose.Schema({
         type: String,
         required: true,
       },
+      itemStatus: {
+        type: String,
+        enum: ["Pending", "Shipped", "Delivered", "Cancelled", "Returned"],
+        default: "Pending",
+      },
       productimage: [
         {
           type: String,
@@ -51,6 +56,10 @@ const orderschema = mongoose.Schema({
     type: Number,
   },
   shippingcharge : {
+    type : Number,
+    default : 0
+  },
+  cancelleditemAmt : {
     type : Number,
     default : 0
   },
@@ -113,6 +122,9 @@ const orderschema = mongoose.Schema({
   orderDate: {
     type: Date,
     default: Date.now, 
+  },
+  returnDate: {
+    type: Date,
   },
   returnReason: {
     type: String,

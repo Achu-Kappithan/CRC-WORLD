@@ -60,10 +60,15 @@ const Update_orderstatus = async (req,res)=>{
             return res.json({success:false, message:`Can't change the order status of ${existingstatus.status} Orders..`})
         }
 
-        const udpatedata =  await Orders.findByIdAndUpdate(
-            orderid,
-            {$set:{ status :status }}
-        )
+        const updatedata =  await Orders.findById({_id:orderid})
+
+        updatedata.status = status;
+
+        updatedata.items.forEach(item => {
+            item.itemStatus = status;
+        });
+        await updatedata.save()
+        
         res.json({ success : true,message:"'Order status has been updated successfully!'"})
     } catch (err) {
         console.log("error for updating the order status",err)
