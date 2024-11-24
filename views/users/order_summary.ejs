@@ -260,7 +260,7 @@ h2, h3 {
                             </button>
                         <% } else if(item.itemStatus === 'Delivered'){ %>
                             <button class="btn btn-danger btn-sm cancel-btn" 
-                            onclick='returnorderitem(<%= JSON.stringify(item) %>)'>
+                            onclick='ReturnOrderitem(<%= JSON.stringify(item) %>)'>
                                 Return
                             </button>
                         <% } %>
@@ -329,9 +329,6 @@ h2, h3 {
 <script>
 
     // for cancellling indivitual order  
-
-   
-
 
     function cancelOrderItem(item) {
     Swal.fire({
@@ -412,5 +409,89 @@ h2, h3 {
         }
     });
 }
+ 
 
+
+// for returning individual items   
+
+function ReturnOrderitem (item){
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You are about to return this this item.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, Return !'
+        }).then((result) => {
+        if (result.isConfirmed){
+            const order_id = document.getElementById("Orderid").value;
+            const itemId =item.productId
+            const itemsize =item.size
+            console.log("orderid is",order_id,"size",itemsize)
+
+            fetch(`/individual_return?id=${itemId}`, {
+                method: 'POST',
+                headers : {
+                    "Content-Type": "application/json"
+                },
+                body : JSON.stringify({order_id,itemsize})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Item Returned!',
+                        icon: 'success',
+                            text: data.message,
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            timer: 3000,
+                    });
+                    console.log("updatd detais",data.orderdata)
+                    document.getElementById(`status-${itemId}`).innerText = 'Returned';
+                    document.getElementById(`status-${itemId}`).classList.remove('alert-warning');
+                    document.getElementById(`status-${itemId}`).classList.add("rounded-pill");
+                    document.getElementById(`status-${itemId}`).classList.add("alert-danger");
+                    document.getElementById(`cancellbuttion-${itemId}`).style.display ="none"
+
+                    let totalamt = data.orderdata.items.reduce((acc, curr) => {
+                            acc += curr.finalprie * curr.quantity; 
+                        return acc;
+                    }, 0)
+
+                    const priceafterreturn = totalamt - data.orderdata.cancelleditemAmt
+                    let grandTotalamt = priceafterreturn + (data.orderdata.shippingcharge || 0) - (data.orderdata.coupondiscout || 0);
+
+                    document.getElementById("itemtotalprice").innerText = priceafterreturn
+                    document.getElementById("coupoundiscount").innerText = data.orderdata.coupondiscout
+                    document.getElementById("grandTotalamount").innerText =  grandTotalamt
+                } else {
+                    Swal.fire({
+                        title: 'Warning!',
+                        icon: 'warning',
+                            text: data.message,
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            timer: 3000,
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Cant complete the request try again,,...!',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            });
+
+        }
+    })
+}
 </script>

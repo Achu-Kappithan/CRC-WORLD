@@ -78,8 +78,9 @@ user_route.get("/order_summary",auth,userprofile_controller.load_ordersummary);
 user_route.get("/my_orders",auth, userprofile_controller.load_myorder);
 user_route.post("/order_cancelled",userprofile_controller.cancell_order);
 user_route.post("/return_order",userprofile_controller.return_order);
-// for individual items cancell
+// for individual items cancell / return
 user_route.post("/individual_cancell",userprofile_controller.individual_cancell);
+user_route.post("/individual_return",userprofile_controller.individual_return);
 
 
 // user wallet

@@ -65,7 +65,9 @@ const Update_orderstatus = async (req,res)=>{
         updatedata.status = status;
 
         updatedata.items.forEach(item => {
+            if(item.itemStatus === 'Pending' || item.itemStatus === 'Shipped'){
             item.itemStatus = status;
+            }
         });
         await updatedata.save()
         

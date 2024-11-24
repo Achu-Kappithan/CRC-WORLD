@@ -368,6 +368,7 @@ const individual_cancell = async (req,res)=>{
         })
         await walletdata.save()
        }
+       
 
       return res.status(200).send({ success:true, orderdata, message: "Item cancelled and coupon adjusted successfully." });
 
@@ -375,6 +376,80 @@ const individual_cancell = async (req,res)=>{
        console.log("error for individual item cancell ",err)
        return res.status(500).render("user404",{message:"Unable to  complete the request try again..!"})
         
+    }
+}
+
+
+// for returning individual items
+
+const individual_return = async (req,res)=>{
+    try {
+        const productid = req.query.id;
+        const{ order_id,itemsize } = req.body
+        const userid = req.session.user_id
+        console.log(`productid =${productid} order_id =${order_id} itemsize =${itemsize}`)
+
+        const orderdetails = await Orders.findById({_id: order_id})
+
+        if(orderdetails.status !== "Delivered"  ){
+            return res.status(400).json({ success:false, message: `Can't change the status of ${orderdetails.status} item`});
+        }
+
+        let itemtotalprice = 0;
+        let cancelledquentity = 0;
+
+        for (let item of orderdetails.items){
+            if(item.productId == productid && item.size == itemsize){
+                item.itemStatus = "Returned";
+                itemtotalprice = item.finalprie* item.quantity; 
+                cancelledquentity = item.quantity
+            }
+        }
+        let couponamt = orderdetails.coupondiscout ?? 0;
+        let totalpricebefore = orderdetails.items.reduce((acc, curr) => {
+                                    acc += curr.finalprie * curr.quantity; 
+                                return acc;
+                                 }, 0)
+        let totalprice =orderdetails.cancelleditemAmt ? totalpricebefore - orderdetails.cancelleditemAmt : totalpricebefore
+        let coupondiscout =  Prepotional_couponamt(itemtotalprice ,totalprice ,couponamt) ;
+        console.log("coupon disamt",coupondiscout)
+
+       orderdetails.coupondiscout -= coupondiscout
+       orderdetails.cancelleditemAmt += itemtotalprice 
+       orderdetails.returnDate = new Date()
+
+       let orderdata = await orderdetails.save()
+       let amt_return = itemtotalprice  - coupondiscout
+
+       const updateResult = await Product.updateOne(
+        {
+            _id: productid, 
+            "sizes.size": itemsize 
+        },
+        {
+            $inc: { "sizes.$.stock": cancelledquentity } 
+        }
+    );
+
+
+    const  walletdata = await Wallet.findOne({userId :userid})
+        console.log("user wallet",walletdata)
+
+        walletdata.balance += amt_return
+        walletdata.transactions.push({
+          orderId : orderdata._id,
+          placedorderid : orderdata.Orderid,
+          amount : amt_return,
+          type : "Indivudal Return",
+          walletTransactionStatus : "refunded"
+        })
+        await walletdata.save()
+
+        return res.status(200).json({ success:true, orderdata, message: "Item successfully returned. Refund is being processed to your wallet." });
+        
+    } catch (err) {
+        console.log("error for individual item return ",err)
+        res.status(500).render("user404",{message: "Unable to complate the request plz try againg"})
     }
 }
 
@@ -400,6 +475,7 @@ module.exports = {
 
     // item individual  handling
 
-    individual_cancell
+    individual_cancell,
+    individual_return
 
 }
