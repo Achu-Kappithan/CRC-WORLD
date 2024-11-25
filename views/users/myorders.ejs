@@ -79,6 +79,55 @@ strong, span h2 {
 }
 
 </style>
+<!-- //style of pagenation -->
+<style>
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        margin-left: 400px;
+    }
+    
+    .pagination {
+        display: flex;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        gap: 5px;
+    }
+    
+    .pagination .page-item {
+        border: none;
+    }
+    
+    .pagination .page-link {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px; /* Ensure uniform size for the buttons */
+        height: 40px;
+        border-radius: 50%;
+        text-decoration: none;
+        background-color: #f5f5f5;
+        color: #050505;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    .pagination .page-link:hover {
+        background-color: #0a0a0a;
+        color: #fff;
+    }
+    
+    .pagination .active .page-link {
+        background-color: #070707;
+        color: #fff;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    </style>
+        
 
     <!-- //my orders page -->
 
@@ -196,13 +245,8 @@ strong, span h2 {
                                        Order Summary
                                     </a>
                                     <br><br>
-                                    
-                                    
                                 </p>
                             </div>
-                            
-
-
                         </div>
     
                         <% if(order.returnReason) { %>
@@ -219,9 +263,30 @@ strong, span h2 {
                     </div>
                 </div>
                 <% }); %> 
+                <div class="pagination-container">
+                    <ul class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= currentPage - 1 %>">&laquo;</a>
+                            </li>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= currentPage + 1 %>">&raquo;</a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            
             </div>
         </div>
     </div>
+
     
     <%- include("../layouts/user/footer.ejs") %>
 

@@ -3,7 +3,8 @@ const Address = require("../models/address");
 const Orders = require("../models/order")
 const Wallet = require("../models/wallet");
 const Product = require("../models/product")
-const {Prepotional_couponamt}  = require("../utils/coupon_util")
+const {Prepotional_couponamt}  = require("../utils/coupon_util");
+const product = require("../models/product");
 
 // for loading  userprofile page
 
@@ -164,21 +165,41 @@ const load_ordersummary = async (req,res)=>{
 
 // for lading my order page
 
-const load_myorder = async (req,res)=>{
+
+const load_myorder = async (req, res) => {
     try {
         const message = req.flash("message");
-        const type =  req.flash("type");
+        const type = req.flash("type");
         const userId = req.session.user_id;
+
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 5     ;
+        const skip = (page - 1) * limit; 
+
+        const totalOrders = await Orders.countDocuments({ userId: userId });
+
         const orders = await Orders.find({ userId: userId })
-        const order_details = orders.reverse()
-        // console.log("this is orderdetails",order_details)
-        return res.status(200).render("myorders",{orderdetails:order_details ,message , type})
-        
+            .sort({ _id: -1 }) 
+            .skip(skip)
+            .limit(limit);
+
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        return res.status(200).render("myorders", {
+            orderdetails: orders,
+            currentPage: page,
+            totalPages,
+            message,
+            type,
+        });
     } catch (err) {
-        console.log("error for loading  order summary page ",err)
-       res.status(500).render("user404",{message: "Unable to load my order page Try again...!"}) 
+        console.log("Error loading order summary page", err);
+        res.status(500).render("user404", {
+            message: "Unable to load My Order page. Please try again!",
+        });
     }
-}
+};
+
 
 // for cancel order
 
@@ -187,8 +208,15 @@ const cancell_order = async (req,res)=>{
         const id = req.body.id.trim();
         const userid = req.session.user_id;
         const cancelledorder = await Orders.findById(id)
-        let return_amt =  cancelledorder.totalPrice -  cancelledorder.shippingcharge
-            
+
+        const curntitemtotal = cancelledorder.items.reduce((acc,curr)=>{
+            if(curr.itemStatus !=="Cancelled"){
+                acc += curr.finalprie * curr.quantity
+            }
+            return acc ;
+        },0)
+
+        let return_amt =  curntitemtotal - cancelledorder.coupondiscout -  cancelledorder.shippingcharge
 
         if(!cancelledorder){
        return res.json({success:false,message:"Can't cancelled order try again..!"})
@@ -220,6 +248,17 @@ const cancell_order = async (req,res)=>{
             value.itemStatus = "Cancelled"
         });
         await cancelledorder.save();
+
+        for(let item of cancelledorder.items){
+            const productdata = await Product.findById({_id: item.productId});
+           for(let prodcut of productdata.sizes){
+                if(prodcut.size == item.size ){
+                    product.stock = item.quantity 
+                }
+            }
+            await productdata.save()
+        }
+
         return res.status(200).json({success:true, message:"Order Cancelled successfully and Payment credited to the wallet..!"})
 
         }else {
@@ -229,6 +268,16 @@ const cancell_order = async (req,res)=>{
             value.itemStatus = "Cancelled"
         });
         await cancelledorder.save();
+
+        for(let item of cancelledorder.items){
+            const productdata = await Product.findById({_id: item.productId});
+           for(let prodcut of productdata.sizes){
+                if(prodcut.size == item.size ){
+                    product.stock = item.quantity 
+                }
+            }
+            await productdata.save()
+        }
         return res.json({success:true, message:"Order Cancelled successfully"})
         }
 
@@ -241,17 +290,50 @@ const cancell_order = async (req,res)=>{
 
 // for loading wallet 
 
-const  load_wallet = async (req,res)=>{
+
+
+const load_wallet = async (req, res) => {
     try {
         const userid = req.session.user_id;
-        const walletdata = await Wallet.findOne({userId:userid})
-        return res.status(200).render("wallet",{walletdata})
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const skip = (page - 1) * limit;
+
+        const walletdata = await Wallet.findOne({ userId: userid });
+
+        if (walletdata && walletdata.transactions) {
+            const totalTransactions = walletdata.transactions.length;
+            const transactions = walletdata.transactions
+                .reverse() 
+                .slice(skip, skip + limit); 
+
+            const totalPages = Math.ceil(totalTransactions / limit);
+
+            return res.status(200).render("wallet", {
+                walletdata: {
+                    ...walletdata.toObject(),
+                    transactions,
+                },
+                currentPage: page,
+                totalPages,
+            });
+        }
+
+        return res.status(200).render("wallet", { walletdata: null });
     } catch (err) {
-        console.log("error for loading user wallset page",err)
-        return res.status(500).render("user404",{message: "Unable to complete the request try again..!"})
-        
+        console.log("Error loading user wallet page:", err);
+        return res
+            .status(500)
+            .render("user404", { message: "Unable to complete the request, try again..!" });
     }
-}
+};
+
+
+
+
+
 
 // for  return a order 
 
@@ -263,8 +345,16 @@ const return_order = async (req,res)=>{
         // console.log("id for return the order",id)
 
         const orderdata = await Orders.findById({_id:id});
-        // console.log("order details for refund",orderdata)
-        const return_amt = orderdata.totalPrice - orderdata.shippingcharge
+        
+        const curntitemtotal = orderdata.items.reduce((acc,curr)=>{
+            if(curr.itemStatus !=="Cancelled" && curr.itemStatus !=="Returned"){
+                acc += curr.finalprie * curr.quantity
+            }
+            return acc ;
+        },0)
+        console.log("item total except the return and cancell",curntitemtotal)
+
+        let return_amt =  curntitemtotal - orderdata.coupondiscout -  orderdata.shippingcharge
 
         let wallet = await Wallet.findOne({userId:userid});
 
@@ -291,6 +381,17 @@ const return_order = async (req,res)=>{
         orderdata.status = "Returned"
 
         await orderdata.save();
+
+        for(let item of orderdata.items){
+            const productdata = await Product.findById({_id: item.productId});
+           for(let prodcut of productdata.sizes){
+                if(prodcut.size == item.size ){
+                    product.stock = item.quantity 
+                }
+            }
+            await productdata.save()
+        }
+
 
         return res.status(200).json({success : true , message: "Order returned successfully, refund credited to wallet"})
 

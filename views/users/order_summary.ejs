@@ -112,6 +112,8 @@ h2, h3 {
 }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
 
 </head>
@@ -317,9 +319,13 @@ h2, h3 {
         <p style="padding: 12px 0; font-weight: bold; color: #333;">Order Total: <span style="padding: 12px 0; text-align: right; font-weight: bold; font-size: 18px; color: black;">₹ <%= orderdetails.totalPrice %></span> </p>
     </div>
 
-    <a href="/user_shop" class="continue-shopping">Continue Shopping</a>
+   
   </div>
 </body>
+<div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 20px;">
+    <a href="/user_shop" class="btn btn-primary">Continue Shopping</a>
+    <button onclick="generateorderPDF()" class="btn btn-primary">Download Invoice</button>
+  </div>
 
 
 
@@ -495,3 +501,55 @@ function ReturnOrderitem (item){
     })
 }
 </script>
+
+
+<!-- // scritpt for making pdf  invoice to customer -->
+
+
+  <script>
+    async function generateorderPDF() {
+      try {
+        const container = document.querySelector('.container');
+        
+        const canvas = await html2canvas(container, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+  
+        const siteName = "CRC WORLD "; 
+        const logoImgUrl = 'assets/images/CRC.png'; 
+        const logoWidth = 60; 
+        const logoHeight = 20;
+        
+    
+        const logoX = (pdfWidth - logoWidth) / 2; 
+        const logoY = 10;
+        pdf.addImage(logoImgUrl, 'PNG', logoX, logoY, logoWidth, logoHeight);
+  
+        
+        const headingFontSize = 14;
+        const headingY = logoY + logoHeight + 10; 
+        pdf.setFontSize(headingFontSize);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(siteName, pdfWidth / 2, headingY, { align: 'center' });
+  
+        const imgWidth = pdfWidth - 20; 
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const xOffset = (pdfWidth - imgWidth) / 2;
+        const yOffset = headingY + 10; 
+  
+        pdf.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight);
+  
+        
+        const orderId = document.getElementById('Orderid').value;
+        pdf.save(`Order_${orderId}.pdf`);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+      }
+    }
+  </script>
+    
+  
