@@ -56,15 +56,15 @@ user_route.post("/product_filter", userproduct_controller.filterProducts);
 user_route.get("/load_usercart",auth,validateCartPrices,usercart_controller.load_cart);
 user_route.post("/addto_cart",auth,validateCartPrices,usercart_controller.addto_cart);
 user_route.post("/remove_cartitem",auth,usercart_controller.remove_cartitem);
-user_route.post("/update_quntity",usercart_controller.update_quentity);
-user_route.get("/getcart_count",usercart_controller.get_cartcount);
+user_route.post("/update_quntity",auth,usercart_controller.update_quentity);
+user_route.get("/getcart_count",auth,usercart_controller.get_cartcount);
 
 // checkout page
 user_route.get("/user_checkout",auth,validateCartPrices,checkout_controller.load_checkout);
 user_route.post("/checkoutedit_address",auth,checkout_controller.checkoutupdate_address);
 user_route.post("/checkout_addaddress",auth,checkout_controller.checkout_newaddress);
-user_route.post("/apply_coupons",checkout_controller.applycouppons);
-user_route.post("/remove_coupon",checkout_controller.remove_coupons);
+user_route.post("/apply_coupons",auth,checkout_controller.applycouppons);
+user_route.post("/remove_coupon",auth,checkout_controller.remove_coupons);
 
 //user profile 
 user_route.get("/user_Profile",auth,userprofile_controller.load_userprofile);
@@ -76,11 +76,11 @@ user_route.post("/Update_userprofile",userprofile_controller.update_userprofile)
 //Order summary and details
 user_route.get("/order_summary",auth,userprofile_controller.load_ordersummary);
 user_route.get("/my_orders",auth, userprofile_controller.load_myorder);
-user_route.post("/order_cancelled",userprofile_controller.cancell_order);
-user_route.post("/return_order",userprofile_controller.return_order);
+user_route.post("/order_cancelled",auth,userprofile_controller.cancell_order);
+user_route.post("/return_order",auth,userprofile_controller.return_order);
 // for individual items cancell / return
-user_route.post("/individual_cancell",userprofile_controller.individual_cancell);
-user_route.post("/individual_return",userprofile_controller.individual_return);
+user_route.post("/individual_cancell",auth,userprofile_controller.individual_cancell);
+user_route.post("/individual_return",auth,userprofile_controller.individual_return);
 
 
 // user wallet
@@ -97,8 +97,8 @@ user_route.post("/remove_item",userwishlist_controller.remove_wishlistitem);
 user_route.post("/Placeorder",auth,order_controller.place_order);
 user_route.post("/create-order",order_controller.razorpay_order);
 user_route.post("/verify-payment",order_controller.verify_payment);
-user_route.get("/load_paymentsuccess",order_controller.load_paymentsuccess);
-user_route.get("/payment_failed",order_controller.payment_faild);
+user_route.get("/load_paymentsuccess",auth,order_controller.load_paymentsuccess);
+user_route.get("/payment_failed",auth,order_controller.payment_faild);
 
 
 

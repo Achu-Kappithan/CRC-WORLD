@@ -203,7 +203,9 @@ h2, h3 {
                     <th>Subtotal</th>
                     <th>Status</th>
                     <% if(orderdetails.status === 'Pending' || orderdetails.status === 'Shipped' || orderdetails.status === 'Delivered' ) {%>
+                        <% if( orderdetails.items.length > 1 ) { %>
                     <th>Actions</th>
+                    <% } %>
                     <% } %>
                 </tr>
             </thead>
@@ -252,7 +254,11 @@ h2, h3 {
                         </span>
                     </td>
 
-                    <% if(orderdetails.status === 'Pending' || orderdetails.status === 'Shipped' || orderdetails.status === 'Delivered' ) {%>
+                    
+
+                    <% if(orderdetails.status === 'Pending' || orderdetails.status === 'Shipped' || orderdetails.status === 'Delivered') {%>
+
+                    <% if( orderdetails.items.length > 1 ) { %>
                      
                     <td id="cancellbuttion-<%= item.productId %>">
                         <% if (item.itemStatus === 'Pending' || item.itemStatus === 'Shipped') { %>
@@ -267,6 +273,7 @@ h2, h3 {
                             </button>
                         <% } %>
                     </td>
+                    <% } %>
                     <% } %>
 
                 </tr>

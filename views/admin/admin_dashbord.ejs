@@ -52,7 +52,7 @@
                     <thead class="table-light">
                       <tr>
                         <th class="align-middle" scope="col">Sl</th>
-                        <th class="align-middle" scope="col">User ID</th>
+                        <!-- <th class="align-middle" scope="col">User ID</th> -->
                         <th class="align-middle" scope="col">User Name</th>
                         <th class="align-middle" scope="col">Email</th>
                         <th class="align-middle" scope="col">Contact Number</th>
@@ -64,9 +64,9 @@
                       <% for(let i = 0; i < users.length; i++) { %>
                       <tr>
                         <td><%= i + 1 %></td>
-                        <td>
+                        <!-- <td>
                           <a href="#" class="fw-bold"><%= users[i]._id %></a>
-                        </td>
+                        </td> -->
                         <td>
                           <%= users[i].firstname + " " + users[i].lastname %>
                         </td>

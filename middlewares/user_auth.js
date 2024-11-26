@@ -1,22 +1,5 @@
 const User = require("../models/user_models")
 
-// const is_authaticated = async (req,res,next)=>{
-//     if (req.session.user_id){
-//         const user = await User.findById(req.session.user_id);
-//         if(user.is_active){
-//             next();
-//         }else{
-//             req.session.destroy()
-//             req.flash("message","Your account is blocked. Please contact support.")
-//             req.flash("type","warning")
-//             res.redirect("/load_home")
-//         }
-//     }else{
-//         req.flash("message","You need to be logged in to access this page.")
-//         req.flash("type","warning")
-//         res.redirect("/load_home")
-//     }
-// }
 
 const is_authaticated = async (req, res, next) => {
     if (req.session.user_id) {
@@ -25,6 +8,7 @@ const is_authaticated = async (req, res, next) => {
             next();
         } else {
             // req.session.destroy();
+            delete req.session.user_id;
             req.flash("message", "Your account is blocked. Please contact support.");
             req.flash("type", "warning");
             res.redirect("/load_home");

@@ -1,5 +1,5 @@
 
-const {generate_salesreport,getdaterange}= require("../utils/generatereport")
+const {generate_salesreport,top_sellingitems,getdaterange}= require("../utils/generatereport")
 
 const load_customreport = async (req,res)=>{
     try {
@@ -8,10 +8,11 @@ const load_customreport = async (req,res)=>{
         const startDate = new Date(startdate);
         const endDate = new Date(enddate);
         const report = await generate_salesreport(startDate, endDate);
-        return res.status(200).render("admin_home", { report, period: "custome" });
+        const topSellings = await top_sellingitems()
+        return res.status(200).render("admin_home", { report, period: "custome",topSellings });
     } catch (err) {
         console.log("error for loading report  page",err)
-        res.redirect("/admin_home");
+        res.render("404",{message:"Unable to complete tehe request"});
     }
 }
 

@@ -175,7 +175,15 @@
                                                                 <li><strong>Discount Percentage:</strong> <%= category.categoryoffer.offerDiscountPercentage %>%</li>
                                                                 <li><strong>Start Date:</strong> <%= new Date(category.categoryoffer.offerStartDate).toLocaleDateString() %></li>
                                                                 <li><strong>Expiry Date:</strong> <%= new Date(category.categoryoffer.offerExpiryDate).toLocaleDateString() %></li>
-                                                                <li><strong>Status:</strong> <p class=  "badge rounded-pill alert-success"  %> ><%= category.categoryoffer.offerStatus ? "Active" : "Inactive" %></p></li>
+                                                                <!-- <li><strong>Status:</strong> <p class=  "badge rounded-pill alert-success"  %> ><%= category.categoryoffer.offerStatus ? "Active" : "Inactive" %></p></li> -->
+                                                                <li>
+                                                                  <strong>Status:</strong>
+                                                                  <p
+                                                                    class="badge rounded-pill <%= category.categoryoffer.offerStatus ? 'alert-success' : 'alert-danger' %>"
+                                                                  >
+                                                                    <%= category.categoryoffer.offerStatus ? "Active" : "Inactive" %>
+                                                                  </p>
+                                                                </li>
                                                                 </ul>
                                                                 <div>
                                                                     <br>

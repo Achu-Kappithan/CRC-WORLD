@@ -88,61 +88,50 @@
     </main>
 
     <script>
-      function validate() {
-        let value = true;
+function validate() {
+  let value = true;
 
-          let nameRegex = /^[a-zA-Z0-9\s]+$/;
-          let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/
+  let nameRegex = /^[a-zA-Z0-9\s]+$/;
+  let disRegex = /^[a-zA-Z0-9\s,.!?-]+$/;
 
-        let name = document.getElementById("brandname").value.trim();
-        let errorName = document.getElementById("errorname");
+  let name = document.getElementById("brandname").value.trim();
+  let errorName = document.getElementById("errorname");
 
-        if (name.length < 4 || !nameRegex.test(name)) {
-          errorName.textContent = "NAME MUST BE AT LEAST 4 CHARACTERS OR ENTER A VALID INPUT";
-          value = false;
-        } else {
-          errorName.textContent = "";
-        }
+  if (name.length < 4 || !nameRegex.test(name)) {
+    errorName.textContent = "NAME MUST BE AT LEAST 4 CHARACTERS OR ENTER A VALID INPUT";
+    value = false;
+  } else {
+    errorName.textContent = "";
+  }
 
-        let description = document
-          .getElementById("branddescription")
-          .value.trim();
-        let errorDescription = document.getElementById("errordis");
+  let description = document.getElementById("branddescription").value.trim();
+  let errorDescription = document.getElementById("errordis");
 
-        if (description.length < 10 || !disRegex.test(dis)) {
-          errorDescription.textContent =
-            "DESCRIPTION MUST BE AT LEAST 10 CHARACTERS OR A VALID INPUT";
-          value = false;
-        } else {
-          errorDescription.textContent = "";
-        }
+  if (description.length < 10 || !disRegex.test(description)) {
+    errorDescription.textContent = "DESCRIPTION MUST BE AT LEAST 10 CHARACTERS OR A VALID INPUT";
+    value = false;
+  } else {
+    errorDescription.textContent = "";
+  }
 
-        let image = document.getElementById("image").files[0];
-        let errorImage = document.getElementById("errorimage");
+  let image = document.getElementById("image").files[0];
+  let errorImage = document.getElementById("errorimage");
 
-        if (!image) {
-          errorImage.textContent = "PLEASE UPLOAD AN IMAGE";
-          value = false;
-        } else {
-          const validImageTypes = [
-            "image/jpeg",
-            "image/png",
-            "image/gif",
-            "image/jpg",
-            "image/webp",
-          ];
-          if (!validImageTypes.includes(image.type)) {
-            errorImage.textContent =
-              "ONLY IMAGE FILES (JPG, PNG, GIF) ARE ALLOWED";
-            value = false;
-          } else {
-            errorImage.textContent = "";
-          }
-        }
+  if (!image) {
+    errorImage.textContent = "PLEASE UPLOAD AN IMAGE";
+    value = false;
+  } else {
+    const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/jpg", "image/webp"];
+    if (!validImageTypes.includes(image.type)) {
+      errorImage.textContent = "ONLY IMAGE FILES (JPG, PNG, GIF) ARE ALLOWED";
+      value = false;
+    } else {
+      errorImage.textContent = "";
+    }
+  }
 
-
-        return value;
-      }
+  return value;
+}
     </script>
 
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>

@@ -156,6 +156,13 @@ const update_catoffer = async (req,res)=>{
         const {catofrname, catofrdescription, catofrpercentage, catofrenddate} = req.body 
         console.log("form data here",req.body)
 
+        const offerstatus = await Category.findById({_id:id})
+        if(offerstatus.categoryoffer.offerStatus == false){
+            req.flash("message","Can't Update Experied offers..")
+            req.flash("type","error")
+            return res.status(400).redirect("/load_offerlist")
+        }
+
         const updateddata = await Category.findByIdAndUpdate(
             {_id:id},
             {$set:{"categoryoffer.offerName" : catofrname,
@@ -235,6 +242,13 @@ const update_productoffer = async (req,res)=>{
         const id = req.query.id;
         console.log("id form the querey",id)
         const {ofrname ,ofrdescription ,ofrpercentage ,ofrenddate }= req.body
+
+        const productstatus = await product.findById({_id:id})
+        if(productstatus.productOffer.offerStatus == false) {
+        req.flash("message","Can't edit Experied offer..!")
+        req.flash("type","error")
+        return res.status(400).redirect("/load_offerlist")
+        }
 
         const updateddata = await product.findByIdAndUpdate(
             {_id:id},

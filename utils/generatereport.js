@@ -110,7 +110,7 @@ const top_sellingproducts = async () => {
         },
       },
       { $sort: { total_quantity: -1 } },
-      { $limit: 1 },
+      { $limit: 5 },
       {
         $lookup: {
           from: "products",
@@ -130,7 +130,7 @@ const top_sellingproducts = async () => {
       },
     ]);
   
-    return topproduct[0] || null;
+    return topproduct;
   };
 
   const top_sellingcategory = async () => {
@@ -162,10 +162,10 @@ const top_sellingproducts = async () => {
         },
       },
       { $sort: { totalQuantity: -1 } }, 
-      { $limit: 1 }, 
+      { $limit: 5 }, 
     ]);
   
-    return top_category[0] || null;
+    return top_category;
   };
   
 
@@ -200,10 +200,10 @@ const top_sellingproducts = async () => {
         },
       },
       { $sort: { totalQuantity: -1 } }, 
-      { $limit: 1 },
+      { $limit: 5 },
     ]);
   
-    return top_brand[0] || null;
+    return top_brand ;
   };
     
     

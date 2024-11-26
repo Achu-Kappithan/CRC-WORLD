@@ -67,20 +67,20 @@ admin_route.get("/load_orderdetails",auth,order_controller.load_orderdetails);
 admin_route.post("/change_status",auth,order_controller.Update_orderstatus);
 
 // offer controller
-admin_route.get("/load_offerlist",offer_controller.load_offerlist);
-admin_route.get("/loadcreateoffer",offer_controller.load_newoffer);
+admin_route.get("/load_offerlist",auth,offer_controller.load_offerlist);
+admin_route.get("/loadcreateoffer",auth,offer_controller.load_newoffer);
 admin_route.post("/add_categoryoffer",offer_controller.add_categoryoffer);
 admin_route.post("/removecatoffer",offer_controller.remove_catoffer);
-admin_route.get("/load_catofferedit",offer_controller.load_editcatoffer);
+admin_route.get("/load_catofferedit",auth,offer_controller.load_editcatoffer);
 admin_route.post("/update_catoffer",offer_controller.update_catoffer);
 admin_route.post("/add_productoffer",offer_controller.add_productoffer);
-admin_route.get("/load_editproductoffer",offer_controller.load_editProductoffer);
+admin_route.get("/load_editproductoffer",auth,offer_controller.load_editProductoffer);
 admin_route.post("/update_productoffer",offer_controller.update_productoffer);
 admin_route.post("/romove_productoffer",offer_controller.remove_productoffer);
 // coupon  controller
-admin_route.get("/load_couponlist",offer_controller.load_couponlist);
+admin_route.get("/load_couponlist",auth,offer_controller.load_couponlist);
 admin_route.post("/add_coupon",offer_controller.add_coupon);
-admin_route.get("/load_editcoupon",offer_controller.load_editcoupon);
+admin_route.get("/load_editcoupon",auth,offer_controller.load_editcoupon);
 admin_route.post("/update_coupon",offer_controller.update_coupons);
 admin_route.post("/remove_coupons",offer_controller.remove_coupons);
 

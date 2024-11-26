@@ -81,6 +81,7 @@
                                                       <th scope="col">Offer (%)</th>
                                                       <th scope="col">Coupon Code</th>
                                                       <th scope="col">Status</th>
+                                                      <th scope="col">User limit</th>
                                                       <th scope="col">Minimun amount</th>
                                                       <th scope="col">Maxmium amount</th>
                                                       <th scope="col">Action</th>
@@ -97,6 +98,7 @@
                                                               <% }else { %>
                                                               <td><span class="badge rounded-pill alert-success">Active</span></td>
                                                               <% } %>
+                                                              <td><%=coupondata.Userlimit  %></td>
                                                               <td><%=coupondata.minAmount  %></td>
                                                               <td><%= coupondata.maxAmount %></td>
                                                               <td class="text-end">
@@ -188,11 +190,6 @@
                         </div>
                       </div>
                     </section> 
-
-
-      
-      
-
       <%- include("../layouts/admin/admin_footer.ejs") %>
 
 

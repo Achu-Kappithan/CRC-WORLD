@@ -41,7 +41,7 @@
                     <tbody>
                         <% orderdata.forEach((order)=>{  %>
                         <tr>
-                            <td><%= order._id %></td>
+                            <td><%= order.Orderid %></td>
                             <td><b><%= order.userId.firstname + order.userId.lastname %></b></td>
                             <td><%= order.userId.email %></td>
                             <td><%= order.totalPrice %></td>
