@@ -211,23 +211,27 @@ const update_quentity = async (req,res)=>{
 
 // for loading cart count  
 
-const get_cartcount =async (req,res)=>{
+const get_cartcount = async (req, res) => {
   try {
-    const id = req.session.user_id;
+    const id = req.session.user_id; 
     let count = 0;
-    if(id){
-    const data = await Cart.findOne({user:id})
-     count = data.items.length
-    console.log("cart count is ",count)
-    return res.json({ success: true, count: count });
+
+    if (id) {
+      const data = await Cart.findOne({ user: id }); 
+
+      if (data) {
+        count = data.items.length ? data.items.length : 0;
+        console.log("cart count is ", count);
+      }
     }
-    return res.json({ success: true, count: count });
+
+    return res.json({ success: true, count: count }); 
   } catch (err) {
     console.log("error for loading cart count", err);
-    return res.status(500).json({ message: "Something went wrong" });
-    
+    return res.status(500).json({ message: "Something went wrong" }); 
   }
-}
+};
+
 
 module.exports = {
   load_cart,

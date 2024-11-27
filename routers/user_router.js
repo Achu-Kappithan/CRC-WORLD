@@ -83,13 +83,15 @@ user_route.post("/individual_cancell",auth,userprofile_controller.individual_can
 user_route.post("/individual_return",auth,userprofile_controller.individual_return);
 
 
-// user wallet
+// user wallet   
 user_route.get("/load_wallet",auth,userprofile_controller.load_wallet);
 
-//user wishlist controller
+
+//user wishlist controller   and  about us 
 user_route.get("/load_wishlist",auth,userwishlist_controller.load_whishlist);
 user_route.post("/addto_wishlist",auth,userwishlist_controller.addto_wishlist);
 user_route.post("/remove_item",userwishlist_controller.remove_wishlistitem);
+user_route.get("/load_aboutus",auth,userwishlist_controller.load_aboutus)
 
 
 // user order controller 

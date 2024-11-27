@@ -25,76 +25,83 @@ function getdaterange(period) {
 
 // for generating the report
 
+
+
 async function generate_salesreport(startDate, endDate) {
-    console.log("dates is ",startDate,  "asdfg",endDate)
+  console.log("Dates are:", startDate, "to", endDate);
 
-    return await Order.aggregate([
-        
-        {
-            $match: {
-                orderDate: { $gte: startDate, $lte: endDate },
-                status: "Delivered"
-            }
-        },
-    
-        {
-            $group: {
-                _id: { $dateToString: { format: "%Y-%m-%d", date: "$orderDate" } },
-                dailySales: { $sum: { $sum: "$items.finalprie" } },
-                dailyQuantity: { $sum: { $sum: "$items.quantity" } },
-                dailyOrders: { $sum: 1 }, 
-                dailyCouponDiscount: { $sum: { $ifNull: ["$coupondiscout", 0] } },
-                dailyOfferDiscount: { 
-                    $sum: { 
-                        $sum: { 
-                            $map: { 
-                                input: "$items", 
-                                as: "item", 
-                                in: { $subtract: ["$$item.Salesprice", "$$item.finalprie"] }
-                            } 
-                        } 
-                    }
-                }
-            }
-        },
-        
-        {
-            $sort: { _id: 1 }
-        },
-    
-        {
-            $group: {
-                _id: null, 
-                totalSales: { $sum: "$dailySales" },
-                totalQuantity: { $sum: "$dailyQuantity" },
-                totalOrders: { $sum: "$dailyOrders" }, 
-                totalCouponDiscount: { $sum: "$dailyCouponDiscount" },
-                totalOfferDiscount: { $sum: "$dailyOfferDiscount" },
-                dailyData: {
-                    $push: {
-                        date: "$_id",
-                        sales: "$dailySales",
-                        quantity: "$dailyQuantity",
-                        orders: "$dailyOrders",
-                        couponDiscount: "$dailyCouponDiscount",
-                        offerDiscount: "$dailyOfferDiscount"
-                    }
-                }
-            }
-        },
-
-        {
-            $project: {
-                _id: 0,
-                totalSales: 1,
-                totalQuantity: 1,
-                totalOrders: 1,
-                totalCouponDiscount: 1,
-                totalOfferDiscount: 1,
-                dailyData: 1 
-            }
-        }
-    ]);
+  return await Order.aggregate([
+      {
+          $match: {
+              orderDate: { $gte: startDate, $lte: endDate },
+              status: "Delivered"
+          }
+      },
+      {
+          $group: {
+              _id: { $dateToString: { format: "%Y-%m-%d", date: "$orderDate" } },
+              dailySales: { 
+                  $sum: { 
+                      $sum: { 
+                          $map: { 
+                              input: "$items",
+                              as: "item",
+                              in: { $multiply: ["$$item.finalprie", "$$item.quantity"] }
+                          } 
+                      } 
+                  } 
+              },
+              dailyQuantity: { $sum: { $sum: "$items.quantity" } },
+              dailyOrders: { $sum: 1 },
+              dailyCouponDiscount: { $sum: { $ifNull: ["$coupondiscout", 0] } },
+              dailyOfferDiscount: { 
+                  $sum: { 
+                      $sum: { 
+                          $map: { 
+                              input: "$items",
+                              as: "item",
+                              in: { $subtract: ["$$item.Salesprice", "$$item.finalprie"] }
+                          } 
+                      } 
+                  } 
+              }
+          }
+      },
+      {
+          $sort: { _id: 1 }
+      },
+      {
+          $group: {
+              _id: null,
+              totalSales: { $sum: "$dailySales" },
+              totalQuantity: { $sum: "$dailyQuantity" },
+              totalOrders: { $sum: "$dailyOrders" },
+              totalCouponDiscount: { $sum: "$dailyCouponDiscount" },
+              totalOfferDiscount: { $sum: "$dailyOfferDiscount" },
+              dailyData: {
+                  $push: {
+                      date: "$_id",
+                      sales: "$dailySales",
+                      quantity: "$dailyQuantity",
+                      orders: "$dailyOrders",
+                      couponDiscount: "$dailyCouponDiscount",
+                      offerDiscount: "$dailyOfferDiscount"
+                  }
+              }
+          }
+      },
+      {
+          $project: {
+              _id: 0,
+              totalSales: 1,
+              totalQuantity: 1,
+              totalOrders: 1,
+              totalCouponDiscount: 1,
+              totalOfferDiscount: 1,
+              dailyData: 1 
+          }
+      }
+  ]);
 }
 
 

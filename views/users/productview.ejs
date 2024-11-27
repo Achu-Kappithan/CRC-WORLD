@@ -330,7 +330,7 @@
                                         </div>
                                         <div class="prInfoRow">
                                           <div class="product-stock">
-                                            <span id="stock-status"></span>
+                                            <span id="active-stock-status"></span>
                                             <p>Stock : <span id="product-stock"><%= productdata.sizes[0].stock %></span></p>
                                           </div>
                                           <!-- <div class="product-sku">SKU: <span class="variant-sku">19115-rdxs</span></div> -->
@@ -733,8 +733,21 @@
 
   
             const stockStatusElement = document.getElementById('stock-status');
+            const activestockStatusElement = document.getElementById('active-stock-status')
+            
             const stock = data.size.stock;
   
+            if (stock > 5) {
+              activestockStatusElement.textContent = 'In Stock';
+              activestockStatusElement.className = 'stock-status in-stock';
+            } else if (stock > 0 && stock <= 5) {
+              activestockStatusElement.textContent = 'Limited Stock';
+              activestockStatusElement.className = 'stock-status limited-stock';
+            } else {
+              activestockStatusElement.textContent = 'Out of Stock';
+              activestockStatusElement.className = 'stock-status out-of-stock';
+            }
+
             if (stock > 5) {
               stockStatusElement.textContent = 'In Stock';
               stockStatusElement.className = 'stock-status in-stock';
@@ -745,6 +758,7 @@
               stockStatusElement.textContent = 'Out of Stock';
               stockStatusElement.className = 'stock-status out-of-stock';
             }
+
           } else {
             alert('Failed to fetch size details. Please try again.');
           }

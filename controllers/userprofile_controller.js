@@ -321,7 +321,7 @@ const load_wallet = async (req, res) => {
             });
         }
 
-        return res.status(200).render("wallet", { walletdata: null });
+        return res.status(200).render("wallet", { walletdata: null, currentPage:1 ,  totalPages:1  });
     } catch (err) {
         console.log("Error loading user wallet page:", err);
         return res
@@ -329,9 +329,6 @@ const load_wallet = async (req, res) => {
             .render("user404", { message: "Unable to complete the request, try again..!" });
     }
 };
-
-
-
 
 
 
@@ -379,6 +376,9 @@ const return_order = async (req,res)=>{
         await wallet.save();
 
         orderdata.status = "Returned"
+        orderdata.items.forEach(value => {
+            value.itemStatus = "Cancelled"
+        });
 
         await orderdata.save();
 
@@ -456,8 +456,16 @@ const individual_cancell = async (req,res)=>{
     // console.log("updated stock result ",updateResult)
 
        if(orderdetails.paymentMethod == "onlinepayment" || orderdetails.paymentMethod == "mywallet"){
-        const  walletdata = await Wallet.findOne({userId :userid})
+        let  walletdata = await Wallet.findOne({userId :userid})
         console.log("user wallet",walletdata)
+
+        if(!walletdata){
+            walletdata = new Wallet({
+                userId :userid,
+                balance : 0,
+                transactions : []
+            })
+        } 
 
         walletdata.balance += amt_return
         walletdata.transactions.push({
@@ -533,8 +541,16 @@ const individual_return = async (req,res)=>{
     );
 
 
-    const  walletdata = await Wallet.findOne({userId :userid})
+    let  walletdata = await Wallet.findOne({userId :userid})
         console.log("user wallet",walletdata)
+
+        if(!walletdata){
+            walletdata = new Wallet({
+                userId :userid,
+                balance : 0,
+                transactions : []
+            })
+        } 
 
         walletdata.balance += amt_return
         walletdata.transactions.push({

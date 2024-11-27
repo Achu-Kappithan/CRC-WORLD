@@ -94,8 +94,22 @@ const remove_wishlistitem = async (req,res)=>{
     }
 }
 
+
+// for loading About us page
+
+const load_aboutus = async (req,res)=>{
+    try {
+        res.status(200).render("aboutus")
+        
+    } catch (err) {
+        console.log("error for loading about us page",err)
+        
+    }
+}
+
 module.exports={
     load_whishlist,
     addto_wishlist,
-    remove_wishlistitem
+    remove_wishlistitem,
+    load_aboutus
 }

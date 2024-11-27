@@ -410,7 +410,6 @@
               </table>
             </div>
           </div>
-          <!-- <button class="btn btn-danger btn-sm mt-2" id="removeCoupon" style="display: none;" >Remove Coupon</button> -->
 
           <hr />
           <div class="card mb-2">
@@ -420,11 +419,15 @@
             <div id="collapseFour" class="collapse" data-parent="#accordion">
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
+                  <% if(wallet) {%>
                   <div>
                     <h5>Wallet Balance:</h5>
                     <p style="font-size: larger; font-weight:bold;" id="wallet-balance">₹ <%= wallet.balance %></p>
                   </div>
                   <a href="/load_wallet" class="btn btn-primary">Go to Wallet</a>
+                  <% }else{ %>
+                    <h3>No Wallet Transaction Available </h3>
+                  <% } %>
                 </div>
               </div>
             </div>
@@ -486,41 +489,6 @@
       
                 <div id="accordion" class="payment-section">
                   
-                  <!-- <div class="card mb-2">
-                    <div class="card-header">
-                      <a
-                        class="collapsed card-link"
-                        data-toggle="collapse"
-                        href="#collapseTwo"
-                        >Enter your coupon code</a
-                      >
-                    </div>
-                    <div
-                      id="collapseTwo"
-                      class="collapse"
-                      data-parent="#accordion"
-                    >
-                      <div class="card-body">
-                        <div>
-                          <div class="discount-coupon">
-                            <div id="coupon" class="coupon-dec tab-pane active">
-                              <p class="margin-10px-bottom">
-                                Enter your coupon code if you have one.
-                              </p>
-                              <label class="required get" for="coupon-code"
-                                ><span class="required-f">*</span> Coupon</label
-                              >
-                              <input id="coupon-code" required="" type="text" class="mb-3" />
-                              <button id="applaycoupons" class="coupon-btn btn" type="button">
-                                Apply Coupon
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div> -->
                   <hr />
                   <br>
 
@@ -552,6 +520,7 @@
                             Online Transaction
                         </div>
                         <br>
+                        
                         <div>
                           <input style=" margin: 3px;" class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery"  value="mywallet" >
                           <label style="margin-left: 20px;" class="form-check-label" for="cashOnDelivery">
@@ -600,12 +569,12 @@
           <h2 class="empty-cart-message">Your cart is empty. Add some products.</h2>
       </div>
       
-   <%- include("../layouts/user/footer.ejs") %>
+   
   <% } %>
   </div>
  </div>
 </body>
-
+<%- include("../layouts/user/footer.ejs") %>
 <footer>
 
     <script>

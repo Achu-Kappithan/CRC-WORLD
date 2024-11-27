@@ -327,8 +327,21 @@ const loadhome = async (req, res) => {
     const userid = req.session.user_id;
     const gadgetcat = await category.findOne({name:{$regex:/Gadgets/i}});
     const batcategory = await category.findOne({name:{$regex:/Bat/i}});
-    const wishlistdata = await Wishlist.findOne({userId:userid});
+    let wishlistdata = null
+    
     // console.log("this is batcat", batcategory)
+
+    if(userid){
+       wishlistdata = await Wishlist.findOne({userId:userid});
+       if(!wishlistdata){
+          let  wishlist = new Wishlist({
+            userId : userid,
+            productIds : []
+          });
+            
+          await wishlist.save()
+       }
+    }
 
     let batlist = null;
     let gadlist =null;
@@ -372,7 +385,7 @@ const loadhome = async (req, res) => {
       type
     });
   } catch (err) {
-    console.log("error for loading usnse home page ", err);
+    console.log("error for loading  home page ", err);
     res.status(500).render("user404", { message: "Unable to load  home page" });
   }
 };

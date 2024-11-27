@@ -10,6 +10,11 @@ const validateCartPrices = async (req, res, next) => {
     const userId = req.session.user_id;
     const cart = await Cart.findOne({ user: userId }).populate("items.productId");
 
+    if (!cart) {
+      console.log("No cart found for the user. Skipping cart validation.");
+      return next();
+    }
+
     let updated = false;
     const today = new Date().toISOString();
 

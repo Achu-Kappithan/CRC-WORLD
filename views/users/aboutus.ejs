@@ -1,0 +1,90 @@
+
+    <%- include("../layouts/user/header.ejs") %>
+        <style>
+            /* CSS styles to match the image */
+            body, html {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .about-content {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 40px;
+            }
+            .logo-section {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .logo-section img {
+                max-width: 100%;
+                height: auto;
+            }
+            .text-section {
+                flex: 1;
+                padding-left: 40px;
+            }
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            p {
+                line-height: 1.6;
+                color: #666;
+            }
+            .newsletter {
+                background-color: #1a4789;
+                color: white;
+                padding: 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 40px;
+            }
+            .newsletter-text {
+                flex: 1;
+            }
+            .newsletter-form {
+                flex: 1;
+                display: flex;
+                justify-content: flex-end;
+            }
+            .newsletter-form input {
+                padding: 10px;
+                width: 60%;
+                border: none;
+            }
+            .newsletter-form button {
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="about-content">
+                <div class="logo-section">
+                    <img src="assets/images/CRC.png" alt="CRC WORLD Logo">
+                </div>
+                <div class="text-section">
+                    <h1>OUR STORY</h1>
+                    <p>At CRC World, Cricket Is More Than Just A Sport; It's A Way Of Life. Founded By A Team Of Passionate Cricket Enthusiasts, Our Journey Began With A Simple Mission: To Bring The Finest Cricket Gear And Accessories To Players Of All Levels.</p>
+                    <p>Whether You're Just Starting Out Or Are A Seasoned Pro, We've Curated A Collection That Reflects The Spirit, Dedication, And Excitement Of The Game. Our Commitment Goes Beyond Selling Products; We Celebrate The Rich History And Evolving Innovations In Cricket, Ensuring That Every Item We Offer—From Bats And Balls To Protective Gear And Training Equipment—Meets The Highest Standards Of Quality And Performance.</p>
+                    <p>Each Product In Our Store Is Handpicked To Help You Play Your Best, While Also Embracing The Love And Tradition Of Cricket.</p>
+                    <p>But We're Not Just A Store; We're A Community. We Believe In Fostering A Deep Connection With Our Customers, Providing Expert Advice, And Sharing Our Collective Passion For The Game. Whether You're Gearing Up For Your Next Big Match Or Simply Seeking The Latest In Cricket Gear, We're Here To Support You Every Step Of The Way.</p>
+                    <p>Thank You For Choosing CRC World As Your Trusted Partner In Cricket. Together, We'll Continue To Celebrate The Sport That Unites Us.</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include("../layouts/user/footer.ejs") %>

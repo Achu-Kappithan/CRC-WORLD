@@ -109,7 +109,7 @@
                     </div>
                     <div class="card-body">
                         <% if (walletdata.transactions && walletdata.transactions.length > 0) { %>
-                            <% walletdata.transactions.reverse().forEach((item) => { %>
+                            <% walletdata.transactions.forEach((item) => { %>
                                 <% if (item.walletTransactionStatus == "paid") { %>
                                     <div class="d-flex align-items-center justify-content-between border-bottom py-3">
                                         <div class="d-flex align-items-center">

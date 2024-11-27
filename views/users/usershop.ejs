@@ -543,16 +543,14 @@ const checkboxes = document.querySelectorAll('.sort-filter');
 
 checkboxes.forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
-        const group = checkbox.value.includes('price') ? 'price' : 'alpha';
-
+        // Uncheck all other checkboxes
         checkboxes.forEach((cb) => {
-            if (cb !== checkbox && cb.value.includes(group)) {
+            if (cb !== checkbox) {
                 cb.checked = false;
             }
         });
     });
 });
-
 </script>
     
 
