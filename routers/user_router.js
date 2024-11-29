@@ -91,7 +91,7 @@ user_route.get("/load_wallet",auth,userprofile_controller.load_wallet);
 user_route.get("/load_wishlist",auth,userwishlist_controller.load_whishlist);
 user_route.post("/addto_wishlist",auth,userwishlist_controller.addto_wishlist);
 user_route.post("/remove_item",userwishlist_controller.remove_wishlistitem);
-user_route.get("/load_aboutus",auth,userwishlist_controller.load_aboutus)
+user_route.get("/load_aboutus",userwishlist_controller.load_aboutus)
 
 
 // user order controller 
