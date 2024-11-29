@@ -16,9 +16,11 @@ const load_productview = async (req, res) => {
 
 
     let relatedproducts = await product.find({
-      $or:[{category:productdata.category},
-        {brand:productdata.brand}]});
-
+      $or: [
+        { category: productdata.category },
+        { brand: productdata.brand }
+      ]
+    }).limit(5);
     // console.log("related productdata ",relatedproducts)
     return res.render("productview", { productdata, priceHelper ,relatedproducts });
   } catch (err) {

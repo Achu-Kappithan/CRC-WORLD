@@ -330,10 +330,9 @@
                                         </div>
                                         <div class="prInfoRow">
                                           <div class="product-stock">
-                                            <span id="active-stock-status"></span>
+                                            <span id="stock-status"></span>
                                             <p>Stock : <span id="product-stock"><%= productdata.sizes[0].stock %></span></p>
                                           </div>
-                                          <!-- <div class="product-sku">SKU: <span class="variant-sku">19115-rdxs</span></div> -->
                                           <div class="product-review">
                                             <a class="reviewLink" href="#tab2">
                                               <i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i>
@@ -342,33 +341,44 @@
                                             </a>
                                           </div>
                                         </div>
-                                         <p class="product-single__price product-single__price-product-template">
-                                            <span class="visually-hidden">Regular price</span>
-                                            <s style="display: none;" id="ComparePrice-product-template"><span id="salesprice" class="money"><%= productdata.sizes[0].Actualprice%></span></s>
-                                            <% if(productdata.sizes[0].Actualprice !== productdata.sizes[0].priceafteroffer){ %>
-                                            <s id="ComparePrice-product-template"><span id="salespriceview" class="money"><%= productdata.sizes[0].Actualprice%></span></s>
-                                            <% } %>
 
-                                            <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
-
-                                              <% let price = 0 
-                                              if(productdata.sizes[0].priceafteroffer !== undefined && productdata.sizes[0].priceafteroffer > 0){
-                                                price = productdata.sizes[0].priceafteroffer
-                                              }else{
-                                                price =  productdata.sizes[0].Actualprice
-                                              }  %>
-                                                <span id="ProductPrice-product-template">₹<span class="money" id="product-price"><%= price %> </span></span>
-                                            </span>
-                                            <% if( productdata.sizes[0].Actualprice !== productdata.sizes[0].priceafteroffer){ %>
-                                            <span class="discount-badge"> <span class="devider">|</span>&nbsp;
-                                                <span>You Save</span> 
-                                                <span  class="product-single__save-amount">
-                                                <span id="SaveAmount" class="money"></span>
+                                        <p class="product-single__price product-single__price-product-template">
+                                          <span class="visually-hidden">Regular price</span>
+                                        
+                                          <% if (productdata.sizes[0].Actualprice !== productdata.sizes[0].priceafteroffer) { %>
+                                            <s id="ComparePrice-product-template">
+                                              <span id="salesprice" class="money">₹<%= productdata.sizes[0].Actualprice %></span>
+                                            </s>
+                                          <% } %>
+                                        
+                                          <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
+                                            <% let finalprice = productdata.sizes[0].priceafteroffer && productdata.sizes[0].priceafteroffer > 0 
+                                                ? productdata.sizes[0].priceafteroffer 
+                                                : productdata.sizes[0].Actualprice; %>
+                                            <span id="ProductPrice-product-template">₹<span class="money" id="product-price"><%= finalprice %></span></span>
+                                          </span>
+                                        
+                                          <% if (productdata.sizes[0].Actualprice !== productdata.sizes[0].priceafteroffer) { %>
+                                            <span class="discount-badge"> 
+                                              <span class="devider">|</span>&nbsp;
+                                              <span>You Save</span>
+                                              <span class="product-single__save-amount">
+                                                <span id="SaveAmount" class="money">
+                                                  <% let savings = productdata.sizes[0].Actualprice - productdata.sizes[0].priceafteroffer; %>
+                                                  ₹<%= savings %>
                                                 </span>
-                                                <span class="off">(<span id="discount-percentage" ></span>%)</span>
-                                            </span> 
-                                            <% } %> 
+                                              </span>
+                                              <span class="off">(<span id="discount-percentage">
+                                                <% let discountPercentage = Math.round((savings / productdata.sizes[0].Actualprice) * 100); %>
+                                                <%= discountPercentage %>
+                                              </span>%)</span>
+                                            </span>
+                                          <% } %> 
                                         </p>
+                                        
+
+
+
                                         <div  class="product-single__description rte">
                                         <ul>
                                             <li><h3>Product Detailas</h3></li>
@@ -477,102 +487,10 @@
                                 <!--Product Tabs-->
                                 <div class="tabs-listing">
                                     <ul class="product-tabs">
-                                        <li rel="tab2"><a class="tablink">Product Reviews</a></li>
                                         <li rel="tab4"><a class="tablink">Shipping &amp; Returns</a></li>
                                     </ul>
                                     <div class="tab-container">
                                         
-                                        <div id="tab2" class="tab-content">
-                                            <div id="shopify-product-reviews">
-                                                <div class="spr-container">
-                                                    <div class="spr-header clearfix">
-                                                        <div class="spr-summary">
-                                                            <span class="product-review"><a class="reviewLink"><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i> </a><span class="spr-summary-actions-togglereviews">Based on 6 reviews456</span></span>
-                                                            <span class="spr-summary-actions">
-                                                                <a href="#" class="spr-summary-actions-newreview btn">Write a review</a>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="spr-content">
-                                                        <div class="spr-form clearfix">
-                                                            <form method="post" action="#" id="new-review-form" class="new-review-form">
-                                                                <h3 class="spr-form-title">Write a review</h3>
-                                                                <fieldset class="spr-form-contact">
-                                                                    <div class="spr-form-contact-name">
-                                                                      <label class="spr-form-label" for="review_author_10508262282">Name</label>
-                                                                      <input class="spr-form-input spr-form-input-text " id="review_author_10508262282" type="text" name="review[author]" value="" placeholder="Enter your name">
-                                                                    </div>
-                                                                    <div class="spr-form-contact-email">
-                                                                      <label class="spr-form-label" for="review_email_10508262282">Email</label>
-                                                                      <input class="spr-form-input spr-form-input-email " id="review_email_10508262282" type="email" name="review[email]" value="" placeholder="john.smith@example.com">
-                                                                    </div>
-                                                                </fieldset>
-                                                                <fieldset class="spr-form-review">
-                                                                  <div class="spr-form-review-rating">
-                                                                    <label class="spr-form-label">Rating</label>
-                                                                    <div class="spr-form-input spr-starrating">
-                                                                      <div class="product-review"><a class="reviewLink" href="#"><i class="fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i></a></div>
-                                                                    </div>
-                                                                  </div>
-                                                            
-                                                                  <div class="spr-form-review-title">
-                                                                    <label class="spr-form-label" for="review_title_10508262282">Review Title</label>
-                                                                    <input class="spr-form-input spr-form-input-text " id="review_title_10508262282" type="text" name="review[title]" value="" placeholder="Give your review a title">
-                                                                  </div>
-                                                            
-                                                                  <div class="spr-form-review-body">
-                                                                    <label class="spr-form-label" for="review_body_10508262282">Body of Review <span class="spr-form-review-body-charactersremaining">(1500)</span></label>
-                                                                    <div class="spr-form-input">
-                                                                      <textarea class="spr-form-input spr-form-input-textarea " id="review_body_10508262282" data-product-id="10508262282" name="review[body]" rows="10" placeholder="Write your comments here"></textarea>
-                                                                    </div>
-                                                                  </div>
-                                                                </fieldset>
-                                                                <fieldset class="spr-form-actions">
-                                                                    <input type="submit" class="spr-button spr-button-primary button button-primary btn btn-primary" value="Submit Review">
-                                                                </fieldset>
-                                                            </form>
-                                                        </div>
-                                                        <div class="spr-reviews">
-                                                            <div class="spr-review">
-                                                                <div class="spr-review-header">
-                                                                    <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
-                                                                    <h3 class="spr-review-header-title">Lorem ipsum dolor sit amet</h3>
-                                                                    <span class="spr-review-header-byline"><strong>dsacc</strong> on <strong>Apr 09, 2019</strong></span>
-                                                                </div>
-                                                                <div class="spr-review-content">
-                                                                    <p class="spr-review-content-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="spr-review">
-                                                              <div class="spr-review-header">
-                                                                <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
-                                                                <h3 class="spr-review-header-title">Lorem Ipsum is simply dummy text of the printing</h3>
-                                                                <span class="spr-review-header-byline"><strong>larrydude</strong> on <strong>Dec 30, 2018</strong></span>
-                                                              </div>
-                                                        
-                                                              <div class="spr-review-content">
-                                                                <p class="spr-review-content-body"><br><br>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.<br><br>
-                                                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.<br><br>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<br>
-                                                                </p>
-                                                              </div>
-                                                            </div>
-                                                            <div class="spr-review">
-                                                              <div class="spr-review-header">
-                                                                <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
-                                                                <h3 class="spr-review-header-title">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...</h3>
-                                                                <span class="spr-review-header-byline"><strong>quoctri1905</strong> on <strong>Dec 30, 2018</strong></span>
-                                                              </div>
-                                                        
-                                                              <div class="spr-review-content">
-                                                                <p class="spr-review-content-body">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.<br>
-                                                                <br>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                                                              </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         
                                         <div id="tab4" class="tab-content">
                                             <h4>Returns Policy</h4>
@@ -696,81 +614,83 @@
 });
 
 
+
+
   function handleSizeChange(sizeId, inputElement) {
-      const selectedSize = inputElement.value;
-      console.log("Selected Size:", selectedSize);
+  const selectedSize = inputElement.value;
+  console.log("Selected Size:", selectedSize);
 
-      updateProductDetails(sizeId);
-  }
+  updateProductDetails(sizeId);
+}
 
-  function updateProductDetails(sizeId) {
-      fetch(`/get-size-details?id=${sizeId}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
+function updateProductDetails(sizeId) {
+  fetch(`/get-size-details?id=${sizeId}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch size details. Server returned an error.");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
 
-            console.log(data)
+        let savings = data.size.Actualprice - data.size.priceafteroffer;
+        console.log("savingamt ", savings);
+        let discountPercentage = (savings / data.size.Actualprice) * 100;
+        console.log("percentAGE", discountPercentage);
 
-            let savings = data.size.Actualprice - data.size.priceafteroffer;
-            console.log("savingamt ",savings)
-            let discountPercentage = ((savings / data.size.Actualprice) * 100);
-            console.log("percentAGE",discountPercentage)
+        let price = 0;
+        if (data.size.priceafteroffer !== undefined && data.size.priceafteroffer > 0) {
+          price = data.size.priceafteroffer;
+        } else {
+          price = data.size.Actualprice;
+        }
 
+        // Check if elements exist before updating
+        const productPriceElement = document.getElementById("product-price");
+        const productStockElement = document.getElementById("product-stock");
+        const salesPriceElement = document.getElementById("salesprice");
+        const salesPriceViewElement = document.getElementById("salespriceview");
+        const saveAmountElement = document.getElementById("SaveAmount");
+        const discountPercentageElement = document.getElementById("discount-percentage");
+        const stockStatusElement = document.getElementById("stock-status");
 
-          let price = 0 
-          if(data.size.priceafteroffer !== undefined && data.size.priceafteroffer > 0){
-            price = data.size.priceafteroffer
-          }else{
-            price =  data.size.Actualprice
-          }  
-            
-            document.getElementById('product-price').textContent = Math.round(price);
-            document.getElementById('product-stock').textContent = data.size.stock;
-            document.getElementById('salesprice').textContent = data.size.Actualprice;
-            document.getElementById("salespriceview").textContent = data.size.Actualprice;
-            document.getElementById('SaveAmount').textContent = Math.round(savings);
-            document.getElementById('discount-percentage').textContent = discountPercentage;
+        if (productPriceElement) productPriceElement.textContent = Math.round(price);
+        if (productStockElement) productStockElement.textContent = data.size.stock;
+        if (salesPriceElement) salesPriceElement.textContent = data.size.Actualprice;
+        if (salesPriceViewElement) salesPriceViewElement.textContent = data.size.Actualprice;
+        if (saveAmountElement) saveAmountElement.textContent = Math.round(savings);
+        if (discountPercentageElement) discountPercentageElement.textContent = Math.round(discountPercentage);
 
-  
-            const stockStatusElement = document.getElementById('stock-status');
-            const activestockStatusElement = document.getElementById('active-stock-status')
-            
-            const stock = data.size.stock;
-  
-            if (stock > 5) {
-              activestockStatusElement.textContent = 'In Stock';
-              activestockStatusElement.className = 'stock-status in-stock';
-            } else if (stock > 0 && stock <= 5) {
-              activestockStatusElement.textContent = 'Limited Stock';
-              activestockStatusElement.className = 'stock-status limited-stock';
-            } else {
-              activestockStatusElement.textContent = 'Out of Stock';
-              activestockStatusElement.className = 'stock-status out-of-stock';
-            }
-
-            if (stock > 5) {
-              stockStatusElement.textContent = 'In Stock';
-              stockStatusElement.className = 'stock-status in-stock';
-            } else if (stock > 0 && stock <= 5) {
-              stockStatusElement.textContent = 'Limited Stock';
-              stockStatusElement.className = 'stock-status limited-stock';
-            } else {
-              stockStatusElement.textContent = 'Out of Stock';
-              stockStatusElement.className = 'stock-status out-of-stock';
-            }
-
+        // Handle stock status
+        const stock = data.size.stock;
+        if (stockStatusElement) {
+          if (stock > 5) {
+            stockStatusElement.textContent = "In Stock";
+            stockStatusElement.className = "stock-status in-stock";
+          } else if (stock > 0 && stock <= 5) {
+            stockStatusElement.textContent = "Limited Stock";
+            stockStatusElement.className = "stock-status limited-stock";
           } else {
-            alert('Failed to fetch size details. Please try again.');
+            stockStatusElement.textContent = "Out of Stock";
+            stockStatusElement.className = "stock-status out-of-stock";
           }
-        })
-        .catch(error => console.error('Error fetching size details:', error));
-  }
+        }
+      } else {
+        alert("Failed to fetch size details. Please try again.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching size details:", error);
+    });
+}
 
+window.onload = function () {
+  const defaultSizeId = "<%= productdata.sizes[0]._id %>";
+  updateProductDetails(defaultSizeId);
+};
 
-  window.onload = function() {
-      const defaultSizeId = '<%= productdata.sizes[0]._id %>';  
-      updateProductDetails(defaultSizeId);  
-  };
 
 
 

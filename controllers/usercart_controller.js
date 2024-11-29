@@ -18,7 +18,7 @@ const load_cart = async (req, res) => {
         message: "User not authenticated plz login with your Creditials",
       });
     }
-    console.log("this is the user cartpage data", cartdata);
+    // console.log("this is the user cartpage data", cartdata);
     res.status(200).render("cart", { cartdata ,message, type });
   } catch (err) {
     console.log("error for loading cart page".err);
