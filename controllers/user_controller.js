@@ -14,9 +14,6 @@ try {
   const bcrypt = require("bcrypt");
   console.log("bcrypt module loaded successfully.");
 
-  const user_otp = require("../models/otp");
-  console.log("OTP model loaded successfully.",user_otp);
-
   const nodemailer = require("nodemailer");
   console.log("nodemailer module loaded successfully.");
 
@@ -34,6 +31,9 @@ try {
 
   const Cart = require("../models/cart");
   console.log("Cart model loaded successfully.");
+  
+  const user_otp = require("../models/otp");
+  console.log("OTP model loaded successfully.",user_otp);
 } catch (error) {
   console.error("Error loading modules:", error.message);
 }
