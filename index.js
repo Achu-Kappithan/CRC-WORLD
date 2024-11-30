@@ -12,7 +12,7 @@ require("dotenv").config()
 app.use(session_config)
 app.use(express.json());
 
-const port = 7001;
+const port = process.env.PORT || 7500;
 dbconnect()
 const flash = require("connect-flash")
 
@@ -45,4 +45,5 @@ app.use('/assets', express.static(path.join(__dirname, 'public/admin/assets')));
 const admin_route = require("./routers/admin_router");
 app.use('/',admin_route);
 
-app.listen(port,()=>console.log(`server is running at http://localhost:${port}`))
+const URL = process.env.URL
+app.listen(port,()=>console.log(`server is running at ${URL}`))

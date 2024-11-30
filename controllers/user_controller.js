@@ -441,7 +441,9 @@ const resetpass_mail = async (req, res) => {
         },
       });
 
-      const resetUrl = `http://localhost:7001/reset_password/${resetToken}`;
+
+      const URL =  process.env.URL
+      const resetUrl = `${URL}/reset_password/${resetToken}`;
       const mailOptions = {
         from: {
           name: "CRC_WORLD",
