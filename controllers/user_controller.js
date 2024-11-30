@@ -1,15 +1,43 @@
-const User = require("../models/user_models");
-const Prouduct = require("../models/product");
-const brand = require("../models/brand");
-const category = require("../models/category");
-const bcrypt = require("bcrypt");
-const user_otp = require("../models/otp");
-const nodemailer = require("nodemailer");
-const otp_generator = require("otp-generator");
-const { price: priceHelper }  = require("../utils/pricehelper");
-const Wishlist = require("../models/wishlist")
-const { applyofferprice } = require("../utils/offeruils")
-const Cart = require("../models/cart")
+try {
+  const User = require("../models/user_models");
+  console.log("User model loaded successfully.");
+
+  const Product = require("../models/product");
+  console.log("Product model loaded successfully.");
+
+  const brand = require("../models/brand");
+  console.log("Brand model loaded successfully.");
+
+  const category = require("../models/category");
+  console.log("Category model loaded successfully.");
+
+  const bcrypt = require("bcrypt");
+  console.log("bcrypt module loaded successfully.");
+
+  const user_otp = require("../models/otp");
+  console.log("OTP model loaded successfully.",user_otp);
+
+  const nodemailer = require("nodemailer");
+  console.log("nodemailer module loaded successfully.");
+
+  const otp_generator = require("otp-generator");
+  console.log("OTP generator loaded successfully.");
+
+  const { price: priceHelper } = require("../utils/pricehelper");
+  console.log("Price helper loaded successfully.");
+
+  const Wishlist = require("../models/wishlist");
+  console.log("Wishlist model loaded successfully.");
+
+  const { applyofferprice } = require("../utils/offeruils");
+  console.log("Offer utils loaded successfully.");
+
+  const Cart = require("../models/cart");
+  console.log("Cart model loaded successfully.");
+} catch (error) {
+  console.error("Error loading modules:", error.message);
+}
+
 
 const crypto = require("crypto");
 require("dotenv").config();
