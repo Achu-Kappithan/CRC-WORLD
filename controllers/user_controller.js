@@ -1,39 +1,41 @@
+let User, Product, brand, category, bcrypt, nodemailer, otp_generator, priceHelper, Wishlist, applyofferprice, Cart, user_otp;
+
 try {
-  const User = require("../models/user_models");
+  User = require("../models/user_models");
   console.log("User model loaded successfully.");
 
-  const Product = require("../models/product");
+  Product = require("../models/product");
   console.log("Product model loaded successfully.");
 
-  const brand = require("../models/brand");
+  brand = require("../models/brand");
   console.log("Brand model loaded successfully.");
 
-  const category = require("../models/category");
+  category = require("../models/category");
   console.log("Category model loaded successfully.");
 
-  const bcrypt = require("bcrypt");
+  bcrypt = require("bcrypt");
   console.log("bcrypt module loaded successfully.");
 
-  const nodemailer = require("nodemailer");
+  nodemailer = require("nodemailer");
   console.log("nodemailer module loaded successfully.");
 
-  const otp_generator = require("otp-generator");
+  otp_generator = require("otp-generator");
   console.log("OTP generator loaded successfully.");
 
-  const { price: priceHelper } = require("../utils/pricehelper");
+  ({ price: priceHelper } = require("../utils/pricehelper"));
   console.log("Price helper loaded successfully.");
 
-  const Wishlist = require("../models/wishlist");
+  Wishlist = require("../models/wishlist");
   console.log("Wishlist model loaded successfully.");
 
-  const { applyofferprice } = require("../utils/offeruils");
+  ({ applyofferprice } = require("../utils/offeruils"));
   console.log("Offer utils loaded successfully.");
 
-  const Cart = require("../models/cart");
+  Cart = require("../models/cart");
   console.log("Cart model loaded successfully.");
-  
-  const user_otp = require("../models/otp");
-  console.log("OTP model loaded successfully.",user_otp);
+
+  user_otp = require("../models/otp");
+  console.log("OTP model loaded successfully.", user_otp);
 } catch (error) {
   console.error("Error loading modules:", error.message);
 }
@@ -374,7 +376,7 @@ const loadhome = async (req, res) => {
     let batlist = null;
     let gadlist =null;
     if (batcategory) {
-       batlist = await Prouduct.find({
+       batlist = await Product.find({
         category: batcategory._id,
         is_deleted: false,
       })
@@ -384,7 +386,7 @@ const loadhome = async (req, res) => {
 
     }
     if(gadgetcat){
-       gadlist = await Prouduct.find({
+       gadlist = await Product.find({
         category: gadgetcat._id,
         is_deleted: false,
       })
@@ -395,7 +397,7 @@ const loadhome = async (req, res) => {
     }
     const branddata = await brand.find({ is_deleted: false });
 
-    let productlist = await Prouduct.find({ is_deleted: false })
+    let productlist = await Product.find({ is_deleted: false })
       .populate("category")
       .populate("brand");
     productlist = await applyofferprice(productlist);

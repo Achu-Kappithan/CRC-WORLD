@@ -739,27 +739,14 @@ document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio)
 
   // for applaying cupons
 
-  document.querySelectorAll(".apply-coupon").forEach(function(button){
-    button.addEventListener("click",function(){
-      const couponcode = button.getAttribute("data-coupon-id")
-      console.log("copon code is ",couponcode)
-      const grandTotal = parseFloat(document.getElementById('totalamt').value); 
-      console.log("grandTotal:", grandTotal);
-
-      fetch("/apply_coupons", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ couponcode, grandTotal })       
-    })
-
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
+  document.querySelectorAll(".apply-coupon").forEach(function(button) {
+    button.addEventListener("click", function() {
+        const appliedCoupon = document.getElementById("applyiedcoupon").value; 
+        if (appliedCoupon) {
             Swal.fire({
-                icon: "success", 
-                title: data.message,
+                icon: "warning",
+                title: "A coupon is already applied!",
+                text: `Remove the current coupon (${appliedCoupon}) to apply a new one.`,
                 toast: true,
                 background: "black",
                 color: "white",
@@ -772,50 +759,82 @@ document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio)
                 },
                 didOpen: () => {
                     const swalPopup = document.querySelector('.custom-toast');
-                    swalPopup.style.marginTop = '70px';  
-                    swalPopup.style.marginRight = '15px'; 
+                    swalPopup.style.marginTop = '70px';
+                    swalPopup.style.marginRight = '15px';
                 }
             });
-
-            console.log("updated data", data.offerprice);
-            document.getElementById("offerprice").textContent = `₹ ${data.offerprice.toFixed(2)}`;  
-            document.getElementById('totalamt').value = (grandTotal - data.offerprice).toFixed(2);  
-            document.getElementById('total-display').textContent = `₹ ${(grandTotal - data.offerprice).toFixed(2)}`;  
-            document.getElementById("orderfinalamt").value = (grandTotal - data.offerprice).toFixed(2)
-            document.getElementById("applyiedcoupon").value = couponcode
-            document.getElementById("couponamt").value = ` ${data.offerprice}`;
-
-            document.getElementById(`applycoupons-${couponcode}`).style.display = "none";
-            document.getElementById(`removecoupon-${couponcode}`).style.display = "block"
-
-
-        } else {
-            Swal.fire({
-                icon: "error", 
-                title: data.message,
-                toast: true,
-                background: "black",
-                color: "white",
-                position: "top-end",
-                showConfirmButton: false,
-                timerProgressBar: true,
-                timer: 5000,
-                customClass: {
-                    popup: 'custom-toast'
-                },
-                didOpen: () => {
-                    const swalPopup = document.querySelector('.custom-toast');
-                    swalPopup.style.marginTop = '70px';  
-                    swalPopup.style.marginRight = '15px'; 
-                }
-            });
+            return; 
         }
+
+        const couponcode = button.getAttribute("data-coupon-id");
+        console.log("Coupon code is ", couponcode);
+        const grandTotal = parseFloat(document.getElementById('totalamt').value); 
+        console.log("Grand Total:", grandTotal);
+
+        fetch("/apply_coupons", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ couponcode, grandTotal })       
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: data.message,
+                    toast: true,
+                    background: "black",
+                    color: "white",
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 5000,
+                    customClass: {
+                        popup: 'custom-toast'
+                    },
+                    didOpen: () => {
+                        const swalPopup = document.querySelector('.custom-toast');
+                        swalPopup.style.marginTop = '70px';  
+                        swalPopup.style.marginRight = '15px'; 
+                    }
+                });
+
+                console.log("Updated data", data.offerprice);
+                document.getElementById("offerprice").textContent = `₹ ${data.offerprice.toFixed(2)}`;  
+                document.getElementById('totalamt').value = (grandTotal - data.offerprice).toFixed(2);  
+                document.getElementById('total-display').textContent = `₹ ${(grandTotal - data.offerprice).toFixed(2)}`;  
+                document.getElementById("orderfinalamt").value = (grandTotal - data.offerprice).toFixed(2);
+                document.getElementById("applyiedcoupon").value = couponcode;
+                document.getElementById("couponamt").value = ` ${data.offerprice}`;
+
+                document.getElementById(`applycoupons-${couponcode}`).style.display = "none";
+                document.getElementById(`removecoupon-${couponcode}`).style.display = "block";
+            } else {
+                Swal.fire({
+                    icon: "error", 
+                    title: data.message,
+                    toast: true,
+                    background: "black",
+                    color: "white",
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    timer: 5000,
+                    customClass: {
+                        popup: 'custom-toast'
+                    },
+                    didOpen: () => {
+                        const swalPopup = document.querySelector('.custom-toast');
+                        swalPopup.style.marginTop = '70px';  
+                        swalPopup.style.marginRight = '15px'; 
+                    }
+                });
+            }
+        });
     });
-
-
-
-    })
-  })
+});
 
     
 

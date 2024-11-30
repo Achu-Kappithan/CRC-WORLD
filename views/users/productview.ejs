@@ -707,7 +707,10 @@ window.onload = function () {
     const stockElement = document.getElementById("product-stock");
     const stock = parseInt(stockElement.textContent);
     const salespriceElement = document.getElementById('salesprice');
-    const Actualprice = salespriceElement.textContent;
+    const Actualprice = salespriceElement ?  salespriceElement.textContent  : Offerprice
+    console.log("actual price is ",Actualprice)
+
+    
 
     const selectedSizeRadio = document.querySelector('input[name="size-option"]:checked');
     const Cartsize = selectedSizeRadio ? selectedSizeRadio.value : null;
