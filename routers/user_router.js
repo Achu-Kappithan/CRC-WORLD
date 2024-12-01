@@ -54,7 +54,7 @@ user_route.post("/product_filter", userproduct_controller.filterProducts);
 
 // load cart patge
 user_route.get("/load_usercart",auth,validateCartPrices,usercart_controller.load_cart);
-user_route.post("/addto_cart",auth,validateCartPrices,usercart_controller.addto_cart);
+user_route.post("/addto_cart",validateCartPrices,usercart_controller.addto_cart);
 user_route.post("/remove_cartitem",auth,usercart_controller.remove_cartitem);
 user_route.post("/update_quntity",auth,usercart_controller.update_quentity);
 user_route.get("/getcart_count",auth,usercart_controller.get_cartcount);
@@ -89,7 +89,7 @@ user_route.get("/load_wallet",auth,userprofile_controller.load_wallet);
 
 //user wishlist controller   and  about us 
 user_route.get("/load_wishlist",auth,userwishlist_controller.load_whishlist);
-user_route.post("/addto_wishlist",auth,userwishlist_controller.addto_wishlist);
+user_route.post("/addto_wishlist",userwishlist_controller.addto_wishlist);
 user_route.post("/remove_item",userwishlist_controller.remove_wishlistitem);
 user_route.get("/load_aboutus",userwishlist_controller.load_aboutus)
 

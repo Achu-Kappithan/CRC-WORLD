@@ -27,8 +27,7 @@ const addto_wishlist = async(req,res)=>{
         const userid = req.session.user_id;
 
         if(!userid){
-            req.flash("messsage","user is not authoticated");
-            return res.status(400).redirect("/user_shop");
+            res.json({success:false, message :"User not authaticated Plz login"})
         }
         const wishlistdata = await Wishlist.findOne({userId:userid})
         let products = []
@@ -50,7 +49,7 @@ const addto_wishlist = async(req,res)=>{
                 }
             })
             if(exisistitem){
-                res.json({error :"Item alredy in the wishlist"})
+                res.json({success:false,message :"Item alredy in the wishlist"})
         }else{
             await Wishlist.findOneAndUpdate(
                 {userId:userid},

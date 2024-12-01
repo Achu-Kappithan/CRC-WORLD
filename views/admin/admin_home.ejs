@@ -62,7 +62,7 @@
                 </span>
                 <div class="text">
                   <h6 class="mb-1 card-title">Revenue</h6>
-                  <span>₹<%=report[0]?.totalSales || 0 %></span>
+                  <span>Rs <%=report[0]?.totalSales || 0 %></span>
                   <span class="text-sm">Excluding shipping fees</span>
                 </div>
               </article>
@@ -106,7 +106,7 @@
                                 <i class="bi bi-gift-fill me-3 text-success"></i> <!-- Icon for Coupons -->
                                 <h6 class="mb-0 card-title">Total Coupons</h6>
                             </div>
-                            <span class="amount">₹ <%= coupontotal %></span> <!-- Amount with new styling -->
+                            <span style="font-size: 15px;" class="amount">Rs  <%= coupontotal %></span> 
                         </div>
         
                         <!-- Total Offers -->
@@ -115,7 +115,7 @@
                                 <i class="bi bi-tag-fill me-3 text-warning"></i> <!-- Icon for Offers -->
                                 <h6 class="mb-0 card-title">Total Offer</h6>
                             </div>
-                            <span class="amount">₹<%= offertotal %></span> <!-- Amount with new styling -->
+                            <span style="font-size: 15px;" class="amount">Rs <%= offertotal %></span> <!-- Amount with new styling -->
                         </div>
                     </div>
                 </article>
@@ -172,9 +172,9 @@
                         <td><%= data.date %></td>
                         <td><%= data.orders %></td>
                         <td><%= data.quantity %></td>
-                        <td>₹<%= data.sales %></td>
-                        <td>₹<%= data.couponDiscount %></td>
-                        <td>₹<%= data.offerDiscount %></td>
+                        <td>Rs <%= data.sales %></td>
+                        <td>Rs <%= data.couponDiscount %></td>
+                        <td>Rs <%= data.offerDiscount %></td>
                       </tr>
                       <% }) %>
                     </tbody>
@@ -246,15 +246,28 @@
 
 
             
-            <div class="col-md-4">
-              <div class="card">
-                <div class="card-body d-flex justify-content-between">
-                  <a href="/admin_home?report=daily" class="btn <%= report === 'daily' ? 'btn-success' : 'btn-primary' %>">Today</a>
-                  <a href="/admin_home?report=monthly" class="btn <%= report === 'monthly' ? 'btn-success' : 'btn-primary' %>">Monthly</a>
-                  <a href="/admin_home?report=yearly" class="btn <%= report === 'yearly' ? 'btn-success' : 'btn-primary' %>">Yearly</a>
-                </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body d-flex justify-content-between align-items-center" style="gap: 10px; flex-wrap: nowrap;">
+                <a href="/admin_home?report=daily" 
+                   class="btn <%= report === 'daily' ? 'btn-success' : 'btn-primary' %>" 
+                   style="padding: 10px 25px; font-size: 12px;">
+                   Today
+                </a>
+                <a href="/admin_home?report=monthly" 
+                   class="btn <%= report === 'monthly' ? 'btn-success' : 'btn-primary' %>" 
+                   style="padding: 10px 25px; font-size: 12px;">
+                   Monthly
+                </a>
+                <a href="/admin_home?report=yearly" 
+                   class="btn <%= report === 'yearly' ? 'btn-success' : 'btn-primary' %>" 
+                   style="padding: 10px 25px; font-size: 12px;">
+                   Yearly
+                </a>
               </div>
             </div>
+          </div>
+                                
           
             <div class="col-md-8">
               <div class="card">
@@ -440,88 +453,132 @@
 
 
 <script>
-
-async function generatePDF(report) {
-  try {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    doc.setFont("helvetica", "normal");
-
-    doc.setFontSize(18);
-    doc.text("Sales Report", 10, 10);
-    doc.setFontSize(12);
-
-    doc.text(`Total Sales: \u20B9${Number(report.totalSales).toFixed(2)}`, 10, 30);
-    doc.text(`Total Quantity: ${report.totalQuantity}`, 10, 40);
-    doc.text(`Total Orders: ${report.totalOrders}`, 10, 50);
-    doc.text(`Total Coupon Discount: \u20B9${Number(report.totalCouponDiscount).toFixed(2)}`, 10, 60);
-    doc.text(`Total Offer Discount: \u20B9${Number(report.totalOfferDiscount).toFixed(2)}`, 10, 70);
-
-    let y = 90;
-    doc.text("Date", 10, y);
-    doc.text("Sales", 60, y);
-    doc.text("Quantity", 110, y);
-    doc.text("Orders", 160, y);
-
-    y += 10;
-
-    report.dailyData.forEach((data) => {
-      console.log("Rendering data:", data);
-
-      if (y > 280) {
-        doc.addPage();
-        y = 10; 
-      }
-
-      doc.text(data.date, 10, y);
-      doc.text(`\u20B9${Number(data.sales).toFixed(2)}`, 60, y); // Ensure sales are formatted correctly
-      doc.text(`${data.quantity}`, 110, y);
-      doc.text(`${data.orders}`, 160, y);
+  async function generatePDF(report) {
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+  
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(20);
+      doc.text("Sales Report", 105, 20, null, null, "center");
+  
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.text("Summary", 10, 40);
+  
+      doc.setFontSize(10);
+      doc.text(`Total Sales: ${Number(report.totalSales).toFixed(2)}`, 10, 50);
+      doc.text(`Total Quantity: ${report.totalQuantity}`, 10, 60);
+      doc.text(`Total Orders: ${report.totalOrders}`, 10, 70);
+      doc.text(`Total Coupon Discount: ${Number(report.totalCouponDiscount).toFixed(2)}`, 10, 80);
+      doc.text(`Total Offer Discount:${Number(report.totalOfferDiscount).toFixed(2)}`, 10, 90);
+  
+      let y = 110;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+  
+      doc.setDrawColor(0, 0, 0);
+      doc.setFillColor(220, 220, 220); 
+      doc.rect(10, y - 5, 190, 10, "F");
+  
+      doc.text("Date", 15, y);
+      doc.text("Sales", 60, y);
+      doc.text("Quantity", 110, y);
+      doc.text("Orders", 160, y);
+  
       y += 10;
-    });
-
-    doc.save("sales-report.pdf");
-  } catch (error) {
-    console.error("Error generating PDF:", error);
-    alert("Failed to generate PDF. Check the console for details.");
+  
+      doc.setFont("helvetica", "normal");
+      report.dailyData.forEach((data, index) => {
+        console.log("Rendering data:", data);
+  
+        if (y > 280) {
+          doc.addPage();
+          y = 20; 
+          doc.setFont("helvetica", "bold");
+          doc.text("Date", 15, y);
+          doc.text("Sales", 60, y);
+          doc.text("Quantity", 110, y);
+          doc.text("Orders", 160, y);
+          y += 10;
+          doc.setFont("helvetica", "normal");
+        }
+  
+        if (index % 2 === 0) {
+          doc.setFillColor(240, 240, 240); 
+          doc.rect(10, y - 5, 190, 10, "F");
+        }
+  
+        doc.text(data.date, 15, y);
+        doc.text(`${Number(data.sales).toFixed(2)}`, 60, y); 
+        doc.text(`${data.quantity}`, 110, y);
+        doc.text(`${data.orders}`, 160, y);
+        y += 10;
+      });
+  
+      const pageCount = doc.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(10);
+        doc.text(`Page ${i} of ${pageCount}`, 105, 290, null, null, "center");
+      }
+  
+      doc.save("sales-report.pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Check the console for details.");
+    }
   }
-}
+  </script>
+  
 
-
-
-</script>
-
-
-<script>
-  function generateExcel(report) {
-    const workbook = XLSX.utils.book_new();
-
-    const summary = [
-      ["Total Sales", report.totalSales],
-      ["Total Quantity", report.totalQuantity],
-      ["Total Orders", report.totalOrders],
-      ["Total Coupon Discount", report.totalCouponDiscount],
-      ["Total Offer Discount", report.totalOfferDiscount],
-    ];
-    const summarySheet = XLSX.utils.aoa_to_sheet(summary);
-    XLSX.utils.book_append_sheet(workbook, summarySheet, "Summary");
-
-    const dailyData = [
-      ["Date", "Sales", "Quantity", "Orders", "Coupon Discount", "Offer Discount"],
-      ...report.dailyData.map((data) => [
-        data.date,
-        data.sales,
-        data.quantity,
-        data.orders,
-        data.couponDiscount,
-        data.offerDiscount,
-      ]),
-    ];
-    const dataSheet = XLSX.utils.aoa_to_sheet(dailyData);
-    XLSX.utils.book_append_sheet(workbook, dataSheet, "Daily Data");
-
-    XLSX.writeFile(workbook, "sales-report.xlsx");
-  }
-</script>
-
+  <script>
+    function generateExcel(report) {
+      try {
+        
+        const workbook = XLSX.utils.book_new();
+  
+        
+        const summary = [
+          ["Summary"], 
+          [],
+          ["Total Sales", `\u20B9${Number(report.totalSales).toFixed(2)}`],
+          ["Total Quantity", report.totalQuantity],
+          ["Total Orders", report.totalOrders],
+          ["Total Coupon Discount", `\u20B9${Number(report.totalCouponDiscount).toFixed(2)}`],
+          ["Total Offer Discount", `\u20B9${Number(report.totalOfferDiscount).toFixed(2)}`],
+        ];
+  
+        
+        const summarySheet = XLSX.utils.aoa_to_sheet(summary);
+        XLSX.utils.book_append_sheet(workbook, summarySheet, "Summary");
+  
+       
+        const dailyData = [
+          ["Daily Data"], 
+          [],
+          ["Date", "Sales", "Quantity", "Orders", "Coupon Discount", "Offer Discount"], 
+          ...report.dailyData.map((data) => [
+            data.date,
+            `\u20B9${Number(data.sales).toFixed(2)}`, 
+            data.quantity,
+            data.orders,
+            `\u20B9${Number(data.couponDiscount || 0).toFixed(2)}`, 
+            `\u20B9${Number(data.offerDiscount || 0).toFixed(2)}`, 
+          ]),
+        ];
+  
+        const dataSheet = XLSX.utils.aoa_to_sheet(dailyData);
+        XLSX.utils.book_append_sheet(workbook, dataSheet, "Daily Data");
+  
+        XLSX.writeFile(workbook, "sales-report.xlsx");
+  
+        alert("Excel report generated successfully!");
+      } catch (error) {
+        console.error("Error generating Excel:", error);
+        alert("Failed to generate Excel. Check the console for details.");
+      }
+    }
+  </script>
+    

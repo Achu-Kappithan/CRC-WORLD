@@ -838,6 +838,7 @@ decrementBtn.addEventListener('click', () => {
 
 document.getElementById("wishlist").addEventListener("click",function(){
     const id = document.getElementById("itemid").value
+    console.log("wihslist is working")
     fetch("/addto_wishlist",{
       method : "POST",
       headers : {
@@ -870,11 +871,11 @@ document.getElementById("wishlist").addEventListener("click",function(){
                         swalPopup.style.marginRight = "15px";
                     },
                 });
-    }else if(data.error){
+    }else {
       Swal.fire({
                     icon: 'warning',
                     title: 'warning',
-                    text: 'Item alredy in the wishlist!',
+                    text: data.message,
                     toast: true,
                     background: "black",
                     color: "white",

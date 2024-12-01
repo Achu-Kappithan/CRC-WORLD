@@ -40,7 +40,7 @@ const addto_cart = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: "User not authenticated",
+        message: "User not authenticated , plz login",
         alertType: "error",
         alertTitle: "Authentication Error",
       });
