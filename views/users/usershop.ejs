@@ -320,11 +320,11 @@
                         swalPopup.style.marginRight = "15px";
                     },
                 });
-            } else if (data.error) {
+            } else {
                 Swal.fire({
                     icon: 'warning',
                     title: 'warning',
-                    text: 'Item alredy in the wishlist!',
+                    text: data.message,
                     toast: true,
                     background: "black",
                     color: "white",
