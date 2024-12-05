@@ -1,5 +1,5 @@
 const Wishlist = require("../models/wishlist")
-
+const statuscode = require("../utils/statusCode")
 
 
 //load wishlist page
@@ -11,11 +11,11 @@ const load_whishlist = async (req,res)=>{
     
         const message = req.flash("message")
         const type = req.flash("type")
-        res.status(200).render("wishlist",{message ,type ,
+        res.status(statuscode.OK).render("wishlist",{message ,type ,
             wishlist: wishlistdata ? wishlistdata.productIds : []})
     } catch (err) {
         console.log("error for loading wishlist page",err)
-        res.status(500).render("user404",{message:"Unable to load wishlist page"})
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Unable to load wishlist page"})
     }
 }
 
@@ -60,6 +60,7 @@ const addto_wishlist = async(req,res)=>{
         }
     } catch (err) {
         console.log("error for product addto wishlist",err)
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message: "Unable to complete the request"})
     }
 }
 
@@ -84,12 +85,12 @@ const remove_wishlistitem = async (req,res)=>{
             req.flash("type","error")
             return res.json({success:false, message:"Failed to remove the procuct"})
         }
-        return res.json({success:true, message:"item removed successfully.."})
+        return res.status(statuscode.OK).json({success:true, message:"item removed successfully.."})
         
 
     } catch (err) {
         console.log("error for removeing wishlist item",err)
-        res.status(500).render("user404",{message:"Unable to complate your request Try again...!"})
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Unable to complate your request Try again...!"})
     }
 }
 
@@ -98,10 +99,11 @@ const remove_wishlistitem = async (req,res)=>{
 
 const load_aboutus = async (req,res)=>{
     try {
-        res.status(200).render("aboutus")
+        res.status(statuscode.ok).render("aboutus")
         
     } catch (err) {
         console.log("error for loading about us page",err)
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Unable to complate your request Try again...!"})
         
     }
 }

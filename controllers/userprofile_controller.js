@@ -5,6 +5,7 @@ const Wallet = require("../models/wallet");
 const Product = require("../models/product")
 const {Prepotional_couponamt}  = require("../utils/coupon_util");
 const product = require("../models/product");
+const statuscode = require('../utils/statusCode')
 
 // for loading  userprofile page
 
@@ -15,11 +16,11 @@ const load_userprofile = async (req,res)=>{
         const message = req.flash("message");
         const type =  req.flash("type");
         // console.log("this is the data send to user profile",userdata)
-        res.status(200).render("userprofile",{userdata , message, type})
+        res.status(statuscode.OK).render("userprofile",{userdata , message, type})
         
     } catch (err) {
         console.log("error for loading user profile",err)
-        res.status(500).render("user404",{message:"Unable to load user profile"})
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Unable to load user profile"})
         
     }
 }
@@ -34,7 +35,7 @@ const add_newaddress = async (req,res)=>{
         if(!userid){
             req.flash("message","User is Not valid");
             req.flash("type","error")
-            res.statun(4001).redirect("/user_Profile")
+            res.status(statuscode.BAD_REQUEST).redirect("/user_Profile")
             console.log("userId is not valid",userid)
         }
 
@@ -61,10 +62,10 @@ const add_newaddress = async (req,res)=>{
         );
         req.flash("message","Adress Added Sucessfully");
         req.flash("type","success")
-        res.status(200).redirect("/user_Profile")
+        res.status(statuscode.OK).redirect("/user_Profile")
     } catch (err) {
         console.log("error for adding address",err)
-        res.status(500).render("user404",{message:"unable to add address try again...!"})
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"unable to add address try again...!"})
     }
 }
 
@@ -74,8 +75,8 @@ const update_address = async (req,res)=>{
     try {
         const id = req.query.id;
         const {name, housename, locality, district, state, pincode, phone, landmark, altphone}= req.body
-        console.log("this is the data for the new updateion",req.body)
-        console.log('this is the id for update address',id)
+        // console.log("this is the data for the new updateion",req.body)
+        // console.log('this is the id for update address',id)
 
 
         await Address.findByIdAndUpdate(id,{
@@ -92,12 +93,12 @@ const update_address = async (req,res)=>{
         });
         req.flash("message","Address Upated successfully")
         req.flash("type","success")
-        res.status(200).redirect("/user_Profile")
+        res.status(statuscode.OK).redirect("/user_Profile")
     } catch (err) {
         console.log("error for updating the user address",err)
         req.flash("message","Fail to updae the addrss try again..!")
         req.flash("type","error")
-        res.status(500).redirect("/user_Profile")
+        res.status(statuscode.INTERNAL_SERVER_ERROR).redirect("/user_Profile")
         
     }
 }
@@ -115,12 +116,12 @@ const delete_address = async (req,res)=>{
         });
         req.flash("message","Address successfully removed")
         req.flash("type","success")
-        res.status(200).redirect("/user_Profile")
+        res.status(statuscode.OK).redirect("/user_Profile")
     } catch (err) {
         console.log("error for deleting user addresss",err)
         req.flash("message","Something went Wrong please Try again...!")
         req.flash("type","error")
-        res.status(500).redirect("/user_Profile")
+        res.status(statuscode.INTERNAL_SERVER_ERROR).redirect("/user_Profile")
         
     }
 }
@@ -138,11 +139,11 @@ const update_userprofile = async(req,res)=>{
         )
         req.flash("message","Profile updated Sucessfully")
         req.flash("type","success")
-        res.status(200).redirect("/user_Profile")
+        res.status(statuscode.OK).redirect("/user_Profile")
         
     } catch (err) {
         console.log("error for updating the userprofile",err)
-        res.status(500).render("user404",{message: "Unablelet to complate the request"})
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message: "Unablelet to complate the request"})
     }
 }
 
@@ -153,11 +154,11 @@ const load_ordersummary = async (req,res)=>{
         orderid = req.query.orderid
         const orderdetails = await Orders.findById(orderid)
         console.log("this is the order details",orderdetails)
-        return res.status(200).render("order_summary",{ orderdetails})
+        return res.status(statuscode.OK).render("order_summary",{ orderdetails})
         
     } catch (err) {
         console.log("error for loading product summary page",err)
-        return res.status(500).render("user404",{message: "unable to load order summaypage"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message: "unable to load order summaypage"})
         
     }
 }
@@ -185,7 +186,7 @@ const load_myorder = async (req, res) => {
 
         const totalPages = Math.ceil(totalOrders / limit);
 
-        return res.status(200).render("myorders", {
+        return res.status(statuscode.OK).render("myorders", {
             orderdetails: orders,
             currentPage: page,
             totalPages,
@@ -194,7 +195,7 @@ const load_myorder = async (req, res) => {
         });
     } catch (err) {
         console.log("Error loading order summary page", err);
-        res.status(500).render("user404", {
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404", {
             message: "Unable to load My Order page. Please try again!",
         });
     }
@@ -259,7 +260,7 @@ const cancell_order = async (req,res)=>{
             await productdata.save()
         }
 
-        return res.status(200).json({success:true, message:"Order Cancelled successfully and Payment credited to the wallet..!"})
+        return res.status(statuscode.OK).json({success:true, message:"Order Cancelled successfully and Payment credited to the wallet..!"})
 
         }else {
 
@@ -283,7 +284,7 @@ const cancell_order = async (req,res)=>{
 
     } catch (err) {
         console.log("error for cancelling a order",err)
-        res.status(500).render("user404",{message:"Something went rong Tray again..!"})
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Something went rong Tray again..!"})
         
     }
 } 
@@ -311,7 +312,7 @@ const load_wallet = async (req, res) => {
 
             const totalPages = Math.ceil(totalTransactions / limit);
 
-            return res.status(200).render("wallet", {
+            return res.status(statuscode.OK).render("wallet", {
                 walletdata: {
                     ...walletdata.toObject(),
                     transactions,
@@ -321,11 +322,11 @@ const load_wallet = async (req, res) => {
             });
         }
 
-        return res.status(200).render("wallet", { walletdata: null, currentPage:1 ,  totalPages:1  });
+        return res.status(statuscode.ok).render("wallet", { walletdata: null, currentPage:1 ,  totalPages:1  });
     } catch (err) {
         console.log("Error loading user wallet page:", err);
         return res
-            .status(500)
+            .status(statuscode.INTERNAL_SERVER_ERROR)
             .render("user404", { message: "Unable to complete the request, try again..!" });
     }
 };
@@ -393,11 +394,11 @@ const return_order = async (req,res)=>{
         }
 
 
-        return res.status(200).json({success : true , message: "Order returned successfully, refund credited to wallet"})
+        return res.status(statuscode.OK).json({success : true , message: "Order returned successfully, refund credited to wallet"})
 
     } catch (err) {
         console.log("error for return the order",err)
-        return res.status(500).render("user404",{message : "Unable to complete the request try again..!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message : "Unable to complete the request try again..!"})
         
     }
 }
@@ -414,7 +415,7 @@ const individual_cancell = async (req,res)=>{
         const orderdetails = await Orders.findById({_id: order_id})
 
         if(orderdetails.status !== "Pending" && orderdetails.status !== "Shipped"  ){
-            return res.status(400).json({ success:false, message: `Can't change the status of ${orderdetails.status} item`});
+            return res.status(statuscode.BAD_REQUEST).json({ success:false, message: `Can't change the status of ${orderdetails.status} item`});
         }
 
         let itemtotalprice = 0;
@@ -457,7 +458,7 @@ const individual_cancell = async (req,res)=>{
 
        if(orderdetails.paymentMethod == "onlinepayment" || orderdetails.paymentMethod == "mywallet"){
         let  walletdata = await Wallet.findOne({userId :userid})
-        console.log("user wallet",walletdata)
+        // console.log("user wallet",walletdata)
 
         if(!walletdata){
             walletdata = new Wallet({
@@ -479,11 +480,11 @@ const individual_cancell = async (req,res)=>{
        }
        
 
-      return res.status(200).send({ success:true, orderdata, message: "Item cancelled and coupon adjusted successfully." });
+      return res.status(statuscode.OK).send({ success:true, orderdata, message: "Item cancelled and coupon adjusted successfully." });
 
     } catch (err) {
        console.log("error for individual item cancell ",err)
-       return res.status(500).render("user404",{message:"Unable to  complete the request try again..!"})
+       return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Unable to  complete the request try again..!"})
         
     }
 }
@@ -501,7 +502,7 @@ const individual_return = async (req,res)=>{
         const orderdetails = await Orders.findById({_id: order_id})
 
         if(orderdetails.status !== "Delivered"  ){
-            return res.status(400).json({ success:false, message: `Can't change the status of ${orderdetails.status} item`});
+            return res.status(statuscode.BAD_REQUEST).json({ success:false, message: `Can't change the status of ${orderdetails.status} item`});
         }
 
         let itemtotalprice = 0;
@@ -562,11 +563,11 @@ const individual_return = async (req,res)=>{
         })
         await walletdata.save()
 
-        return res.status(200).json({ success:true, orderdata, message: "Item successfully returned. Refund is being processed to your wallet." });
+        return res.status(statuscode.OK).json({ success:true, orderdata, message: "Item successfully returned. Refund is being processed to your wallet." });
         
     } catch (err) {
         console.log("error for individual item return ",err)
-        res.status(500).render("user404",{message: "Unable to complate the request plz try againg"})
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message: "Unable to complate the request plz try againg"})
     }
 }
 

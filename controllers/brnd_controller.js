@@ -1,4 +1,5 @@
 const brand = require("../models/brand");
+const statuscode = require("../utils/statusCode")
 
 //for loading berand page
 
@@ -14,11 +15,11 @@ const load_brand = async (req, res) => {
     const totaldocument = await brand.countDocuments()
     const totalPages = Math.ceil(totaldocument/limit)
 
-    return res.status(200).render("brand", { brand: branddata, totalPages , page });
+    return res.status(statuscode.OK).render("brand", { brand: branddata, totalPages , page });
   } catch (err) {
     console.log("error for loding the brand page", err);
     return res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("404", { message: "unable to load brand page" });
   }
 };
@@ -27,11 +28,11 @@ const load_brand = async (req, res) => {
 
 const load_newbrand = async (req, res) => {
   try {
-    return res.status(200).render("add_brand");
+    return res.status(statuscode.OK).render("add_brand");
   } catch (err) {
     console.log("error for loading brand add page", err);
     return res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("404", { message: "unable to load add brand page" });
   }
 };
@@ -53,7 +54,7 @@ const add_newbrand = async (req, res) => {
 
     if(existingdata){
       req.flash("error","Brand name is already exists")
-      return res.status(400).redirect("/brand")
+      return res.status(statuscode.BAD_REQUEST).redirect("/brand")
     }
 
     const newBrand = new brand({
@@ -64,11 +65,11 @@ const add_newbrand = async (req, res) => {
 
     await newBrand.save();
     req.flash("success", "New brand created successfully");
-    return res.status(200).redirect("/brand");
+    return res.status(statuscode.OK).redirect("/brand");
   } catch (err) {
     console.error("error for adding new brand", err);
     req.flash("error", "An error occurred while creating the brand");
-    return res.status(500).redirect("/newbrand");
+    return res.status(statuscode.INTERNAL_SERVER_ERROR).redirect("/newbrand");
   }
 };
 
@@ -80,10 +81,10 @@ const delete_brand = async (req, res) => {
     console.log(id);
     const item = await brand.findByIdAndUpdate(id, { is_deleted: true });
     req.flash("success", "Brand deleted sucessfully");
-    return res.status(200).redirect("/brand");
+    return res.status(statuscode.OK).redirect("/brand");
   } catch (err) {
     console.log("error for deleting the brand", err);
-    return res.status(500).render("404", { message: "unable to delete brand" });
+    return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404", { message: "unable to delete brand" });
   }
 };
 
@@ -94,11 +95,11 @@ const edit_brand = async (req, res) => {
     const id = req.query.id;
     const branddata = await brand.findById({ _id: id });
     // console.log(branddata)
-    return res.status(200).render("edite_brand", { data: branddata });
+    return res.status(statuscode.OK).render("edite_brand", { data: branddata });
   } catch (err) {
     console.log("error for loading editit  brand page", err);
     return res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("404", { message: "unable to  edit brand data try again..!" });
   }
 };
@@ -129,7 +130,7 @@ const update_brand = async (req, res) => {
       { new: true }
     );
     req.flash("success", "Brand updated successfully");
-    return res.status(200).redirect("/brand");
+    return res.status(statuscode.OK).redirect("/brand");
 
     }else if(!matchname){
     await brand.findByIdAndUpdate(
@@ -137,18 +138,18 @@ const update_brand = async (req, res) => {
       { $set: updateData },
       { new: true }
     );
- req.flash("success", "Brand updated successfully");
-    return res.status(200).redirect("/brand");
+    req.flash("success", "Brand updated successfully");
+    return res.status(statuscode.OK).redirect("/brand");
 
     }else{
     req.flash("error", "Brand name is already exists");
-    return res.status(404).redirect("/brand");
+    return res.status(statuscode.BAD_REQUEST).redirect("/brand");
   }
 
   } catch (err) {
     console.error('error for upadatitng the brand',err);
     req.flash("error", "An error occurred while updating the brand");
-    return res.status(500).redirect("/brand");
+    return res.status(statuscode.INTERNAL_SERVER_ERROR).redirect("/brand");
   }
 };
 

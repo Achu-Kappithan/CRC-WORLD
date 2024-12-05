@@ -6,6 +6,7 @@ const Order = require("../models/order")
 const Product = require("../models/product")
 const Coupons = require("../models/coupons")
 const Wallet = require("../models/wallet")
+const statuscode = require("../utils/statusCode")
 
 //for loading  chekout page
 
@@ -22,11 +23,11 @@ const  load_checkout = async (req,res)=>{
         const type =  req.flash("type");
 
         // console.log("this is the data send to user profile",userdata)
-       return res.status(200).render("checkout",{userdata ,cardata ,message ,type ,coupons , wallet})
+       return res.status(statuscode.OK).render("checkout",{userdata ,cardata ,message ,type ,coupons , wallet})
     } catch (err) {
 
         console.log("error for loading checkout page ",err)
-        res.status(500).render("user404",{message:"Something went worng can't load checkout page"})
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Something went worng can't load checkout page"})
         
     }
 }
@@ -55,12 +56,12 @@ const checkoutupdate_address = async (req,res)=>{
         });
         req.flash("message","Address Upated successfully")
         req.flash("type","success")
-        return  res.status(200).redirect("/user_checkout")
+        return  res.status(statuscode.OK).redirect("/user_checkout")
     } catch (err) {
         console.log("error for updating the user address",err)
         req.flash("message","Fail to updae the addrss try again..!")
         req.flash("type","error")
-        return res.status(500).redirect("/user_checkout")
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).redirect("/user_checkout")
         
     }
 }
@@ -75,7 +76,7 @@ const checkout_newaddress = async (req,res)=>{
         if(!userid){
             req.flash("message","User is Not valid");
             req.flash("type","error")
-            return res.statun(4001).redirect("/user_checkout")
+            return res.status(statuscode.BAD_REQUEST).redirect("/user_checkout")
             // console.log("userId is not valid",userid)
         }
 
@@ -102,10 +103,10 @@ const checkout_newaddress = async (req,res)=>{
         );
         req.flash("message","Adress Added Sucessfully");
         req.flash("type","success")
-        return  res.status(200).redirect("/user_checkout")
+        return  res.status(statuscode.OK).redirect("/user_checkout")
     } catch (err) {
         console.log("error for adding address",err)
-        res.status(500).render("user404",{message:"unable to add address try again...!"})
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"unable to add address try again...!"})
     }
 }
 
@@ -144,10 +145,10 @@ const applycouppons = async (req, res) => {
         // console.log("offerprice:", offerprice); 
 
 
-        res.status(200).json({ offerprice, success: true, message: "Coupon added successfully" });
+        res.status(statuscode.OK).json({ offerprice, success: true, message: "Coupon added successfully" });
     } catch (err) {
         console.log("Error applying coupon:", err);
-        res.status(500).render("user404", { message: "Unable to complete the request" });
+        res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404", { message: "Unable to complete the request" });
     }
 };
 
@@ -159,11 +160,11 @@ const remove_coupons = async (req,res)=>{
         const { grandTotal ,couponcode } = req.body;
         const offerprice = 0;
 
-        return res.json({success : true , message :"Coupon removed successfully"})
+        return res.status(statuscode.OK).json({success : true , message :"Coupon removed successfully"})
         
     } catch (err) {
         console.log("error for removeing coupoons ",err)
-        return res.status(500).render("user404",{message : "Unable to complete the request try again..!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message : "Unable to complete the request try again..!"})
     }
 }
  

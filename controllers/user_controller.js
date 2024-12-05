@@ -40,6 +40,8 @@ try {
   console.error("Error loading modules:", error.message);
 }
 
+const statuscode = require('../utils/statusCode')
+
 
 const crypto = require("crypto");
 require("dotenv").config();
@@ -50,11 +52,11 @@ const loadlogin = (req, res) => {
   try {
     const message = req.flash("message");
     const type = req.flash("type");
-    return res.status(200).render("login", { message, type });
+    return res.status(statuscode.OK).render("login", { message, type });
   } catch (err) {
     console.log("error for loading login page", err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", { message: "unable to load userlogin page" });
   }
 };
@@ -65,11 +67,11 @@ const loadsignup = (req, res) => {
   try {
     const message = req.flash("message");
     const type = req.flash("type");
-    return res.status(200).render("register", { message, type });
+    return res.status(statuscode.OK).render("register", { message, type });
   } catch (err) {
     console.log("error for loading signup page", err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", { message: "unable to load signup page" });
   }
 };
@@ -83,7 +85,7 @@ const encryptpass = async (password) => {
     return hashpass;
   } catch (err) {
     console.log("error for hashing passwordd", err);
-    res.status(500).render("user404");
+    res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404");
   }
 };
 
@@ -98,7 +100,7 @@ const signup_user = async (req, res) => {
     if (userexist) {
       req.flash("message", "User Alredy exist plz Login");
       req.flash("type", "warning");
-      return res.status(401).redirect("/register");
+      return res.status(statuscode.BAD_REQUEST).redirect("/register");
     }
     const otp = otp_generator.generate(6, {
       digits: true,
@@ -155,11 +157,11 @@ const signup_user = async (req, res) => {
     };
     await sendMail();
 
-    return res.status(200).redirect("/otp");
+    return res.status(statuscode.OK).redirect("/otp");
   } catch (err) {
     console.log("error for registering the user", err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", {
         message: "unable to register new user plz tray again",
       });
@@ -171,11 +173,11 @@ const user_send_otp = async (req, res) => {
   try {
     const message = req.flash("message");
     const type = req.flash("type");
-    return res.status(200).render("otp", { message, type });
+    return res.status(statuscode.OK).render("otp", { message, type });
   } catch (error) {
     console.log("error with otp".error.message);
     return res
-      .status(400)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", { message: "error while resending the otp" });
   }
 };
@@ -214,12 +216,12 @@ const verify_otp = async (req, res) => {
     } else {
       req.flash("message", "Invalid Otp");
       req.flash("type", "error");
-      return res.status(401).redirect("/otp");
+      return res.status(statuscode.NOT_FOUND).redirect("/otp");
     }
   } catch (err) {
     console.log(`error from verify otp function `, err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", {
         message: "unable to connect due to otp regading error ",
       });
@@ -233,7 +235,7 @@ const resend_otp = async (req, res) => {
     if (!req.session.form_data || !req.session.form_data.email) {
       req.flash("message", "Session expired or email not found in session.");
       req.flash("type", "error");
-      return res.status(400).redirect("/login");
+      return res.status(statuscode.BAD_REQUEST).redirect("/login");
     }
 
     const { email } = req.session.form_data;
@@ -241,7 +243,7 @@ const resend_otp = async (req, res) => {
     if (!email) {
       req.flash("message", "Session expired or email not found in session.");
       req.flash("type", "error");
-      return res.status(400).redirect("/login");
+      return res.status(statuscode.BAD_REQUEST).redirect("/login");
     }
 
     const otpDocument = await user_otp.findOne({ email });
@@ -249,7 +251,7 @@ const resend_otp = async (req, res) => {
     if (!otpDocument) {
       req.flash("message", "Otp not found");
       req.flash("type", "error");
-      return res.status(404).redirect("/otp");
+      return res.status(statuscode.BAD_REQUEST).redirect("/otp");
     }
 
     const newOtp = otp_generator.generate(8, {
@@ -304,7 +306,7 @@ const resend_otp = async (req, res) => {
   } catch (err) {
     console.log("error for sending resend otp ", err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", { message: "Unable to complate the request" });
   }
 };
@@ -343,7 +345,7 @@ const userverification = async (req, res) => {
   } catch (err) {
     console.log("error for user verification", err.message);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", { message: "Error regarding user verification" });
   }
 };
@@ -416,7 +418,7 @@ const loadhome = async (req, res) => {
     });
   } catch (err) {
     console.log("error for loading  home page ", err);
-    res.status(500).render("user404", { message: "Unable to load  home page" });
+    res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404", { message: "Unable to load  home page" });
   }
 };
 
@@ -426,11 +428,11 @@ const load_forgotpass = async (req, res) => {
   try {
     const message = req.flash("message");
     const type = req.flash("type");
-    return res.status(200).render("forgotpassword", { message, type });
+    return res.status(statuscode.OK).render("forgotpassword", { message, type });
   } catch (err) {
     console.log("error for loading  the forgotpassword page", err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", { message: "unable to load forgotpassword page" });
   }
 };
@@ -503,7 +505,7 @@ const resetpass_mail = async (req, res) => {
   } catch (err) {
     console.log("error for reset pass mail ", err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", { message: "unable to complate your request" });
   }
 };
@@ -539,7 +541,7 @@ const update_password = async (req, res) => {
 
     if (!user) {
       req.flash("error", "Invalid or expired token");
-      return res.status(400).redirect("/login");
+      return res.status(statuscode.BAD_REQUEST).redirect("/login");
     }
 
     // Update password
@@ -554,7 +556,7 @@ const update_password = async (req, res) => {
     return res.redirect("/login");
   } catch (err) {
     console.log("error for update  new passowrd ", err);
-    res.status(500).render("user404", "Unable to complate your request");
+    res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404", "Unable to complate your request");
   }
 };
 
@@ -562,15 +564,15 @@ const logout_user = async (req, res) => {
   try {
     req.session.destroy((err) => {
       if (err) {
-        res.status(500).redirect("/load_home");
+        res.status(statuscode.BAD_REQUEST).redirect("/load_home");
       } else {
-        res.redirect("/login");
+        res.status(statuscode.OK).redirect("/login");
       }
     });
   } catch (err) {
     console.log("error related to logout", err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", { message: "Unable to complate the request" });
   }
 };

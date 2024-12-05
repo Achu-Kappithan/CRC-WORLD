@@ -6,6 +6,8 @@ const razorpay = require("../config/razorpayconfig")
 const Coupon = require("../models/coupons")
 const { findOneAndUpdate } = require("../models/user_models")
 const Wallet = require("../models/wallet")
+const statuscode  = require("../utils/statusCode")
+const StatusCodes = require("../utils/statusCode")
 
 
 // for placeing a new order
@@ -25,13 +27,13 @@ const place_order = async (req, res) => {
       if(grandtotal>10000 && paymentMethod=="COD" ){
         req.flash("message","Cash on Delivery is only available for orders below ₹10,000. Please select another payment method to proceed")
         req.flash("type","info")
-        return res.status(401).redirect("/user_checkout")
+        return res.status(statuscode.BAD_REQUEST).redirect("/user_checkout")
       }
 
       if(!addressId && !paymentMethod){
         req.flash("message","Plz Select address and Payment Method");
         req.flash("type","warning")
-        return res.status(400).redirect("/user_checkout");
+        return res.status(statuscode.BAD_REQUEST).redirect("/user_checkout");
       }
       const walletdata = await Wallet.findOne({userId:userId})
 
@@ -39,7 +41,7 @@ const place_order = async (req, res) => {
         if (!walletdata || walletdata.balance < grandtotal) {
             req.flash("message", "Insufficient wallet balance to process the order.");
             req.flash("type", "warning");
-            return res.status(403).redirect("/user_checkout");
+            return res.status(statuscode.BAD_REQUEST).redirect("/user_checkout");
         }
     }  
       const orderAddress = await Address.findById(addressId);
@@ -49,7 +51,7 @@ const place_order = async (req, res) => {
       if (!cartData || cartData.items.length === 0) {
         req.flash("message","Your cart is empty plz add items");
         req.flash("type","warning")
-        return res.status(400).redirect("/user_checkout");
+        return res.status(statuscode.BAD_REQUEST).redirect("/user_checkout");
       }
 
       for (let value of cartData.items){
@@ -58,7 +60,7 @@ const place_order = async (req, res) => {
           if(item.stock < value.quantity && value.size == item.size){
             req.flash("message","Sorry, Invalid stock  Item is not available ");
             req.flash("type","warning")
-            return res.status(400).redirect("/user_checkout");
+            return res.status(statuscode.BAD_REQUEST).redirect("/user_checkout");
           }
         }
       }
@@ -158,13 +160,13 @@ const place_order = async (req, res) => {
        }
        
       if(paymentMethod =="onlinepayment"){
-        return res.status(200).render("online_paymentcnfm",{orderdata})
+        return res.status(statuscode.OK).render("online_paymentcnfm",{orderdata})
       }
-      return res.status(200).render("order_successfull",{  newOrder:neworder });
+      return res.status(statuscode.OK).render("order_successfull",{  newOrder:neworder });
       
     } catch (err) {
       console.error("Error while placing order:", err);
-     return  res.status(500).render("user404",{message:"Something went wrong. Please try again."});
+     return  res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Something went wrong. Please try again."});
     }
   };
 
@@ -189,7 +191,7 @@ const  razorpay_order = async (req,res)=>{
         });
     } catch (error) {
         console.error("Error in creating Razorpay order:", error);
-        res.status(500).json({
+        res.status(statuscode.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: "Order creation failed",
         });
@@ -206,7 +208,7 @@ const verify_payment = async (req, res) => {
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !db_orderid) {
       console.log("Payment failed - Missing payment fields");
       await Order.findByIdAndUpdate({ _id: db_orderid }, { paymentStatus: "Failed" });
-      return res.status(400).json({ 
+      return res.status(statuscode.BAD_REQUEST).json({ 
         success: false, 
         message: "Payment failed", 
         redirectUrl: "/payment_failed" 
@@ -241,7 +243,7 @@ const verify_payment = async (req, res) => {
     if (db_orderid) {
       await Order.findByIdAndUpdate({ _id: db_orderid }, { paymentStatus: "Failed" });
     }
-    return res.status(500).json({ 
+    return res.status(statuscode.INTERNAL_SERVER_ERROR).json({ 
       success: false, 
       message: "Payment verification error",
       redirectUrl: "/payment_failed" 
@@ -263,7 +265,7 @@ const load_paymentsuccess = async (req,res)=>{
         
     } catch (err) {
         console.log("error for loading paymest success page",err)
-        return res.status(500).render("user404",{message:"Unable to complate the request"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Unable to complate the request"})
     }
 }
 
@@ -274,10 +276,11 @@ const payment_faild  = async ( req,res)=>{
     const orderid = req.query.id;
     console.log("order id",orderid)
     const orderdata = await Order.findById({_id:orderid})
-    return res.status(200).render("paymentfaild",{orderdata})
+    return res.status(statuscode.OK).render("paymentfaild",{orderdata})
     
   } catch (err) {
     console.log("error for loading payment faildpage",err)
+    return res.staus(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message: "Unable to load Payment faild page"})
     
   }
 }

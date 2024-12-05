@@ -3,6 +3,7 @@ const Category = require("../models/category");
 const Brand = require("../models/brand");
 const { findByIdAndUpdate } = require("../models/otp");
 const product = require("../models/product");
+const statuscode = require("../utils/statusCode")
 
 // load addproduct page
 
@@ -10,7 +11,7 @@ const loadadd_product = async (req, res) => {
   try {
     const brandlist = await Brand.find();
     const categorylist = await Category.find();
-    res.render("addproduct", { brandlist, categorylist });
+    res.status(statuscode.OK).render("addproduct", { brandlist, categorylist });
   } catch (err) {
     console.log("error for loading addproduct page", err);
   }
@@ -27,17 +28,17 @@ const add_product = async (req, res) => {
 
     if (exsitingproduct) {
       req.flash("error", "Product alredy exist Tray with another product");
-      return res.status(409).redirect("/lodadadd_product");
+      return res.status(statuscode.FORBIDDEN).redirect("/lodadadd_product");
     }
 
     if (!productcategory && !productbrand) {
       req.flash("error", "Plz select category and brand");
-      return res.status(409).redirect("/lodadadd_product");
+      return res.status(statuscode.FORBIDDEN).redirect("/lodadadd_product");
     }
 
     if (!req.files || req.files.length === 0) {
       req.flash("error", "No files were uploaded");
-      return res.status(401).redirect("/lodadadd_product");
+      return res.status(statuscode.BAD_REQUEST).redirect("/lodadadd_product");
     }
     const productImages = req.files.map((file) => file.filename);
 
@@ -83,7 +84,7 @@ const add_product = async (req, res) => {
     console.error(err);
     req.flash("error", "Error adding product: ", err);
     res
-      .status(404)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("404", { message: "unable to addproduct  plz tray again " });
   }
 };
@@ -104,12 +105,12 @@ const product_list = async (req, res) => {
     const totalPages = Math.ceil(toataorders / limit);
 
     return res
-      .status(200)
+      .status(statuscode.OK)
       .render("productlist", { productlist, totalPages, page , message ,type});
   } catch (err) {
     console.log("error for displaying product list", err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("404", { message: "Unable to dispaly the product list" });
   }
 };
@@ -129,12 +130,12 @@ const loadedit_product = async (req, res) => {
       .populate("category");
     // console.log("this is data for editing ",productdata)
     return res
-      .status(200)
+      .status(statuscode.OK)
       .render("edit_product", { productdata, brandlist, categorylist ,message ,type });
   } catch (err) {
     console.log("error for loding edit product page", err);
     res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("404", { message: "unable to load product edit page" });
   }
 };
@@ -151,17 +152,17 @@ const unlist_product = async (req, res) => {
       await product.findByIdAndUpdate(id, { is_deleted: true });
       req.flash("message", "Product unlisted sucessfully");
       req.flash("type","success")
-      return res.status(200).redirect("/admin_productlist");
+      return res.status(statuscode.OK).redirect("/admin_productlist");
     } else {
       await product.findByIdAndUpdate(id, { is_deleted: false });
       req.flash("message", "Product listed sucessfully");
       req.flash("type","success")
-      return res.status(200).redirect("/admin_productlist");
+      return res.status(statuscode.OK).redirect("/admin_productlist");
     }
   } catch (err) {
     console.log("error for list or unlist the product", err);
     return res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("404", { message: "Sorry Unable to  complate your request" });
   }
 };
@@ -243,7 +244,7 @@ const update_product = async (req, res) => {
       );
       req.flash("message", "Product updated successfully");
       req.flash("type","success")
-      return res.status(200).redirect("/admin_productlist");
+      return res.status(statuscode.OK).redirect("/admin_productlist");
     } else if (!namematch) {
       await Product.findByIdAndUpdate(
         productId,
@@ -252,16 +253,16 @@ const update_product = async (req, res) => {
       );
       req.flash("message", "Product updated successfully");
       req.flash("type","success")
-      return res.status(200).redirect("/admin_productlist");
+      return res.status(statuscode.OK).redirect("/admin_productlist");
     } else {
       req.flash("message", "Product name already exisits");
       req.flash("type","warning")
-      res.status(500).redirect("/admin_productlist");
+      res.status(statuscode.OK).redirect("/admin_productlist");
     }
   } catch (err) {
     console.log("this is the error for updating the product", err);
     return res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("404", { message: "Unable to complate product updation" });
   }
 };
@@ -281,7 +282,7 @@ const admin_productsort = async (req, res) => {
   } catch (err) {
     console.log("error for product sort by status", err);
     return res
-      .status(500)
+      .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("404", { message: "Unable to complate request" });
   }
 };

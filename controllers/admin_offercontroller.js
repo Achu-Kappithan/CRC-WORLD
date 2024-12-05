@@ -4,6 +4,7 @@ const product = require("../models/product");
 const { findById } = require("../models/user_models");
 const {findbestoffer} = require("../utils/findbestprice")
 const Coupon = require("../models/coupons")
+const statuscode = require("../utils/statusCode")
 
 // for loading offerlist page
 
@@ -13,7 +14,7 @@ const load_offerlist = async (req,res)=>{
         const type = req.flash("type")
         const category = await Category.find()
         const  productdata = await product.find()
-        console.log("productdata",productdata)
+        // console.log("productdata",productdata)
         const currentdate = Date.now();
 
         for (const product of productdata) {
@@ -34,10 +35,10 @@ const load_offerlist = async (req,res)=>{
             }
         }
         
-        return res.status(200).render("offerlist",{category, message, type, productdata })
+        return res.status(statuscode.OK).render("offerlist",{category, message, type, productdata })
     } catch (err) {
         console.log("error for  loading offerlist page",err);
-       return res.status(500).redirect("404"," Can't load offerlist Tray aganin ....!")
+       return res.status(statuscode.INTERNAL_SERVER_ERROR).redirect("404"," Can't load offerlist Tray aganin ....!")
     }
 }
 
@@ -51,11 +52,11 @@ const load_newoffer = async (req,res)=>{
         const category = await Category.find()
         const products = await product.find()
 
-        console.log("this is the category is send to the offers page",category)
-        return res.status(200).render("add_newoffer",{category ,message ,type ,products})
+        // console.log("this is the category is send to the offers page",category)
+        return res.status(statuscode.OK).render("add_newoffer",{category ,message ,type ,products})
     } catch (err) {
         console.log("error for loading new offer page",err)
-        return res.status(500).render("404","Can't load addoffer page Tray aganin ....!")
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404","Can't load addoffer page Tray aganin ....!")
     }
 }
 
@@ -85,17 +86,14 @@ const add_categoryoffer = async (req,res)=>{
         }else{
             // const productdata = await product.find({category : catofrid})
             // await findbestoffer(productdata);
-
-
-
             req.flash("message","Offer successfully added..")
             req.flash("type","success")
-            return  res.redirect("/loadcreateoffer")
+            return  res.status(statuscode.OK).redirect("/loadcreateoffer")
 
         }
     } catch (err) {
         console.log("error for addnew category offer",err)
-        return res.status(500).render("404","Can't complete your request..!")
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404","Can't complete your request..!")
         
     }
 }
@@ -107,7 +105,7 @@ const add_categoryoffer = async (req,res)=>{
 const remove_catoffer = async (req,res)=>{
     try {
         const catid = req.query.id ;
-        console.log("catid for remove the offer",catid)
+        // console.log("catid for remove the offer",catid)
 
          await Category.findByIdAndUpdate(
             { _id: catid },
@@ -123,10 +121,10 @@ const remove_catoffer = async (req,res)=>{
         await product.save()
        }
        
-        return res.json({success:true,message:"Offer removed successfully"})
+        return res.status(statuscode.OK).json({success:true,message:"Offer removed successfully"})
     } catch (err) {
         console.log("error for remove the catoffer",err)
-        return res.render("404",{message: "Unable to complate your request plz try again...!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404",{message: "Unable to complate your request plz try again...!"})
     }
 }
 
@@ -139,11 +137,11 @@ const load_editcatoffer = async (req,res)=>{
         const type = req.flash("type")
         const id = req.query.id;
         const catdata = await Category.findById({_id:id})
-        return res.status(200).render("catofferedit",{catdata, type, message})
+        return res.status(statuscode.OK).render("catofferedit",{catdata, type, message})
         
     } catch (err) {
         console.log("error for loading categoryoffer editing page",err);
-        return res.status(500).render("404",{message: "Unable to complete request try again...!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404",{message: "Unable to complete request try again...!"})
     }
 }
 
@@ -152,15 +150,15 @@ const load_editcatoffer = async (req,res)=>{
 const update_catoffer = async (req,res)=>{
     try {
         const id = req.query.id
-        console.log("id for update category offer",id)
+        // console.log("id for update category offer",id)
         const {catofrname, catofrdescription, catofrpercentage, catofrenddate} = req.body 
-        console.log("form data here",req.body)
+        // console.log("form data here",req.body)
 
         const offerstatus = await Category.findById({_id:id})
         if(offerstatus.categoryoffer.offerStatus == false){
             req.flash("message","Can't Update Experied offers..")
             req.flash("type","error")
-            return res.status(400).redirect("/load_offerlist")
+            return res.status(statuscode.BAD_REQUEST).redirect("/load_offerlist")
         }
 
         const updateddata = await Category.findByIdAndUpdate(
@@ -176,10 +174,10 @@ const update_catoffer = async (req,res)=>{
 
             req.flash("message","Offer successfully Updated..")
             req.flash("type","success")
-            return res.status(200).redirect("/load_offerlist")
+            return res.status(statuscode.OK).redirect("/load_offerlist")
     } catch (err) {
         console.log("error for update category offer",err)
-        return res.status(500).render("404",{message: "Can't Update Offer try again...!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404",{message: "Can't Update Offer try again...!"})
         
     }
 }
@@ -209,11 +207,11 @@ const add_productoffer = async (req, res) => {
 
         req.flash("message", "Product offer added successfully");
         req.flash("type", "success");
-        return res.status(200).redirect("/load_offerlist");
+        return res.status(statuscode.OK).redirect("/load_offerlist");
 
     } catch (err) {
         console.error("error for adding product offer", err);
-        return res.status(500).render("404", { message: "Unable to complete your request" });
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404", { message: "Unable to complete your request" });
     }
 };
 
@@ -226,11 +224,11 @@ const load_editProductoffer = async (req,res)=>{
         const message = req.flash("message")
         const type = req.flash("type")
         const produtdata = await product.findById({_id:id})
-        return res.status(500).render("productofferedit",{produtdata, message, type})
+        return res.status(statuscode.OK).render("productofferedit",{produtdata, message, type})
         
     } catch (err) {
         console.log("error for loading editproduct offer ",err)
-        return res.status(500).render("404",{message: "Can't load this page Try again..!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404",{message: "Can't load this page Try again..!"})
     }
 }
 
@@ -240,14 +238,14 @@ const load_editProductoffer = async (req,res)=>{
 const update_productoffer = async (req,res)=>{
     try {
         const id = req.query.id;
-        console.log("id form the querey",id)
+        // console.log("id form the querey",id)
         const {ofrname ,ofrdescription ,ofrpercentage ,ofrenddate }= req.body
 
         const productstatus = await product.findById({_id:id})
         if(productstatus.productOffer.offerStatus == false) {
         req.flash("message","Can't edit Experied offer..!")
         req.flash("type","error")
-        return res.status(400).redirect("/load_offerlist")
+        return res.status(statuscode.BAD_REQUEST).redirect("/load_offerlist")
         }
 
         const updateddata = await product.findByIdAndUpdate(
@@ -264,17 +262,17 @@ const update_productoffer = async (req,res)=>{
         if(!updateddata){
         req.flash("message","Unable to update try again..!")
         req.flash("type","error")
-        return res.status(200).redirect("/load_offerlist")
+        return res.status(statuscode.BAD_REQUEST).redirect("/load_offerlist")
         }
         const produtdata =  await product.findById({_id:id})
         await findbestoffer(produtdata)
 
         req.flash("message","Offer Updated successfully")
         req.flash("type","success")
-        return res.status(200).redirect("/load_offerlist")
+        return res.status(statuscode.OK).redirect("/load_offerlist")
     } catch (err) {
         console.log("error update the productoffer changes ",err)
-        return res.status(500).render("404",{message: " Unable to complete the request..!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404",{message: " Unable to complete the request..!"})
         
     }
 }
@@ -295,11 +293,11 @@ const remove_productoffer = async (req, res)=>{
 
         req.flash("message","Offer removed successfully")
         req.flash("type","success")
-        return res.status(200).redirect("/load_offerlist")
+        return res.status(statuscode.OK).redirect("/load_offerlist")
         
     } catch (err) {
         console.log("error for removing prouct offer",err);
-        return res.status(500).render("404",{message: "Unable to complate the reqeust try again...!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404",{message: "Unable to complate the reqeust try again...!"})
         
     }
 }
@@ -311,11 +309,11 @@ const load_couponlist = async(req,res)=>{
         const message = req.flash("message")
         const type = req.flash("type")
         const coupondata = await Coupon.find()
-        return res.status(200).render("couponslist",{message,type,coupondata})
+        return res.status(statuscode.OK).render("couponslist",{message,type,coupondata})
         
     } catch (err) {
         console.log("error for loading coupon list page",err)
-        return res.status(500).render("404",{message: "Can't load coupon page try again....!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404",{message: "Can't load coupon page try again....!"})
     }
 }
 
@@ -325,9 +323,6 @@ const load_couponlist = async(req,res)=>{
 const add_coupon = async (req,res)=>{
     try {
         const {couponName, couponDescription, couponCode, couponDiscount, maxAmount, minAmount, userLimit, }= req.body
-        
-        console.log("addcoupon body ",req.body)
-
         const coupondata = new Coupon({
             couponName : couponName, 
             couponDescription : couponDescription, 
@@ -342,10 +337,10 @@ const add_coupon = async (req,res)=>{
         await coupondata. save()
         req.flash("message","Coupon added successfully")
         req.flash("type","success")
-        res.status(200).redirect("/load_couponlist")
+        res.status(statuscode.OK).redirect("/load_couponlist")
     } catch (err) {
         console.log("error for adding coupons",err)
-        return res.status(500).render("404",{message: "Unable to complate your request"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404",{message: "Unable to complate your request"})
     }
 }
 
@@ -358,11 +353,11 @@ const load_editcoupon = async (req,res)=>{
         const id = req.query.id;
         console.log("this is the idcoupon",id)
         const coupondata = await Coupon.findById({_id:id})
-        return res.status(200).render("editcoupons",{coupondata ,message ,type})
+        return res.status(statuscode.OK).render("editcoupons",{coupondata ,message ,type})
         
     } catch (err) {
         console.log("error for loading couponedit page",err)
-        return res.status(500).render("404",{message: "Unable to load Coupon edit page try again..!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("404",{message: "Unable to load Coupon edit page try again..!"})
     }
 }
 
@@ -388,11 +383,11 @@ const update_coupons = async (req,res)=>{
         );
         req.flash("message","Coupon Updated successfully")
         req.flash("type","success")
-        return res.status(200).redirect("/load_couponlist");
+        return res.status(statuscode.OK).redirect("/load_couponlist");
         
     } catch (err) {
         console.log("error for uploading coupos edited data",err)
-        return res.status(500).render("user404",{message: "Unable to compelate the request"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message: "Unable to compelate the request"})
     }
 }
 
@@ -405,11 +400,11 @@ const remove_coupons = async (req,res)=>{
         await Coupon.findByIdAndDelete ({_id:id})
         req.flash("message","Coupons remove successfully...")
         req.flash("type","success")
-        return res.status(500).redirect("/load_couponlist")
+        return res.status(statuscode.OK).redirect("/load_couponlist")
         
     } catch (err) {
         console.log("error for removing coupons",err)
-        return res.status(500).render("user404",{messsage: "Unable to complete the request try again..!"})
+        return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{messsage: "Unable to complete the request try again..!"})
     }
 }
 

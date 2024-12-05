@@ -5,6 +5,7 @@ const { price: priceHelper } = require("../utils/pricehelper");
 const { applyofferprice } = require("../utils/offeruils")
 const Wishlist = require("../models/wishlist");
 const { countDocuments } = require("../models/user_models");
+const statuscode = require("../utils/statusCode")
 
 // for loading product view page
 const load_productview = async (req, res) => {
@@ -22,9 +23,10 @@ const load_productview = async (req, res) => {
       ]
     }).limit(5);
     // console.log("related productdata ",relatedproducts)
-    return res.render("productview", { productdata, priceHelper ,relatedproducts });
+    return res.status(statuscode.OK).render("productview", { productdata, priceHelper ,relatedproducts });
   } catch (err) {
     console.log("error for loading product view page",err);
+    return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message: "unable to complete the request"})
   }
 };
 
@@ -85,7 +87,7 @@ const load_shop = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).render("user404",{maessage:"Unable load shop-page Try again..!"});
+    res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{maessage:"Unable load shop-page Try again..!"});
   }
 };
 
@@ -138,7 +140,7 @@ const filterProducts = async (req, res) => {
     return res.json({ products });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ error: "Server error" });
+    res.status(statuscode.INTERNAL_SERVER_ERROR).send({ error: "Server error" });
   }
 };
 

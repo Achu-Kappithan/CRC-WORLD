@@ -1,5 +1,6 @@
 const Cart = require("../models/cart");
 const Product = require("../models/product");
+const statuscode = require("../utils/statusCode")
 
 // for loading the cart page
 
@@ -14,15 +15,15 @@ const load_cart = async (req, res) => {
     });
 
     if (!userId) {
-      return res.status(401).render("user404",{
+      return res.status(statuscode.BAD_REQUEST).render("user404",{
         message: "User not authenticated plz login with your Creditials",
       });
     }
     // console.log("this is the user cartpage data", cartdata);
-    res.status(200).render("cart", { cartdata ,message, type });
+    res.status(statuscode.OK).render("cart", { cartdata ,message, type });
   } catch (err) {
     console.log("error for loading cart page".err);
-    res.status(500).render("user404", { message: "unable to load cart page" });
+    res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404", { message: "unable to load cart page" });
   }
 };
 
@@ -38,7 +39,7 @@ const addto_cart = async (req, res) => {
     // );
 
     if (!userId) {
-      return res.status(401).json({
+      return res.status(statuscode.BAD_REQUEST).json({
         success: false,
         message: "User not authenticated , plz login",
         alertType: "error",
@@ -50,7 +51,7 @@ const addto_cart = async (req, res) => {
     const product = await Product.findById(productId);
 
     if (!product) {
-      return res.status(404).json({
+      return res.status(statuscode.BAD_REQUEST).json({
         success: false,
         message: "Product not found",
         alertType: "error",
@@ -59,7 +60,7 @@ const addto_cart = async (req, res) => {
     }
 
     if (stock < quantity) {
-      return res.status(400).json({
+      return res.status(statuscode.BAD_REQUEST).json({
         success: false,
         message: "Not enough stock available",
         alertType: "error",
@@ -94,7 +95,7 @@ const addto_cart = async (req, res) => {
       // console.log(Cartsize);
 
       if (itemIndex > -1) {
-        return res.status(404).json({
+        return res.status(statuscode.BAD_REQUEST).json({
           success: false,
           message: "Product already in the cart with the same size",
           alertType: "warning",
@@ -120,7 +121,7 @@ const addto_cart = async (req, res) => {
     console.log("new data added to cart",newdata)
     const updatedCartCount = newdata.items.length;
 
-    res.status(200).json({
+    res.status(statuscode.OK).json({
       success: true,
       message: "Product added to cart",
       cart,
@@ -131,7 +132,7 @@ const addto_cart = async (req, res) => {
     });
   } catch (error) {
     console.error("Error adding to cart:", error);
-    res.status(500).json({
+    res.status(statuscode.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal server error",
       alertType: "error",
@@ -154,7 +155,7 @@ const remove_cartitem = async (req,res)=>{
     if(!userId){
       req.flash("message","Unauthorized user")
       req.flash("type","error")
-      return res.status(401).redirect ("/load_usercart");
+      return res.status(statuscode.BAD_REQUEST).redirect ("/load_usercart");
     }
    const updatedcart = await Cart.findOneAndUpdate({user:userId},
       {$pull:{items:{_id:id}}},
@@ -163,17 +164,17 @@ const remove_cartitem = async (req,res)=>{
       if(!updatedcart){
       req.flash("message","Cart not found")
       req.flash("type","error")
-      return res.status(404).redirect ("/load_usercart");
+      return res.status(statuscode.BAD_REQUEST).redirect ("/load_usercart");
 
       }
       req.flash("message","Item successfully removed")
       req.flash("type","success")
-      return res.status(200).redirect ("/load_usercart");
+      return res.status(statuscode.OK).redirect ("/load_usercart");
 
 
   } catch (err) {
     console.log("error for removing cartitem",err);
-    return res.status(500).render("user404",{ message: "Unable to complete the request. Try again!" });
+    return res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{ message: "Unable to complete the request. Try again!" });
   }
 }
 
@@ -204,7 +205,7 @@ const update_quentity = async (req,res)=>{
 
   } catch (err) {
     console.log("error for updating the quentity from the cart ",err)
-    res.render("user404",{message:"Unable to  complete the request"})
+    res.status(statuscode.INTERNAL_SERVER_ERROR).render("user404",{message:"Unable to  complete the request"})
   }
 }
 
@@ -225,10 +226,10 @@ const get_cartcount = async (req, res) => {
       }
     }
 
-    return res.json({ success: true, count: count }); 
+    return res.status(statuscode.OK).json({ success: true, count: count }); 
   } catch (err) {
     console.log("error for loading cart count", err);
-    return res.status(500).json({ message: "Something went wrong" }); 
+    return res.status(statuscode.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" }); 
   }
 };
 
