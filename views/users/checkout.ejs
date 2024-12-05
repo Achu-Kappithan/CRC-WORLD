@@ -739,6 +739,10 @@ document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio)
 
   // for applaying cupons
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 99bb74a (Save local changes before pulling)
   document.querySelectorAll(".apply-coupon").forEach(function(button) {
     button.addEventListener("click", function() {
         const appliedCoupon = document.getElementById("applyiedcoupon").value; 
@@ -835,6 +839,11 @@ document.querySelectorAll('input[name="paymentMethod"]').forEach(function(radio)
         });
     });
 });
+<<<<<<< HEAD
+=======
+         
+  
+>>>>>>> 99bb74a (Save local changes before pulling)
 
     
 
@@ -990,7 +999,41 @@ document.querySelectorAll(".remove-coupon").forEach(function(button){
     $(`#pincodeError-${addressId}`).text("");
     $(`#phoneError-${addressId}`).text("");
 
+<<<<<<< HEAD
     const textRegex = /^[a-zA-Z\s']+$/;
+=======
+        const textRegex = /^[a-zA-Z\s']+$/;
+
+if (!name.val().trim() || !textRegex.test(name.val().trim())) {
+    $(`#nameError-${addressId}`).text("Name is required and must contain only letters.");
+    isValid = false;
+}
+if (!housename.val().trim() || !textRegex.test(housename.val().trim())) {
+    $(`#housenameError-${addressId}`).text("House name is required and must contain only letters.");
+    isValid = false;
+}
+if (!locality.val().trim() || !textRegex.test(locality.val().trim())) {
+    $(`#localityError-${addressId}`).text("Locality is required and must contain only letters.");
+    isValid = false;
+}
+if (!district.val().trim() || !textRegex.test(district.val().trim())) {
+    $(`#districtError-${addressId}`).text("District is required and must contain only letters.");
+    isValid = false;
+}
+if (!state.val().trim() || !textRegex.test(state.val().trim())) {
+    $(`#stateError-${addressId}`).text("State is required and must contain only letters.");
+    isValid = false;
+}
+if (!/^\d{6}$/.test(pincode.val().trim())) {
+    $(`#pincodeError-${addressId}`).text("Invalid PIN code.");
+    isValid = false;
+}
+if (!/^\d{10}$/.test(phone.val().trim())) {
+    $(`#phoneError-${addressId}`).text("Invalid phone number.");
+    isValid = false;
+}
+
+>>>>>>> 99bb74a (Save local changes before pulling)
 
 if (!name.val().trim() || !textRegex.test(name.val().trim())) {
     $(`#nameError-${addressId}`).text("Name is required and must contain only letters.");

@@ -64,6 +64,7 @@ const addto_wishlist = async(req,res)=>{
     }
 }
 
+
 // for remove product from the wishlist
 
 const remove_wishlistitem = async (req,res)=>{

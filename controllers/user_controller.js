@@ -40,7 +40,12 @@ try {
   console.error("Error loading modules:", error.message);
 }
 
+<<<<<<< HEAD
 const statuscode = require('../utils/statusCode')
+=======
+ 
+
+>>>>>>> 99bb74a (Save local changes before pulling)
 
 
 const crypto = require("crypto");
@@ -360,7 +365,6 @@ const loadhome = async (req, res) => {
     const gadgetcat = await category.findOne({name:{$regex:/Gadgets/i}});
     const batcategory = await category.findOne({name:{$regex:/Bat/i}});
     let wishlistdata = null
-    
     // console.log("this is batcat", batcategory)
 
     if(userid){
@@ -370,7 +374,6 @@ const loadhome = async (req, res) => {
             userId : userid,
             productIds : []
           });
-            
           await wishlist.save()
        }
     }

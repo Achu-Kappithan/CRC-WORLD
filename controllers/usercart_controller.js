@@ -11,7 +11,7 @@ const load_cart = async (req, res) => {
     const type = req.flash("type");
     let cartdata = await Cart.findOne({ user: userId }).populate({
       path: "items.productId",
-      model: "Product", 
+      model: "Product",
     });
 
     if (!userId) {
@@ -41,7 +41,11 @@ const addto_cart = async (req, res) => {
     if (!userId) {
       return res.status(statuscode.BAD_REQUEST).json({
         success: false,
+<<<<<<< HEAD
         message: "User not authenticated , plz login",
+=======
+        message: "User not authenticated please login and continue..",
+>>>>>>> 99bb74a (Save local changes before pulling)
         alertType: "error",
         alertTitle: "Authentication Error",
       });
@@ -197,9 +201,9 @@ const update_quentity = async (req,res)=>{
         {$set:{"items.$.quantity":quantity}},
         {new: true}
       )
-      res.json({ success: true }); 
+      res.json({ success: true });
     } else {
-      res.json({ stockError: true }); 
+      res.json({ stockError: true });
     }
     res.json()
 
@@ -210,15 +214,15 @@ const update_quentity = async (req,res)=>{
 }
 
 
-// for loading cart count  
+// for loading cart count
 
 const get_cartcount = async (req, res) => {
   try {
-    const id = req.session.user_id; 
+    const id = req.session.user_id;
     let count = 0;
 
     if (id) {
-      const data = await Cart.findOne({ user: id }); 
+      const data = await Cart.findOne({ user: id });
 
       if (data) {
         count = data.items.length ? data.items.length : 0;
@@ -226,10 +230,10 @@ const get_cartcount = async (req, res) => {
       }
     }
 
-    return res.status(statuscode.OK).json({ success: true, count: count }); 
+    return res.status(statuscode.OK).json({ success: true, count: count });
   } catch (err) {
     console.log("error for loading cart count", err);
-    return res.status(statuscode.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" }); 
+    return res.status(statuscode.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong" });
   }
 };
 
