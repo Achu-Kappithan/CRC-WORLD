@@ -40,12 +40,7 @@ try {
   console.error("Error loading modules:", error.message);
 }
 
-<<<<<<< HEAD
-const statuscode = require('../utils/statusCode')
-=======
- 
-
->>>>>>> 99bb74a (Save local changes before pulling)
+const statuscode = require('../utils/statusCode');
 
 
 const crypto = require("crypto");

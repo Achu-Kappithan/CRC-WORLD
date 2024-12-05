@@ -41,11 +41,10 @@ const addto_cart = async (req, res) => {
     if (!userId) {
       return res.status(statuscode.BAD_REQUEST).json({
         success: false,
-<<<<<<< HEAD
         message: "User not authenticated , plz login",
-=======
+
         message: "User not authenticated please login and continue..",
->>>>>>> 99bb74a (Save local changes before pulling)
+
         alertType: "error",
         alertTitle: "Authentication Error",
       });
