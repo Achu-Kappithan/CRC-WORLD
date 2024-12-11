@@ -100,7 +100,7 @@ const remove_wishlistitem = async (req,res)=>{
 
 const load_aboutus = async (req,res)=>{
     try {
-        res.status(statuscode.ok).render("aboutus")
+        res.status(statuscode.OK).render("aboutus")
         
     } catch (err) {
         console.log("error for loading about us page",err)

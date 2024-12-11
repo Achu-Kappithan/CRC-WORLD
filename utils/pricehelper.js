@@ -1,5 +1,4 @@
 
-
 const price = function(size) {
   let finalprice = 0;
 
@@ -17,7 +16,6 @@ const price = function(size) {
 
   return "Unavailable";
 };
-
 
 
 module.exports = {price};
