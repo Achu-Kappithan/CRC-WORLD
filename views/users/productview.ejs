@@ -692,6 +692,10 @@ window.onload = function () {
 };
 
 
+
+
+
+
   document.querySelectorAll("[id^='addToCart_']").forEach(button => {
   button.addEventListener("click", function() {
     const productId = this.dataset.productId;
@@ -703,14 +707,10 @@ window.onload = function () {
     const stockElement = document.getElementById("product-stock");
     const stock = parseInt(stockElement.textContent);
     const salespriceElement = document.getElementById('salesprice');
-<<<<<<< HEAD
     const Actualprice = salespriceElement ?  salespriceElement.textContent  : Offerprice
     console.log("actual price is ",Actualprice)
 
     
-=======
-    const Actualprice = salespriceElement? salespriceElement.textContent :Offerprice ;
->>>>>>> 99bb74a (Save local changes before pulling)
 
     const selectedSizeRadio = document.querySelector('input[name="size-option"]:checked');
     const Cartsize = selectedSizeRadio ? selectedSizeRadio.value : null;
@@ -871,11 +871,7 @@ document.getElementById("wishlist").addEventListener("click",function(){
                         swalPopup.style.marginRight = "15px";
                     },
                 });
-<<<<<<< HEAD
     }else {
-=======
-    }else{
->>>>>>> 99bb74a (Save local changes before pulling)
       Swal.fire({
                     icon: 'warning',
                     title: 'warning',

@@ -27,7 +27,7 @@ const addto_wishlist = async(req,res)=>{
         const userid = req.session.user_id;
 
         if(!userid){
-            res.json({success:false, message :"User not authaticated Plz login"})
+            return res.json({success:false, message :"User not authaticated Plz login"})
         }
         const wishlistdata = await Wishlist.findOne({userId:userid})
         let products = []
