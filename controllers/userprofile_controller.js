@@ -326,7 +326,7 @@ const load_wallet = async (req, res) => {
             });
         }
 
-        return res.status(statuscode.Ok).render("wallet", { walletdata: null, currentPage:1 ,  totalPages:1  });
+        return res.status(statuscode.OK).render("wallet", { walletdata: null, currentPage:1 ,  totalPages:1  });
     } catch (err) {
         console.log("Error loading user wallet page:", err);
         return res
