@@ -223,7 +223,11 @@ const cancell_order = async (req,res)=>{
        return res.json({success:false,message:"Can't cancelled order try again..!"})
 
         }else if(cancelledorder.paymentMethod == "onlinepayment" || cancelledorder.paymentMethod == "mywallet"){
-            const wallet = await Wallet.findOne({userId:userid})
+
+            if(cancelledorder.paymentStatus !== "Success"){
+                return res.json({success:false,message:"Can't cancelled order due to payment error..!"})
+            }
+            let wallet = await Wallet.findOne({userId:userid})
             if(!wallet){
                 wallet = new Wallet({
                     userId :userid,
@@ -322,7 +326,7 @@ const load_wallet = async (req, res) => {
             });
         }
 
-        return res.status(statuscode.ok).render("wallet", { walletdata: null, currentPage:1 ,  totalPages:1  });
+        return res.status(statuscode.Ok).render("wallet", { walletdata: null, currentPage:1 ,  totalPages:1  });
     } catch (err) {
         console.log("Error loading user wallet page:", err);
         return res
