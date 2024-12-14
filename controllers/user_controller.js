@@ -175,7 +175,7 @@ const user_send_otp = async (req, res) => {
     const type = req.flash("type");
     return res.status(statuscode.OK).render("otp", { message, type });
   } catch (error) {
-    console.log("error with otp".error.message);
+    console.log("error with otp".error);
     return res
       .status(statuscode.INTERNAL_SERVER_ERROR)
       .render("user404", { message: "error while resending the otp" });

@@ -1,6 +1,7 @@
 const Cart = require("../models/cart"); 
 const Product = require("../models/product"); 
 const Category = require("../models/category");
+const statuscode = require("../utils/statusCode");
 
 
 
@@ -85,7 +86,7 @@ const validateCartPrices = async (req, res, next) => {
     next();
   } catch (error) {
     console.error("Error validating cart prices:", error);
-    res.status(500).json({ message: "Error validating cart prices" });
+    res.status(statuscode.INTERNAL_SERVER_ERROR).json({ message: "Error validating cart prices" });
   }
 };
 

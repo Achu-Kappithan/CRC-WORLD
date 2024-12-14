@@ -7,7 +7,6 @@ const Coupon = require("../models/coupons")
 const { findOneAndUpdate } = require("../models/user_models")
 const Wallet = require("../models/wallet")
 const statuscode  = require("../utils/statusCode")
-const StatusCodes = require("../utils/statusCode")
 
 
 // for placeing a new order

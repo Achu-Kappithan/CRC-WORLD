@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 require("dotenv").config;
 const {generate_salesreport,getdaterange ,top_sellingitems }= require("../utils/generatereport")
 const statuscode = require("../utils/statusCode");
-const StatusCodes = require("../utils/statusCode");
 
 // load admin login page
 
