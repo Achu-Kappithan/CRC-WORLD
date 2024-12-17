@@ -20,6 +20,7 @@ const place_order = async (req, res) => {
       const couponcode = req.body.couponcode?   req.body.couponcode : null
       const couponamt = req.body.couponamt;
       grandtotal = Number(grandtotal);
+      console.log("this is the address id",addressId)
 
       
       
@@ -27,6 +28,12 @@ const place_order = async (req, res) => {
         req.flash("message","Cash on Delivery is only available for orders below ₹10,000. Please select another payment method to proceed")
         req.flash("type","info")
         return res.status(statuscode.BAD_REQUEST).redirect("/user_checkout")
+      }
+
+      if(!addressId || addressId == null  || addressId == undefined){
+        req.flash("message","Plece Enter a valid addresss");
+        req.flash("type","warning")
+        return res.status(statuscode.BAD_REQUEST).redirect("/user_checkout");
       }
 
       if(!addressId && !paymentMethod){
